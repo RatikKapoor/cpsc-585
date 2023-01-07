@@ -1,3 +1,8 @@
  {
-    "cmake.generator": "Visual Studio 16 2019"
+   "cmake.generator": "Visual Studio 16 2019",
+   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+   "files.associations": {
+    "*.vert":"objective-c",
+    "*.frag":"objective-c"
+   }
  }

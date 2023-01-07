@@ -1,0 +1,42 @@
+{
+  "Header Comment":{
+    "description": "Header comment for a file, with auto-generated information.",
+    "body": [ "/**",
+              " * Date created: $CURRENT_DATE/$CURRENT_MONTH_NAME_SHORT/$CURRENT_YEAR",
+              " * Project name: TBD",
+              " * Course: CPSC 585 Games Programming",
+              " * Semester: Winter 2023",
+              " * Course instructor: Dr. Ben Stephenson",
+              " * File author: ${1:}",
+              " */",
+              "${0:}"],
+              "prefix": "fhed",
+              "scope": "c,cpp,objective-c,objective-cpp"
+  },
+  "C++ Class":{
+    "description": "Creates a new C++ class, with standard imports.",
+    "body": [
+      "#include <iostream>",
+      "",
+      "using namespace std",
+      "",
+      "class ${1:ClassName} {",
+      "public:",
+      "",
+      "protected:",
+      "",
+      "private:",
+      "",
+      "};${0:}"],
+      "prefix": "cppclass"
+  },
+  "OpenGL Includes":{
+    "description": "Standard imports used in OpenGL files",
+    "prefix": "opengl",
+    "body": [ "#include <glad/glad.h>",
+              "#include <GLFW/glfw3.h>",
+              "${0:}"]
+
+  }
+
+}
