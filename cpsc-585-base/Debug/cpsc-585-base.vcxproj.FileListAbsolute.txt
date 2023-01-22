@@ -1,3 +1,0 @@
-E:\documents\school\w23\cpsc585\cpsc-585\cpsc-585-base\Debug\cpsc-585-base.vcxproj.CopyComplete
-E:\documents\school\w23\cpsc585\cpsc-585\cpsc-585-base\Debug\cpsc-585-base.exe
-E:\documents\school\w23\cpsc585\cpsc-585\cpsc-585-base\Debug\glfw3.dll
