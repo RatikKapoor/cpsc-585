@@ -6,10 +6,6 @@
 #include "PxPhysicsAPI.h"
 #include "Transform.h"
 
-int initPhysxDemo();
-void renderPhysxDemo();
-void cleanupPhysxDemo();
-
 class PhysicsSystem
 {
 public:
