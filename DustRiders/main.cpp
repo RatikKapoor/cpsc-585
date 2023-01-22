@@ -1,7 +1,15 @@
+#include <iostream>
+
 #include <PxPhysicsAPI.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+#include "Window.h"
+#include "Entity.h"
 #include "PhysicsSystem.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -19,56 +27,81 @@ void processInput(GLFWwindow* window) {
 int main() {
 	PhysicsSystem physics;
 
-	while (1)
+	std::vector<Entity*> entityList;
+	entityList.reserve(465);
+	for (int i = 0; i < 465; i++)
 	{
+		entityList.emplace_back(new Entity());
+		entityList.back()->transform = physics.transformList[i];
+	}
+
+	glfwInit();
+	Window window(800, 800, "DustRiders");
+
+	//glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
+
+	double lastTime = glfwGetTime();
+	int nbFrames = 0;
+	int currentFps = 0;
+	while (!window.shouldClose()) {
+		// Game Section
+		/*processInput(window);*/
+
 		physics.gScene->simulate(1.f / 60.f);
 		physics.gScene->fetchResults(true);
 
 		auto position = physics.getPosition();
-		std::cout << "(" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
-	}
 
-	return 0;
-
-	/*glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-
-	GLFWwindow* window = glfwCreateWindow(800, 800, "CPSC 585 Base", NULL, NULL);
-	if (window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-	glViewport(0, 0, 800, 800);
-
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	initPhysxDemo();
-
-	while (!glfwWindowShouldClose(window)) {
-		processInput(window);
-
-		renderPhysxDemo();
-
-		glfwSwapBuffers(window);
+		window.swapBuffers();
 		glfwPollEvents();
 		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Development Peripherals Section
+
+		// Framerate calculations
+		double currentTime = glfwGetTime();
+		nbFrames++;
+		if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
+			// printf and reset timer
+			printf("%f ms/frame\n", 1000.0 / double(nbFrames));
+			currentFps = nbFrames;
+			nbFrames = 0;
+			lastTime += 1.0;
+		}
+
+
+		// ImGui
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		// Putting the text-containing window in the top-left of the screen.
+		ImGui::SetNextWindowPos(ImVec2(5, 5));
+		// Setting flags
+		ImGuiWindowFlags textWindowFlags =
+			ImGuiWindowFlags_NoMove |			// text "window" should not move
+			ImGuiWindowFlags_NoResize |			// should not resize
+			ImGuiWindowFlags_NoCollapse |		// should not collapse
+			ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+			ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+			// ImGuiWindowFlags_NoBackground |		// window should be transparent; only the text should be visible
+			ImGuiWindowFlags_NoDecoration | // no decoration; only the text should be visible
+			ImGuiWindowFlags_NoTitleBar;	// no title; only the text should be visible
+		// Begin a new window with these flags. (bool *)0 is the "default" value for its argument.
+		ImGui::Begin("DustRiders", (bool*)0, textWindowFlags);
+		ImGui::Text("FPS: %i", currentFps);
+		// End the window.
+		ImGui::End();
+		// Render window
+		ImGui::Render();										// Render the ImGui window
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Some middleware thing
+		// End ImGui
+		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
-	cleanupPhysxDemo();
-
-	glfwTerminate();*/
+	glfwTerminate();
 	return 0;
 }

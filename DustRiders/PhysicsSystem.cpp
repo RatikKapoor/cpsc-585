@@ -63,7 +63,7 @@ PhysicsSystem::PhysicsSystem()
 
 			// Add the PxRigidDynamic to a vector
 			rigidDynamicList.push_back(body);
-			transformList.push_back(new Transform());
+			transformList.emplace_back(new Transform());
 
 			body->attachShape(*shape);
 			physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -91,13 +91,13 @@ void PhysicsSystem::updateTransforms()
 	for (int i = 0; i < transformList.size(); i++)
 	{
 		// Copy position values from physx::PxVec3 to glm::vec3
-		transformList[i].position.x = rigidDynamicList[i]->getGlobalPose().p.x;
-		transformList[i].position.y = rigidDynamicList[i]->getGlobalPose().p.y;
-		transformList[i].position.z = rigidDynamicList[i]->getGlobalPose().p.z;
+		transformList[i]->position.x = rigidDynamicList[i]->getGlobalPose().p.x;
+		transformList[i]->position.y = rigidDynamicList[i]->getGlobalPose().p.y;
+		transformList[i]->position.z = rigidDynamicList[i]->getGlobalPose().p.z;
 
 		// Copy rotation values from physx::PxQuat to glm::quat
-		transformList[i].rotation.x = rigidDynamicList[i]->getGlobalPose().q.x;
-		transformList[i].rotation.y = rigidDynamicList[i]->getGlobalPose().q.y;
-		transformList[i].rotation.z = rigidDynamicList[i]->getGlobalPose().q.z;
+		transformList[i]->rotation.x = rigidDynamicList[i]->getGlobalPose().q.x;
+		transformList[i]->rotation.y = rigidDynamicList[i]->getGlobalPose().q.y;
+		transformList[i]->rotation.z = rigidDynamicList[i]->getGlobalPose().q.z;
 	}
 }

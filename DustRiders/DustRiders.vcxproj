@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
