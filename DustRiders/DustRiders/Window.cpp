@@ -6,40 +6,39 @@
 
 #include <iostream>
 
-
 // ---------------------------
 // static function definitions
 // ---------------------------
 
-void Window::keyMetaCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	CallbackInterface* callbacks = static_cast<CallbackInterface*>(glfwGetWindowUserPointer(window));
+void Window::keyMetaCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	CallbackInterface *callbacks = static_cast<CallbackInterface *>(glfwGetWindowUserPointer(window));
 	callbacks->keyCallback(key, scancode, action, mods);
 }
 
-
-void Window::mouseButtonMetaCallback(GLFWwindow* window, int button, int action, int mods) {
-	CallbackInterface* callbacks = static_cast<CallbackInterface*>(glfwGetWindowUserPointer(window));
+void Window::mouseButtonMetaCallback(GLFWwindow *window, int button, int action, int mods)
+{
+	CallbackInterface *callbacks = static_cast<CallbackInterface *>(glfwGetWindowUserPointer(window));
 	callbacks->mouseButtonCallback(button, action, mods);
 }
 
-
-void Window::cursorPosMetaCallback(GLFWwindow* window, double xpos, double ypos) {
-	CallbackInterface* callbacks = static_cast<CallbackInterface*>(glfwGetWindowUserPointer(window));
+void Window::cursorPosMetaCallback(GLFWwindow *window, double xpos, double ypos)
+{
+	CallbackInterface *callbacks = static_cast<CallbackInterface *>(glfwGetWindowUserPointer(window));
 	callbacks->cursorPosCallback(xpos, ypos);
 }
 
-
-void Window::scrollMetaCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	CallbackInterface* callbacks = static_cast<CallbackInterface*>(glfwGetWindowUserPointer(window));
+void Window::scrollMetaCallback(GLFWwindow *window, double xoffset, double yoffset)
+{
+	CallbackInterface *callbacks = static_cast<CallbackInterface *>(glfwGetWindowUserPointer(window));
 	callbacks->scrollCallback(xoffset, yoffset);
 }
 
-
-void Window::windowSizeMetaCallback(GLFWwindow* window, int width, int height) {
-	CallbackInterface* callbacks = static_cast<CallbackInterface*>(glfwGetWindowUserPointer(window));
+void Window::windowSizeMetaCallback(GLFWwindow *window, int width, int height)
+{
+	CallbackInterface *callbacks = static_cast<CallbackInterface *>(glfwGetWindowUserPointer(window));
 	callbacks->windowSizeCallback(width, height);
 }
-
 
 // ----------------------
 // non-static definitions
@@ -47,10 +46,8 @@ void Window::windowSizeMetaCallback(GLFWwindow* window, int width, int height) {
 
 Window::Window(
 	std::shared_ptr<CallbackInterface> callbacks, int width, int height,
-	const char* title, GLFWmonitor* monitor, GLFWwindow* share
-)
-	: window(nullptr)
-	, callbacks(callbacks)
+	const char *title, GLFWmonitor *monitor, GLFWwindow *share)
+	: window(nullptr), callbacks(callbacks)
 {
 	// specify OpenGL version
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -61,7 +58,8 @@ Window::Window(
 
 	// create window
 	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(width, height, title, monitor, share));
-	if (window == nullptr) {
+	if (window == nullptr)
+	{
 		std::cout << ("WINDOW failed to create GLFW window");
 		throw std::runtime_error("Failed to create GLFW window.");
 	}
@@ -70,36 +68,37 @@ Window::Window(
 	// initialize OpenGL extensions for the current context (this window)
 	/*GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		Log::error("WINDOW glewInit error:{}", glewGetErrorString(err));
 		throw std::runtime_error("Failed to initialize GLEW");
 	}*/
 	// initialize OpenGL extensions for the current context (this window)
-	if (!gladLoadGL()) {
+	if (!gladLoadGL())
+	{
 		throw std::runtime_error("Failed to initialize GLAD");
 	}
 
 	glfwSetWindowSizeCallback(window.get(), defaultWindowSizeCallback);
 
-	if (callbacks != nullptr) {
+	if (callbacks != nullptr)
+	{
 		connectCallbacks();
 	}
 
 	// Standard ImGui/GLFW middleware
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO &io = ImGui::GetIO();
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window.get(), true);
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 }
 
-
-Window::Window(int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share)
+Window::Window(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
 	: Window(nullptr, width, height, title, monitor, share)
-{}
+{
+}
 
-
-void Window::connectCallbacks() {
+void Window::connectCallbacks()
+{
 	// set userdata of window to point to the object that carries out the callbacks
 	glfwSetWindowUserPointer(window.get(), callbacks.get());
 
@@ -111,21 +110,21 @@ void Window::connectCallbacks() {
 	glfwSetWindowSizeCallback(window.get(), windowSizeMetaCallback);
 }
 
-
-void Window::setCallbacks(std::shared_ptr<CallbackInterface> callbacks_) {
+void Window::setCallbacks(std::shared_ptr<CallbackInterface> callbacks_)
+{
 	callbacks = callbacks_;
 	connectCallbacks();
 }
 
-
-glm::ivec2 Window::getPos() const {
+glm::ivec2 Window::getPos() const
+{
 	int x, y;
 	glfwGetWindowPos(window.get(), &x, &y);
 	return glm::ivec2(x, y);
 }
 
-
-glm::ivec2 Window::getSize() const {
+glm::ivec2 Window::getSize() const
+{
 	int w, h;
 	glfwGetWindowSize(window.get(), &w, &h);
 	return glm::ivec2(w, h);

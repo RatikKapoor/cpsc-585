@@ -4,6 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <vector>
+#include <cmath>
+#include <string>
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -13,6 +17,7 @@
 #include "PhysicsSystem.h"
 #include "Overlay.h"
 #include "ShaderProgram.h"
+#include "Geometry.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -47,6 +52,10 @@ int main()
 
 	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
+	GPU_Geometry triangle;
+	triangle.setVerts(std::vector<glm::vec3>{ glm::vec3{ 0.0f, 0.5f, 0.0f }, glm::vec3{ -0.5f, -0.5f, 0.0f }, glm::vec3{ 0.5f, -0.5f, 0.0f } });
+	triangle.setCols(std::vector<glm::vec3>{ glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f } });
+
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
 	while (!window.shouldClose())
@@ -67,9 +76,14 @@ int main()
 		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		overlay.RenderOverlay();
+		basicShader.use();
+		triangle.bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+
+		overlay.RenderOverlay();
 	}
 
 	overlay.Cleanup();
