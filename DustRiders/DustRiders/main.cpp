@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "Entity.h"
 #include "PhysicsSystem.h"
+#include "ShaderProgram.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -38,6 +39,8 @@ int main() {
 	glfwInit();
 	Window window(800, 800, "DustRiders");
 
+	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
+
 	//glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
 	double lastTime = glfwGetTime();
@@ -54,8 +57,15 @@ int main() {
 
 		window.swapBuffers();
 		glfwPollEvents();
+
+		// Rendering Objects
+		glEnable(GL_FRAMEBUFFER_SRGB);
 		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+
+
+		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 
 		// Development Peripherals Section
 
