@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{33f6a401-3d93-46b1-ba8b-ca650e4d6105}</ProjectGuid>
+    <ProjectGuid>{f9ef0f33-dba7-471d-a66b-c488d2e8651a}</ProjectGuid>
     <RootNamespace>DustRiders</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -173,8 +173,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Main.frag" />
-    <None Include="Main.vert" />
+    <None Include=".\\Main.frag" />
+    <None Include=".\\Main.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
