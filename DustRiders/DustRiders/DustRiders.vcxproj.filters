@@ -118,5 +118,11 @@
     <None Include=".\\Main.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="basic.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="basic.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
