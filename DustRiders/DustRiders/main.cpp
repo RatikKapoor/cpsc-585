@@ -18,6 +18,9 @@
 #include "Overlay.h"
 #include "ShaderProgram.h"
 #include "Geometry.h"
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -57,6 +60,12 @@ int main()
 	triangle.setCols(std::vector<glm::vec3>{ glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f } });
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
+	SoundDevice* mysounddevice = SoundDevice::get();
+	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
+
+
+	SoundSource mySpeaker;
+	mySpeaker.Play(sound1);
 
 	while (!window.shouldClose())
 	{
@@ -80,6 +89,7 @@ int main()
 		triangle.bind();
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		
 
 		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 
