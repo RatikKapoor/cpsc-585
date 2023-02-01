@@ -168,6 +168,8 @@
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Overlay.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="snippetrender\SnippetCamera.cpp" />
@@ -199,6 +201,8 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Overlay.h" />
+    <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="snippetrender\SnippetCamera.h" />
