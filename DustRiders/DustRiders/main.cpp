@@ -36,7 +36,7 @@ void processInput(GLFWwindow *window)
 
 int main()
 {
-	PhysicsSystem physics;
+	//PhysicsSystem physics;
 	Overlay overlay;
 
 	std::vector<Entity *> entityList;
@@ -44,7 +44,7 @@ int main()
 	for (int i = 0; i < 465; i++)
 	{
 		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList[i];
+		//entityList.back()->transform = physics.transformList[i];
 	}
 
 	glfwInit();
@@ -63,10 +63,10 @@ int main()
 		// Game Section
 		// processInput(window.get);
 
-		physics.gScene->simulate(1.f / 60.f);
-		physics.gScene->fetchResults(true);
+		//physics.gScene->simulate(1.f / 60.f);
+		//physics.gScene->fetchResults(true);
 
-		auto position = physics.getPosition();
+		//auto position = physics.getPosition();
 
 		window.swapBuffers();
 		glfwPollEvents();
