@@ -1,5 +1,7 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+#include <vector>
 
 enum class XboxButton
 {
@@ -11,7 +13,7 @@ enum class XboxButton
 	XBOX_RB = 5,
 	XBOX_VIEW = 6,
 	XBOX_MENU = 7,
-	XBOX_MAIN = 8, // The 'X' button on the center of the controller
+	XBOX_MAIN = 8,
 	XBOX_JSLB = 9,
 	XBOX_JSRB = 10,
 	XBOX_DUP = 11,
@@ -20,16 +22,19 @@ enum class XboxButton
 	XBOX_DLEFT = 14
 };
 
-class Joystick {
-public:
-	Joystick(int jsID) :jsID(jsID);
-	Joystick(const Joystick& js) {
-		this->jsID = js.jsID;
-		return;
-	}
+class Joystick
+{
 
-	Joystick
+public:
+	Joystick() {}
+
+	int add(int jsID);
+	int status(int jsID);
+	int remove(int jsID);
+	int removeAll();
+	std::vector<int> getAll() const;
 
 private:
-	int jsID; 
+	static std::vector<int> jsPresent;
+	int searchJS(int jsID);
 };
