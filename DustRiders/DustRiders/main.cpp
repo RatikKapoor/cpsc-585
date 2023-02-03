@@ -14,7 +14,6 @@
 
 #include "Window.h"
 #include "Entity.h"
-#include "Model.h"
 #include "PhysicsSystem.h"
 #include "Overlay.h"
 #include "ShaderProgram.h"
@@ -40,25 +39,14 @@ void processInput(GLFWwindow *window)
 int main()
 {
 	PhysicsSystem physics;
-	RenderingSystem renderer;
 	Overlay overlay;
 
 	std::vector<Entity *> entityList;
-
-	std::vector<glm::vec3> triangleVerts{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}};
-	std::vector<glm::vec3> triangleCols{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}};
-	Model *triangle = renderer.loadModel("triangle", triangleVerts, triangleCols);
-
-	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
-
 	entityList.reserve(465);
 	for (int i = 0; i < 465; i++)
 	{
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList[i];
-
-		entityList.back()->model = triangle;
-		entityList.back()->shaderProgram = basicShader;
 	}
 
 	glfwInit();
@@ -68,13 +56,18 @@ int main()
 
 	Window window(800, 800, "DustRiders");
 
+	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
+
+	GPU_Geometry triangle;
+	triangle.setVerts(std::vector<glm::vec3>{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}});
+	triangle.setCols(std::vector<glm::vec3>{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}});
+
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
 	while (!window.shouldClose())
 	{
 		// Game Section
 		// processInput(window.get);
-		glfwPollEvents();
 
 		// physics.gScene->simulate(1.f / 60.f);
 		// physics.gScene->fetchResults(true);
@@ -82,7 +75,19 @@ int main()
 		// auto position = physics.getPosition();
 
 		window.swapBuffers();
-		renderer.updateRender(entityList);
+		glfwPollEvents();
+
+		// Rendering Objects
+		glEnable(GL_FRAMEBUFFER_SRGB);
+		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		basicShader.use();
+		triangle.bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 
 		overlay.RenderOverlay();
 	}

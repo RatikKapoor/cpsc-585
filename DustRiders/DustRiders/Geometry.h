@@ -16,6 +16,15 @@
 
 #include <vector>
 
+// List of vertices and texture coordinates using std::vector and glm::vec3
+struct CPU_Geometry
+{
+	std::vector<glm::vec3> verts;
+	std::vector<glm::vec3> cols;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec2> texCoords;
+};
+
 // VAO and two VBOs for storing vertices and texture coordinates, respectively
 class GPU_Geometry
 {
