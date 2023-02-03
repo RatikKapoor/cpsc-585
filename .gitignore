@@ -28,7 +28,7 @@
 *.lai
 *.la
 *.a
-*.lib
+!*.lib
 
 # Executables
 *.exe
@@ -445,5 +445,5 @@ FodyWeavers.xsd
 *imgui.ini
 
 # Static libraries that need to be included
-!DustRiders/DustRiders/Debug
-!DustRiders/DustRiders/Release
+!DustRiders/DustRiders/Debug/
+!DustRiders/DustRiders/Release/
