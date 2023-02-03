@@ -19,6 +19,8 @@
 #include "ShaderProgram.h"
 #include "Geometry.h"
 
+#include "InputHandler.h"
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -36,15 +38,21 @@ void processInput(GLFWwindow *window)
 
 int main()
 {
-	//PhysicsSystem physics;
+	// PhysicsSystem physics;
 	Overlay overlay;
+
+	Joystick js;
+	for (auto j : js.getAll())
+	{
+		std::cout << j << std::endl;
+	}
 
 	std::vector<Entity *> entityList;
 	entityList.reserve(465);
 	for (int i = 0; i < 465; i++)
 	{
 		entityList.emplace_back(new Entity());
-		//entityList.back()->transform = physics.transformList[i];
+		// entityList.back()->transform = physics.transformList[i];
 	}
 
 	glfwInit();
@@ -53,8 +61,8 @@ int main()
 	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
 	GPU_Geometry triangle;
-	triangle.setVerts(std::vector<glm::vec3>{ glm::vec3{ 0.0f, 0.5f, 0.0f }, glm::vec3{ -0.5f, -0.5f, 0.0f }, glm::vec3{ 0.5f, -0.5f, 0.0f } });
-	triangle.setCols(std::vector<glm::vec3>{ glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f } });
+	triangle.setVerts(std::vector<glm::vec3>{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}});
+	triangle.setCols(std::vector<glm::vec3>{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}});
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
@@ -63,10 +71,10 @@ int main()
 		// Game Section
 		// processInput(window.get);
 
-		//physics.gScene->simulate(1.f / 60.f);
-		//physics.gScene->fetchResults(true);
+		// physics.gScene->simulate(1.f / 60.f);
+		// physics.gScene->fetchResults(true);
 
-		//auto position = physics.getPosition();
+		// auto position = physics.getPosition();
 
 		window.swapBuffers();
 		glfwPollEvents();
