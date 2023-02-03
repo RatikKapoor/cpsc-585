@@ -443,3 +443,7 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++,vcpkg
 
 *imgui.ini
+
+# Static libraries that need to be included
+!DustRiders/DustRiders/Debug/
+!DustRiders/DustRiders/Release/
