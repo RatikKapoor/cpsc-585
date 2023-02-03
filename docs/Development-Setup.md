@@ -34,11 +34,12 @@ To do so, either run `cpsc-585/vckpg-packages.bat`, or manually install the foll
  glad:x64-windows-static
  glm:x64-windows-static
  imgui:x64-windows-static
-"imgui[opengl3-binding]> ":x64-windows-static
-"imgui[glfw-binding]> ":x64-windows-static
+"imgui[opengl3-binding]:x64-windows-static"
+"imgui[glfw-binding]:x64-windows-static"
  libsndfile:x64-windows-static
  openal-soft:x64-windows-static
  stb:x64-windows-static
+ rapidjson:x64-windows-static
  ```
 After running `cpsc-585/vcpkg-packages.bat` or manually installing the packages, run cmd.exe as an administrator and run the following:
 

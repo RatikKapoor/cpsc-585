@@ -30,8 +30,9 @@ CLS
 %1 install  glad:x64-windows-static
 %1 install  glm:x64-windows-static
 %1 install  imgui:x64-windows-static
-%1 install "imgui[opengl3-binding]> ":x64-windows-static --recurse
-%1 install "imgui[glfw-binding]> ":x64-windows-static --recurse
+%1 install "imgui[opengl3-binding]:x64-windows-static" --recurse
+%1 install "imgui[glfw-binding]:x64-windows-static" --recurse
 %1 install  libsndfile:x64-windows-static
 %1 install  openal-soft:x64-windows-static
 %1 install  stb:x64-windows-static
+%1 install  rapidjson:x64-windows-static
