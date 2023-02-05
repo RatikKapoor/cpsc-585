@@ -3,95 +3,101 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <string>
+#include <map>
+#include <memory>
 
-// enum class XboxButton
-// {
-// 	XBOX_A = 0,
-// 	XBOX_B = 1,
-// 	XBOX_X = 2,
-// 	XBOX_Y = 3,
-// 	XBOX_LB = 4,
-// 	XBOX_RB = 5,
-// 	XBOX_VIEW = 6,
-// 	XBOX_MENU = 7,
-// 	XBOX_MAIN = 8,
-// 	XBOX_JSRB = 9,	 // NEW JSLB
-// 	XBOX_DUP = 10,	 // NEW JSRB
-// 	XBOX_DDOWN = 11, // NEW DRIGHT
-// 	XBOX_DLEFT = 14, //
-// 	XBOX_JSLB = 12,
-// 	XBOX_DRIGHT = 13, // NEW DUP
-// };
+#define XBOX_A 0
+#define XBOX_B 1
+#define XBOX_X 2
+#define XBOX_Y 3
+#define XBOX_LB 4
+#define XBOX_RB 5
+#define XBOX_VIEW 6
+#define XBOX_MENU 7
+#define XBOX_LJS 8
+#define XBOX_RJS 9
+#define XBOX_UP 10
+#define XBOX_RIGHT 11
+#define XBOX_DOWN 12
+#define XBOX_LEFT 13
 
-enum class XboxButton
-{
-	XBOX_A = 0,
-	XBOX_B = 1,
-	XBOX_X = 2,
-	XBOX_Y = 3,
-	XBOX_LB = 4,
-	XBOX_RB = 5,
-	XBOX_VIEW = 6,
-	XBOX_MENU = 7,
-	XBOX_JSLB = 8,
-	XBOX_JSRB = 9,
-	XBOX_DUP = 10,
-	XBOX_DRIGHT = 11,
-	XBOX_DDOWN = 12,
-	XBOX_DLEFT = 13
-};
-
-constexpr const char *getButtonName(XboxButton button)
-{
-	switch (button)
-	{
-	case XboxButton::XBOX_A:
-		return "A";
-	case XboxButton::XBOX_B:
-		return "B";
-	case XboxButton::XBOX_X:
-		return "X";
-	case XboxButton::XBOX_Y:
-		return "Y";
-	case XboxButton::XBOX_LB:
-		return "LB";
-	case XboxButton::XBOX_RB:
-		return "RB";
-	case XboxButton::XBOX_VIEW:
-		return "VW";
-	case XboxButton::XBOX_MENU:
-		return "MU";
-	case XboxButton::XBOX_JSLB:
-		return "JSL";
-	case XboxButton::XBOX_JSRB:
-		return "JSR";
-	case XboxButton::XBOX_DUP:
-		return "DUP";
-	case XboxButton::XBOX_DRIGHT:
-		return "DRT";
-	case XboxButton::XBOX_DDOWN:
-		return "DDN";
-	case XboxButton::XBOX_DLEFT:
-		return "DLT";
-	default:
-		return "Unknown button";
-	}
-}
+#define XBOX_L_XAXIS 0
+#define XBOX_L_YAXIS 1
+#define XBOX_R_XAXIS 2
+#define XBOX_R_YAXIS 3
+#define XBOX_L_TRIGGER 4
+#define XBOX_R_TRIGGER 5
 
 class Joystick
 {
-
 public:
 	Joystick() {}
+	Joystick(const Joystick &js)
+	{
+		for (int i = 0; i < 14; i++)
+		{
+			this->buttons[i] = js.buttons[i];
+		}
+		for (int i = 0; i < 6; i++)
+		{
+			this->analogs[i] = js.analogs[i];
+		}
+	}
 
-	int add(int jsID);
-	int status(int jsID);
-	int remove(int jsID);
-	int removeAll();
-	std::vector<int> getAll() const;
-	static std::string getButtonsString(int jsID);
+	Joystick &operator=(const Joystick &js)
+	{
+		if (this != &js)
+		{
+			for (int i = 0; i < 14; i++)
+			{
+				this->buttons[i] = js.buttons[i];
+			}
+			for (int i = 0; i < 6; i++)
+			{
+				this->analogs[i] = js.analogs[i];
+			}
+		}
+		return *this;
+	}
+
+	~Joystick() {}
+
+	static std::string buttonToStr(int button);
+	static std::string analogToStr(int analog);
+
+	bool setButtons(const unsigned char *buttons);
+	bool updateButtons(int jsID);
+
+	bool setAnalogs(const float *analogs);
+	bool updateAnalogs(int jsID);
+
+	bool setInputs(const unsigned char *buttons, const float *analogs);
+	bool setInputs(int jsID);
+
+	bool getButton(int buttonIndex);
+	bool getAnalog(int analogIndex);
+
+	std::string buttonList();
+	std::string triggerList();
+	std::string axisList();
 
 private:
-	static std::vector<int> jsPresent;
-	int searchJS(int jsID);
+	unsigned char buttons[14];
+	float analogs[6];
+};
+
+class JSHandler
+{
+public:
+	// Adds one controller by default
+	JSHandler()
+	{
+		if (jsMap.size() == 0 && glfwJoystickPresent(GLFW_JOYSTICK_1))
+		{
+			JSHandler::jsMap[GLFW_JOYSTICK_1] = Joystick();
+		}
+	}
+
+private:
+	static std::map<int, Joystick> jsMap;
 };
