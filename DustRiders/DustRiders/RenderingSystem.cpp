@@ -1,8 +1,9 @@
 #include "RenderingSystem.h"
+#include "Geometry.h"
 
-Model* RenderingSystem::loadModel(std::string name, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& colors)
+Model* RenderingSystem::loadModel(std::string name, std::vector<Vertex>& verts, std::vector<unsigned int>& indices)
 {
-	Model* m = new Model(positions, colors);
+	Model* m = new Model(verts, indices);
 	models.emplace(std::make_pair(name, m));
 
 	return m;
@@ -35,7 +36,7 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList)
 		int count = entity->model->use();
 		entity->shaderProgram->use();
 
-		glDrawArrays(GL_TRIANGLES, 0, count);
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	}
 
 	glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui

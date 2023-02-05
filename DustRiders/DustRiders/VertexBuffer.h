@@ -5,12 +5,13 @@
 //#include <GL/glew.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 
 
 class VertexBuffer {
 
 public:
-	VertexBuffer(GLuint index, GLint size, GLenum dataType);
+	VertexBuffer(std::vector<GLint> sizes, std::vector<GLenum> dataTypes, int stride);
 
 	// Because we're using the VertexBufferHandle to do RAII for the buffer for us
 	// and our other types are trivial or provide their own RAII
@@ -21,6 +22,7 @@ public:
 
 	// Public interface
 	void bind() const { glBindBuffer(GL_ARRAY_BUFFER, bufferID); }
+
 	void uploadData(GLsizeiptr size, const void* data, GLenum usage);
 
 private:
