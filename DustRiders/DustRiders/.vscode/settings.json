@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.theme-css": "css",
+    "*.vert": "glsl",
+    "xstring": "cpp"
+  }
+}

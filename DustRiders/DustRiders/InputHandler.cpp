@@ -1,4 +1,7 @@
 #include "InputHandler.h"
+#include <string>
+
+std::vector<int> Joystick::jsPresent;
 
 int Joystick::add(int jsID)
 {
@@ -69,4 +72,36 @@ std::vector<int> Joystick::getAll() const
 {
   std::vector<int> jsList = Joystick::jsPresent;
   return jsList;
+}
+
+std::string Joystick::getButtonsString(int jsID)
+{
+  // No butt
+  std::string buttonString = "JStick ";
+  buttonString.append(std::to_string(jsID));
+  if (!glfwJoystickPresent(jsID))
+  {
+    buttonString.append(" not present.");
+    return buttonString;
+  }
+
+  int count;
+  const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
+  buttonString.append(" buttons: ");
+  buttonString.append(std::to_string(count));
+  for (int i = 0; i < count; i++)
+  {
+
+    // buttonString.append(std::to_string(i));
+    // buttonString.append("(");
+    // buttonString.append(std::to_string(buttons[i]));
+    // buttonString.append(")");
+    if (buttons[i])
+    {
+      buttonString.append(getButtonName(static_cast<XboxButton>(i)));
+      buttonString.append(", ");
+    }
+  }
+  buttonString.resize(buttonString.size() - 2);
+  return buttonString;
 }
