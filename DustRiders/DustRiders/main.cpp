@@ -14,7 +14,7 @@
 
 #include "Window.h"
 #include "Entity.h"
-//#include "PhysicsSystem.h"
+// #include "PhysicsSystem.h"
 #include "Overlay.h"
 #include "ShaderProgram.h"
 #include "Geometry.h"
@@ -40,12 +40,6 @@ int main()
 {
 	// PhysicsSystem physics;
 	Overlay overlay;
-
-	Joystick js;
-	for (auto j : js.getAll())
-	{
-		std::cout << j << std::endl;
-	}
 
 	std::vector<Entity *> entityList;
 	entityList.reserve(465);
@@ -92,10 +86,6 @@ int main()
 		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 
 		overlay.RenderOverlay();
-		for (auto j : js.getAll())
-		{
-			std::cout << j << std::endl;
-		}
 	}
 
 	overlay.Cleanup();

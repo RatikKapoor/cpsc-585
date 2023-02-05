@@ -1,107 +1,211 @@
 #include "InputHandler.h"
 #include <string>
+#include <map>
 
-std::vector<int> Joystick::jsPresent;
+std::map<int, Joystick> JSHandler::jsMap;
 
-int Joystick::add(int jsID)
+std::string Joystick::buttonToStr(int button)
 {
-  if (Joystick::jsPresent.size() >= 16)
+  switch (button)
   {
-    return -1;
-  }
-  if (searchJS(jsID) == -1)
-  {
-    Joystick::jsPresent.push_back(jsID);
-    return 0;
-  }
-  else
-  {
-    return 1;
+  case XBOX_A:
+    return "A";
+    break;
+  case XBOX_B:
+    return "B";
+    break;
+  case XBOX_X:
+    return "X";
+    break;
+  case XBOX_Y:
+    return "Y";
+    break;
+  case XBOX_LB:
+    return "LB";
+    break;
+  case XBOX_RB:
+    return "RB";
+    break;
+  case XBOX_VIEW:
+    return "VIEW";
+    break;
+  case XBOX_MENU:
+    return "MENU";
+    break;
+  case XBOX_LJS:
+    return "LJS";
+    break;
+  case XBOX_RJS:
+    return "RJS";
+    break;
+  case XBOX_UP:
+    return "UP";
+    break;
+  case XBOX_RIGHT:
+    return "RIGHT";
+    break;
+  case XBOX_DOWN:
+    return "DOWN";
+    break;
+  case XBOX_LEFT:
+    return "LEFT";
+    break;
+  default:
+    return "UNKNOWN";
   }
 }
 
-int Joystick::remove(int jsID)
+std::string Joystick::analogToStr(int analog)
 {
-  if (Joystick::jsPresent.empty())
+  switch (analog)
   {
-    return -1;
-  }
-  int searchInd = searchJS(jsID);
-  if (searchInd == -1)
-  {
-    return 1;
-  }
-  else
-  {
-    Joystick::jsPresent.erase(Joystick::jsPresent.begin() + searchInd);
-    return 0;
+  case XBOX_L_XAXIS:
+    return "L_XAXIS";
+    break;
+  case XBOX_L_YAXIS:
+    return "L_YAXIS";
+    break;
+  case XBOX_R_XAXIS:
+    return "R_XAXIS";
+    break;
+  case XBOX_R_YAXIS:
+    return "R_YAXIS";
+    break;
+  case XBOX_L_TRIGGER:
+    return "L_TRIGGER";
+    break;
+  case XBOX_R_TRIGGER:
+    return "R_TRIGGER";
+    break;
+  default:
+    return "UKNOWN";
   }
 }
 
-int Joystick::status(int jsID)
+std::string Joystick::buttonList()
 {
-  return (searchJS(jsID) >= 0);
-}
-
-int Joystick::removeAll()
-{
-  Joystick::jsPresent.clear();
-  return (Joystick::jsPresent.empty());
-}
-
-int Joystick::searchJS(int jsID)
-{
-  // We will have a max of 16 controllers, so this should be fine for performance
-  if (Joystick::jsPresent.empty())
+  std::string buttonList;
+  for (int i = 0; i < 14; i++)
   {
-    return -1;
-  }
-  int index = 0;
-  for (auto js : Joystick::jsPresent)
-  {
-    if (js == jsID)
+    if (buttons[i])
     {
-      return index;
+      buttonList.append(Joystick::buttonToStr(i));
+      buttonList.append(", ");
     }
-    index++;
   }
-  return -1;
+  if (buttonList.size() == 0)
+  {
+    buttonList = "NONE";
+  }
+  else
+  {
+    buttonList.resize(buttonList.size() - 2);
+  }
+  return buttonList;
 }
 
-std::vector<int> Joystick::getAll() const
+std::string Joystick::axisList()
 {
-  std::vector<int> jsList = Joystick::jsPresent;
-  return jsList;
+  std::string axisList;
+  axisList.append("Left JS: (");
+  axisList.append(std::to_string(analogs[XBOX_L_XAXIS]) + ", " + std::to_string(analogs[XBOX_L_YAXIS]));
+  axisList.append(")");
+  axisList.append("\n\rRight JS:(");
+  axisList.append(std::to_string(analogs[XBOX_R_XAXIS]) + ", " + std::to_string(analogs[XBOX_R_YAXIS]));
+  axisList.append(")");
+  return axisList;
 }
 
-std::string Joystick::getButtonsString(int jsID)
+std::string Joystick::triggerList()
 {
-  // No butt
-  std::string buttonString = "JStick ";
-  buttonString.append(std::to_string(jsID));
+  std::string triggerList;
+  triggerList.append("Left trigger: " + std::to_string(analogs[XBOX_L_TRIGGER]));
+  triggerList.append("\n\rRight trigger: " + std::to_string(analogs[XBOX_R_TRIGGER]));
+  ;
+  return triggerList;
+}
+
+bool Joystick::setButtons(const unsigned char *buttons)
+{
+  int i;
+  for (i = 0; i < 14 && buttons + i != nullptr; i++)
+  {
+    this->buttons[i] = buttons[i];
+  }
+
+  if (i == 14)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool Joystick::updateButtons(int jsID)
+{
   if (!glfwJoystickPresent(jsID))
   {
-    buttonString.append(" not present.");
-    return buttonString;
+    return false;
   }
 
   int count;
-  const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
-  buttonString.append(" buttons: ");
-  buttonString.append(std::to_string(count));
-  for (int i = 0; i < count; i++)
-  {
+  return setButtons(glfwGetJoystickButtons(jsID, &count));
+}
 
-    // buttonString.append(std::to_string(i));
-    // buttonString.append("(");
-    // buttonString.append(std::to_string(buttons[i]));
-    // buttonString.append(")");
-    if (buttons[i])
-    {
-      buttonString.append(getButtonName(static_cast<XboxButton>(i)));
-      buttonString.append(", ");
-    }
+bool Joystick::setAnalogs(const float *analogs)
+{
+  int i;
+  for (i = 0; i < 6 && analogs + i != nullptr; i++)
+  {
+    this->analogs[i] = analogs[i];
   }
-  buttonString.resize(buttonString.size() - 2);
-  return buttonString;
+
+  if (i == 6)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool Joystick::updateAnalogs(int jsID)
+{
+  if (!glfwJoystickPresent(jsID))
+  {
+    return false;
+  }
+
+  int count;
+  return setAnalogs(glfwGetJoystickAxes(jsID, &count));
+}
+
+bool Joystick::setInputs(const unsigned char *buttons, const float *analogs)
+{
+  return (setButtons(buttons) && setAnalogs(analogs));
+}
+
+bool Joystick::setInputs(int jsID)
+{
+  if (!glfwJoystickPresent(jsID))
+  {
+    return false;
+  }
+
+  int countB;
+  int countA;
+  return setInputs(glfwGetJoystickButtons(jsID, &countB), glfwGetJoystickAxes(jsID, &countA));
+}
+
+bool Joystick::getButton(int button)
+{
+  return buttons[button];
+}
+
+bool Joystick::getAnalog(int analog)
+{
+  return analogs[analog];
 }

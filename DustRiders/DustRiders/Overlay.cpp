@@ -23,6 +23,9 @@ void Overlay::RenderOverlay()
 		lastTime += 1.0;
 	}
 
+	Joystick js;
+	js.setInputs(GLFW_JOYSTICK_1);
+
 	// ImGui
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -42,9 +45,15 @@ void Overlay::RenderOverlay()
 	// Begin a new window with these flags. (bool *)0 is the "default" value for its argument.
 	ImGui::Begin("DustRiders", (bool *)0, textWindowFlags);
 	ImGui::Text("FPS: %i", currentFps);
-	
-	// Current buttons being pressed 
-	ImGui::Text("%s", Joystick::getButtonsString(GLFW_JOYSTICK_1).c_str());
+
+	// Current buttons being pressed
+	// ImGui::Text("%s", Joystick::getButtonStr(GLFW_JOYSTICK_1).c_str());
+	// ImGui::Text("%s", Joystick::getTriggerStr(GLFW_JOYSTICK_1).c_str());
+	// ImGui::Text("%s", Joystick::getStickStr(GLFW_JOYSTICK_1).c_str());
+
+	ImGui::Text("Buttons: %s", js.buttonList().c_str());
+	ImGui::Text("%s", js.triggerList().c_str());
+	ImGui::Text("%s", js.axisList().c_str());
 
 	// End the window.
 	ImGui::End();
