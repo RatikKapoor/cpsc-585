@@ -8,29 +8,23 @@ class Model
 {
 public:
 	// These vectors are parallel to represent a vertex overall
-	std::vector<glm::vec3> positions;
-	std::vector<glm::vec3> colors;
-	//std::vector<glm::vec3> normals;
-	//std::vector<glm::vec2> texCoords;
+	std::vector<Vertex> verts;
+	std::vector<unsigned int> indices;
 
 	GPU_Geometry geometry;
 
 	int use() {
 		geometry.bind();
 
-		return positions.size();
+		return indices.size();
 	}
 
-	Model(std::vector<glm::vec3>& verts, std::vector<glm::vec3>& cols)
-		: positions(verts)
-		, colors(cols)
-		//, normals(norms)
-		//, texCoords(tex)
+	Model(std::vector<Vertex>& v, std::vector<unsigned int>& i)
+		: verts(v)
+		, indices(i)
 	{
 		geometry.bind();
-		geometry.setVerts(positions);
-		geometry.setCols(colors);
-		//geometry.setNormals(normals);
-		//geometry.setTexCoords(texCoords);
+		geometry.setVerts(verts);
+		geometry.setIndices(indices);
 	}
 };

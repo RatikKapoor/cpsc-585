@@ -48,9 +48,13 @@ int main()
 
 	std::vector<Entity *> entityList;
 
-	std::vector<glm::vec3> triangleVerts{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}};
-	std::vector<glm::vec3> triangleCols{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}};
-	Model *triangle = renderer.loadModel("triangle", triangleVerts, triangleCols);
+	std::vector<Vertex> triangleVerts{ 
+		Vertex{ glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3 {-0.5f, -0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) }
+	};
+	std::vector<unsigned int> triangleIndices{0, 1, 2};
+	Model *triangle = renderer.loadModel("triangle", triangleVerts, triangleIndices);
 
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 

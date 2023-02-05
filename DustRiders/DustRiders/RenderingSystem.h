@@ -19,7 +19,7 @@ class RenderingSystem
 
 public:
 
-	Model* loadModel(std::string name, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& colors);
+	Model* loadModel(std::string name, std::vector<Vertex>& verts, std::vector<unsigned int>& indices);
 	ShaderProgram* compileShader(std::string name, const std::string& vertexPath, const std::string& fragmentPath);
 	Texture* loadTexture(std::string name, std::string path, GLint interpolation);
 

@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ElementBuffer.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GLDebug.cpp" />
     <ClCompile Include="GLHandles.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLDebug.h" />

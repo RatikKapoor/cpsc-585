@@ -1,14 +1,20 @@
 #include "VertexBuffer.h"
 
 #include <utility>
+#include <vector>
 
 
-VertexBuffer::VertexBuffer(GLuint index, GLint size, GLenum dataType)
+VertexBuffer::VertexBuffer(std::vector <GLint> sizes, std::vector <GLenum> dataTypes, int stride)
 	: bufferID{}
 {
 	bind();
-	glVertexAttribPointer(index, size, dataType, GL_FALSE, 0, (void*)0);
-	glEnableVertexAttribArray(index);
+	int offset = 0;
+	for (int i = 0; i < sizes.size(); i++) {
+		glVertexAttribPointer(i, sizes[i], dataTypes[i], GL_FALSE, stride, (void*)offset);
+		glEnableVertexAttribArray(i);
+
+		offset += sizes[i];
+	}
 }
 
 
