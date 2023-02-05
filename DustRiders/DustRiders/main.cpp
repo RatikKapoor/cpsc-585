@@ -14,7 +14,7 @@
 
 #include "Window.h"
 #include "Entity.h"
-#include "Model.h"
+#include "Mesh.h"
 #include "PhysicsSystem.h"
 #include "Overlay.h"
 #include "ShaderProgram.h"
@@ -48,13 +48,44 @@ int main()
 
 	std::vector<Entity *> entityList;
 
-	std::vector<Vertex> triangleVerts{ 
-		Vertex{ glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3 {-0.5f, -0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec3(0.0f), glm::vec2(0.0f) }
+	std::vector<Vertex> cubeVerts{
+		Vertex{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3 {-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
+		Vertex{ glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) }
 	};
-	std::vector<unsigned int> triangleIndices{0, 1, 2};
-	Model *triangle = renderer.loadModel("triangle", triangleVerts, triangleIndices);
+	std::vector<unsigned int> cubeIndices{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// right face
+		4, 0, 3,
+		4, 3, 7,
+
+		// back face
+		5, 4, 7,
+		5, 7, 6,
+
+		// left face
+		1, 5, 6,
+		1, 6, 2,
+
+		// top face
+		0, 4, 5,
+		0, 5, 1,
+
+		// bottom face
+		2, 3, 7,
+		2, 7, 6
+	};
+	Model* cubeModel = new Model();
+	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
+	cubeModel = renderer.addModel("cube", cubeModel);
 
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
@@ -64,7 +95,7 @@ int main()
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList[i];
 
-		entityList.back()->model = triangle;
+		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
 	}
 

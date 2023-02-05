@@ -1,30 +1,20 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <vector>
-#include "Geometry.h"
+#include "Mesh.h"
+#include "ShaderProgram.h"
+
+# include <vector>
+
 
 class Model
 {
 public:
-	// These vectors are parallel to represent a vertex overall
-	std::vector<Vertex> verts;
-	std::vector<unsigned int> indices;
+	std::vector<Mesh> meshes;
 
-	GPU_Geometry geometry;
-
-	int use() {
-		geometry.bind();
-
-		return indices.size();
-	}
-
-	Model(std::vector<Vertex>& v, std::vector<unsigned int>& i)
-		: verts(v)
-		, indices(i)
-	{
-		geometry.bind();
-		geometry.setVerts(verts);
-		geometry.setIndices(indices);
+	void draw(ShaderProgram& shader) {
+		for (int i = 0; i < meshes.size(); i++) {
+			meshes[i].draw(shader);
+		}
 	}
 };
+

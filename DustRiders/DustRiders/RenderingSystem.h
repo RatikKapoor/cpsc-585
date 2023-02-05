@@ -10,6 +10,10 @@
 #include "Camera.h"
 #include "Entity.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 class RenderingSystem
 {
 	// storing assets to avoid duplication
@@ -19,7 +23,13 @@ class RenderingSystem
 
 public:
 
-	Model* loadModel(std::string name, std::vector<Vertex>& verts, std::vector<unsigned int>& indices);
+	Model* addModel(std::string name, Model* model);
+
+	Model* loadModelFromFile(std::string name, std::string filepath);
+	void processNode(aiNode* node, const aiScene* scene, Model* model);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	//std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+
 	ShaderProgram* compileShader(std::string name, const std::string& vertexPath, const std::string& fragmentPath);
 	Texture* loadTexture(std::string name, std::string path, GLint interpolation);
 
