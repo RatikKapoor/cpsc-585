@@ -19,7 +19,12 @@
 #include "ShaderProgram.h"
 #include "Geometry.h"
 
+#define TEST_MAIN
+
+#ifdef TEST_MAIN
 #include "InputHandler.h"
+int TestMain();
+#endif
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -39,6 +44,9 @@ void processInput(GLFWwindow *window)
 int main()
 {
 	// PhysicsSystem physics;
+#ifdef TEST_MAIN
+	TestMain();
+#else
 	Overlay overlay;
 
 	std::vector<Entity *> entityList;
@@ -57,6 +65,70 @@ int main()
 	GPU_Geometry triangle;
 	triangle.setVerts(std::vector<glm::vec3>{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}});
 	triangle.setCols(std::vector<glm::vec3>{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}});
+
+	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
+
+	while (!window.shouldClose())
+	{
+		// Game Section
+		// processInput(window.get);
+
+		// physics.gScene->simulate(1.f / 60.f);
+		// physics.gScene->fetchResults(true);
+
+		// auto position = physics.getPosition();
+
+		window.swapBuffers();
+		glfwPollEvents();
+
+		// Rendering Objects
+		glEnable(GL_FRAMEBUFFER_SRGB);
+		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		basicShader.use();
+		triangle.bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+
+		overlay.RenderOverlay();
+	}
+
+	overlay.Cleanup();
+
+	glfwTerminate();
+#endif
+	return 0;
+}
+
+int TestMain()
+{
+	// PhysicsSystem physics;
+
+	Overlay overlay;
+
+	JSHandler jshandler;
+
+	std::vector<Entity *> entityList;
+	entityList.reserve(465);
+	for (int i = 0; i < 465; i++)
+	{
+		entityList.emplace_back(new Entity());
+		// entityList.back()->transform = physics.transformList[i];
+	}
+
+	glfwInit();
+	Window window(800, 800, "DustRiders");
+
+	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
+
+	GPU_Geometry triangle;
+	triangle.setVerts(std::vector<glm::vec3>{glm::vec3{0.0f, 0.5f, 0.0f}, glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.5f, -0.5f, 0.0f}});
+	triangle.setCols(std::vector<glm::vec3>{glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3{1.0f, 1.0f, 1.0f}});
+
+	JSHandler::addJS(GLFW_JOYSTICK_1);
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 

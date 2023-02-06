@@ -1,6 +1,7 @@
 #include "InputHandler.h"
 #include <string>
 #include <map>
+#include <list>
 
 std::map<int, Joystick> JSHandler::jsMap;
 
@@ -188,7 +189,7 @@ bool Joystick::setInputs(const unsigned char *buttons, const float *analogs)
   return (setButtons(buttons) && setAnalogs(analogs));
 }
 
-bool Joystick::setInputs(int jsID)
+bool Joystick::updateInputs(int jsID)
 {
   if (!glfwJoystickPresent(jsID))
   {
@@ -200,12 +201,34 @@ bool Joystick::setInputs(int jsID)
   return setInputs(glfwGetJoystickButtons(jsID, &countB), glfwGetJoystickAxes(jsID, &countA));
 }
 
-bool Joystick::getButton(int button)
+bool JSHandler::addJS(int jsID)
 {
-  return buttons[button];
+  if (glfwJoystickPresent(jsID))
+  {
+    auto jsIter = JSHandler::jsMap.find(jsID);
+    if (jsIter == JSHandler::jsMap.end() || JSHandler::jsMap.size() == 0)
+    {
+      JSHandler::jsMap[jsID] = Joystick(jsID);
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
-bool Joystick::getAnalog(int analog)
+bool JSHandler::removeJS(int jsID)
 {
-  return analogs[analog];
+  if (!glfwJoystickPresent(jsID))
+  {
+    JSHandler::jsMap.erase(jsID);
+  }
+  return true;
+}
+
+std::map<int, Joystick> JSHandler::getJSMap()
+{
+  std::map<int, Joystick> varMap = JSHandler::jsMap;
+  return varMap;
 }
