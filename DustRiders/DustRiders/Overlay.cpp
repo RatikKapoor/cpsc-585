@@ -23,7 +23,7 @@ void Overlay::RenderOverlay()
 		lastTime += 1.0;
 	}
 
-	JSHandler jsHand;
+	JoystickHandler jsHand;
 
 	// ImGui
 	ImGui_ImplOpenGL3_NewFrame();
@@ -50,7 +50,7 @@ void Overlay::RenderOverlay()
 	// ImGui::Text("%s", Joystick::getTriggerStr(GLFW_JOYSTICK_1).c_str());
 	// ImGui::Text("%s", Joystick::getStickStr(GLFW_JOYSTICK_1).c_str());
 
-	std::map<int, Joystick> tMap = JSHandler::getJSMap();
+	std::map<int, Joystick> tMap = JoystickHandler::getJSMap();
 
 	auto jsItr = tMap.begin();
 
