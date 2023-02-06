@@ -33,7 +33,7 @@ public:
 	ShaderProgram* compileShader(std::string name, const std::string& vertexPath, const std::string& fragmentPath);
 	Texture* loadTexture(std::string name, std::string path, GLint interpolation);
 
-	void updateRender(std::vector<Entity*>& entityList);
+	void updateRender(std::vector<Entity*>& entityList, Camera& cam);
 };
 
 

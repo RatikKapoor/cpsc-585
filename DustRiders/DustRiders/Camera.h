@@ -1,18 +1,12 @@
 #pragma once
+#include "Entity.h"
 
-//------------------------------------------------------------------------------
-// This file contains an implementation of a spherical camera
-//------------------------------------------------------------------------------
-
-//#include <GL/glew.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-
-class Camera {
+class Camera
+{
 public:
-
 	Camera(float t, float p, float r);
+
+	void setFocusEntity(Entity* entity);
 
 	glm::mat4 getView();
 	glm::vec3 getPos();
@@ -25,4 +19,7 @@ private:
 	float theta;
 	float phi;
 	float radius;
+
+	Entity* focusEntity;
 };
+
