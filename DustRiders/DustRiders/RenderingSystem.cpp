@@ -105,12 +105,17 @@ Texture* RenderingSystem::loadTexture(std::string name, std::string path, GLint 
 	return t;
 }
 
-void RenderingSystem::updateRender(std::vector<Entity*>& entityList)
+void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam)
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	glm::mat4 view = cam.getView();
+
+	float aspect = 1.0f;
+	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 
 	for (Entity* entity : entityList) {
 		ShaderProgram& shader = *entity->shaderProgram;
@@ -123,6 +128,12 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList)
 		
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
+
+		location = glGetUniformLocation(shader, "V");
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(view));
+
+		location = glGetUniformLocation(shader, "P");
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(perspective));
 
 		entity->model->draw(shader);
 	}

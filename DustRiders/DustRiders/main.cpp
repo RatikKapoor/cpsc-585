@@ -21,6 +21,7 @@
 #include "Geometry.h"
 #include "RenderingSystem.h"
 #include "InputHandler.h"
+#include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -45,45 +46,44 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
+	Camera camera(glm::radians(0.0f), glm::radians(0.0f), 80.0);
 
 	std::vector<Entity *> entityList;
 
 	std::vector<Vertex> cubeVerts{
-		Vertex{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3 {-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) },
-		Vertex{ glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f) }
-	};
+			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)}};
 	std::vector<unsigned int> cubeIndices{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
+			// front face
+			0, 1, 2,
+			0, 2, 3,
 
-		// right face
-		4, 0, 3,
-		4, 3, 7,
+			// right face
+			4, 0, 3,
+			4, 3, 7,
 
-		// back face
-		5, 4, 7,
-		5, 7, 6,
+			// back face
+			5, 4, 7,
+			5, 7, 6,
 
-		// left face
-		1, 5, 6,
-		1, 6, 2,
+			// left face
+			1, 5, 6,
+			1, 6, 2,
 
-		// top face
-		0, 4, 5,
-		0, 5, 1,
+			// top face
+			0, 4, 5,
+			0, 5, 1,
 
-		// bottom face
-		2, 3, 7,
-		2, 7, 6
-	};
-	Model* cubeModel = new Model();
+			// bottom face
+			2, 3, 7,
+			2, 7, 6};
+	Model *cubeModel = new Model();
 	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
 	cubeModel = renderer.addModel("cube", cubeModel);
 
@@ -98,6 +98,8 @@ int main()
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
 	}
+
+	// camera.setFocusEntity(entityList[0]);
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
@@ -114,9 +116,11 @@ int main()
 		// auto position = physics.getPosition();
 
 		window.swapBuffers();
-		renderer.updateRender(entityList);
+		renderer.updateRender(entityList, camera);
 
 		overlay.RenderOverlay();
+
+		camera.incrementTheta(0.5f);
 	}
 
 	overlay.Cleanup();
