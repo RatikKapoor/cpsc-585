@@ -22,8 +22,11 @@
 #define TEST_MAIN
 
 #ifdef TEST_MAIN
+#define RENDER_SNIPPET
 #include "InputHandler.h"
 int TestMain();
+
+extern int snippetMain();
 #endif
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -107,7 +110,7 @@ int TestMain()
 {
 	// PhysicsSystem physics;
 
-	Overlay overlay;
+	// Overlay overlay;
 
 	JSHandler jshandler;
 
@@ -132,35 +135,36 @@ int TestMain()
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
-	while (!window.shouldClose())
-	{
-		// Game Section
-		// processInput(window.get);
+	snippetMain();
+	// while (!window.shouldClose())
+	// {
+	// 	// Game Section
+	// 	// processInput(window.get);
 
-		// physics.gScene->simulate(1.f / 60.f);
-		// physics.gScene->fetchResults(true);
+	// 	// physics.gScene->simulate(1.f / 60.f);
+	// 	// physics.gScene->fetchResults(true);
 
-		// auto position = physics.getPosition();
+	// 	// auto position = physics.getPosition();
 
-		window.swapBuffers();
-		glfwPollEvents();
+	// 	window.swapBuffers();
+	// 	glfwPollEvents();
 
-		// Rendering Objects
-		glEnable(GL_FRAMEBUFFER_SRGB);
-		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	// 	// Rendering Objects
+	// 	glEnable(GL_FRAMEBUFFER_SRGB);
+	// 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
+	// 	glClear(GL_COLOR_BUFFER_BIT);
 
-		basicShader.use();
-		triangle.bind();
+	// 	basicShader.use();
+	// 	triangle.bind();
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+	// 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+	// 	glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
 
-		overlay.RenderOverlay();
-	}
+	// 	overlay.RenderOverlay();
+	// }
 
-	overlay.Cleanup();
+	// overlay.Cleanup();
 
 	glfwTerminate();
 	return 0;
