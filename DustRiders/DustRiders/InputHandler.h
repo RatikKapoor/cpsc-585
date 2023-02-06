@@ -102,11 +102,11 @@ private:
 	bool updateInputs(int jsID);
 };
 
-class JSHandler
+class JoystickHandler
 {
 public:
 	// Adds one controller by default
-	JSHandler() {}
+	JoystickHandler() {}
 
 	static bool addJS(int jsID);
 	static bool removeJS(int jsID);

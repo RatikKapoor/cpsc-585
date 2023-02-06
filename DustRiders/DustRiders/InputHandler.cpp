@@ -3,7 +3,7 @@
 #include <map>
 #include <list>
 
-std::map<int, Joystick> JSHandler::jsMap;
+std::map<int, Joystick> JoystickHandler::jsMap;
 
 std::string Joystick::buttonToStr(int button)
 {
@@ -201,14 +201,14 @@ bool Joystick::updateInputs(int jsID)
   return setInputs(glfwGetJoystickButtons(jsID, &countB), glfwGetJoystickAxes(jsID, &countA));
 }
 
-bool JSHandler::addJS(int jsID)
+bool JoystickHandler::addJS(int jsID)
 {
   if (glfwJoystickPresent(jsID))
   {
-    auto jsIter = JSHandler::jsMap.find(jsID);
-    if (jsIter == JSHandler::jsMap.end() || JSHandler::jsMap.size() == 0)
+    auto jsIter = JoystickHandler::jsMap.find(jsID);
+    if (jsIter == JoystickHandler::jsMap.end() || JoystickHandler::jsMap.size() == 0)
     {
-      JSHandler::jsMap[jsID] = Joystick(jsID);
+      JoystickHandler::jsMap[jsID] = Joystick(jsID);
     }
     return true;
   }
@@ -218,17 +218,17 @@ bool JSHandler::addJS(int jsID)
   }
 }
 
-bool JSHandler::removeJS(int jsID)
+bool JoystickHandler::removeJS(int jsID)
 {
   if (!glfwJoystickPresent(jsID))
   {
-    JSHandler::jsMap.erase(jsID);
+    JoystickHandler::jsMap.erase(jsID);
   }
   return true;
 }
 
-std::map<int, Joystick> JSHandler::getJSMap()
+std::map<int, Joystick> JoystickHandler::getJSMap()
 {
-  std::map<int, Joystick> varMap = JSHandler::jsMap;
+  std::map<int, Joystick> varMap = JoystickHandler::jsMap;
   return varMap;
 }
