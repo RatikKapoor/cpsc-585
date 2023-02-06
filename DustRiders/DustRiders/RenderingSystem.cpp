@@ -2,6 +2,7 @@
 
 #include "Geometry.h"
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 Model* RenderingSystem::addModel(std::string name, Model* model)
 {
@@ -114,6 +115,15 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList)
 	for (Entity* entity : entityList) {
 		ShaderProgram& shader = *entity->shaderProgram;
 		shader.use();
+		
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, entity->transform->position);
+		model = model * glm::toMat4(entity->transform->rotation);
+		model = glm::scale(model, glm::vec3(1.0f));
+		
+		GLuint location = glGetUniformLocation(shader, "M");
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
+
 		entity->model->draw(shader);
 	}
 
