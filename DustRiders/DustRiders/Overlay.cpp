@@ -23,8 +23,7 @@ void Overlay::RenderOverlay()
 		lastTime += 1.0;
 	}
 
-	Joystick js;
-	js.setInputs(GLFW_JOYSTICK_1);
+	JSHandler jsHand;
 
 	// ImGui
 	ImGui_ImplOpenGL3_NewFrame();
@@ -51,9 +50,18 @@ void Overlay::RenderOverlay()
 	// ImGui::Text("%s", Joystick::getTriggerStr(GLFW_JOYSTICK_1).c_str());
 	// ImGui::Text("%s", Joystick::getStickStr(GLFW_JOYSTICK_1).c_str());
 
-	ImGui::Text("Buttons: %s", js.buttonList().c_str());
-	ImGui::Text("%s", js.triggerList().c_str());
-	ImGui::Text("%s", js.axisList().c_str());
+	std::map<int, Joystick> tMap = JSHandler::getJSMap();
+
+	auto jsItr = tMap.begin();
+
+	while (jsItr != tMap.end())
+	{
+		jsItr->second.updateInputs();
+		ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
+		ImGui::Text("%s", jsItr->second.triggerList().c_str());
+		ImGui::Text("%s", jsItr->second.axisList().c_str());
+		jsItr++;
+	}
 
 	// End the window.
 	ImGui::End();

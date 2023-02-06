@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <list>
 
 #define XBOX_A 0
 #define XBOX_B 1
@@ -31,7 +32,9 @@
 class Joystick
 {
 public:
-	Joystick() {}
+	Joystick(int jsID) : jsID(jsID) {}
+	Joystick() : jsID(-1) {}
+
 	Joystick(const Joystick &js)
 	{
 		for (int i = 0; i < 14; i++)
@@ -42,6 +45,7 @@ public:
 		{
 			this->analogs[i] = js.analogs[i];
 		}
+		this->jsID = js.jsID;
 	}
 
 	Joystick &operator=(const Joystick &js)
@@ -56,6 +60,7 @@ public:
 			{
 				this->analogs[i] = js.analogs[i];
 			}
+			this->jsID = js.jsID;
 		}
 		return *this;
 	}
@@ -66,17 +71,22 @@ public:
 	static std::string analogToStr(int analog);
 
 	bool setButtons(const unsigned char *buttons);
-	bool updateButtons(int jsID);
 
 	bool setAnalogs(const float *analogs);
-	bool updateAnalogs(int jsID);
 
 	bool setInputs(const unsigned char *buttons, const float *analogs);
-	bool setInputs(int jsID);
 
-	bool getButton(int buttonIndex);
-	bool getAnalog(int analogIndex);
+	bool updateButtons() { return updateButtons(this->jsID); }
+	bool updateAnalogs() { return updateAnalogs(this->jsID); }
+	bool updateInputs() { return updateInputs(this->jsID); }
 
+	bool getButton(int buttonIndex) { return buttons[buttonIndex]; }
+	float getAnalog(int analogIndex) { return analogs[analogIndex]; }
+
+	const float *getAnalogs() { return analogs; }
+	const unsigned char *getButtons() { return buttons; };
+
+	// For printing button names, for testing
 	std::string buttonList();
 	std::string triggerList();
 	std::string axisList();
@@ -84,19 +94,24 @@ public:
 private:
 	unsigned char buttons[14];
 	float analogs[6];
+	int jsID;
+
+	// for Testing
+	bool updateButtons(int jsID);
+	bool updateAnalogs(int jsID);
+	bool updateInputs(int jsID);
 };
 
 class JSHandler
 {
 public:
 	// Adds one controller by default
-	JSHandler()
-	{
-		if (jsMap.size() == 0 && glfwJoystickPresent(GLFW_JOYSTICK_1))
-		{
-			JSHandler::jsMap[GLFW_JOYSTICK_1] = Joystick();
-		}
-	}
+	JSHandler() {}
+
+	static bool addJS(int jsID);
+	static bool removeJS(int jsID);
+
+	static std::map<int, Joystick> getJSMap();
 
 private:
 	static std::map<int, Joystick> jsMap;
