@@ -103,6 +103,8 @@ int main()
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
+	JoystickHandler::addJS(GLFW_JOYSTICK_1);
+
 	while (!window.shouldClose())
 	{
 		// Game Section
