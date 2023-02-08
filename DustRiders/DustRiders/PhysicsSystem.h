@@ -31,7 +31,4 @@ public:
 	//physx::PxVec3 getPosition();
 	void updatePhysics(double);
 	void updateTransforms();
-
-private:
-	double lastTime = 0.0f;
 };

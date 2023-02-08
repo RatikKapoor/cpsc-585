@@ -17,6 +17,8 @@ Vehicle::Vehicle(PhysicsSystem &ps) {
 	this->gPhysics = ps.gPhysics;
 	this->gMaterial = ps.gMaterial;
 	this->gScene = ps.gScene;
+
+	this->ps = &ps;
 }
 
 void Vehicle::initMaterialFrictionTable()
@@ -53,6 +55,9 @@ bool Vehicle::initVehicle() {
 	//Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(PxVec3(-5.0f, 0.5f, 0.0f), PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
+	this->ps->rigidDynamicList.push_back((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody);
+	this->ps->transformList.emplace_back(new Transform());
+	//gVehicle.mBaseState.;
 
 	//Set up the simulation context.
 	//The snippet is set up with
@@ -71,12 +76,10 @@ bool Vehicle::initVehicle() {
 	return true;
 }
 
-void Vehicle::stepPhysics()
+void Vehicle::stepPhysics(double timestep)
 {
 	if (gNbCommands == gCommandProgress)
 		return;
-
-	const PxF32 timestep = 0.0166667f;
 
 	//Apply the brake, throttle and steer to the command state of the direct drive vehicle.
 	const Command& command = gCommands[gCommandProgress];

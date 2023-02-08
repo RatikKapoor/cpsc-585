@@ -109,35 +109,40 @@ int main()
 	Vehicle v(physics);
 	v.initVehicle();
 
-	//{
-	//	entityList.emplace_back(new Entity());
-	//	physics.transformList.emplace_back(new Transform());
-	//	entityList.back()->transform = physics.transformList.back();
-	//	entityList.back()->model = cubeModel;
-	//	entityList.back()->shaderProgram = basicShader;
-	//}
+	{
+		entityList.emplace_back(new Entity());
+		//physics.transformList.emplace_back(physics.transformList[0]);
+		entityList.back()->transform = physics.transformList.back();
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
+	}
 
 	double lastTime = 0.0f;
-
+	int i = 0;
 	while (!window.shouldClose())
 	{
 		auto t = glfwGetTime();
-		if (t - lastTime > 0.0167) { // FIXME: Set program to run at 60 FPS, there's definitely a better way to do this using real clock time
-
+		if (t - lastTime > 0.0167) {
+			auto deltaT = t - lastTime;
+			// First few renders should be simulated with manual step to avoid objects clipping through ground
+			if (i < 15) {
+				deltaT = (1.f / 60.f);
+				i++;
+			}
 			// Game Section
 			// processInput(window.get);
 
 			glfwPollEvents();
 
-			v.stepPhysics();
-			physics.updatePhysics(t);
+			v.stepPhysics(deltaT);
+			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
 			renderer.updateRender(entityList, camera);
 
 			overlay.RenderOverlay();
 
-			camera.incrementTheta(0.5f);
+			//camera.incrementTheta(0.5f);
 
 			lastTime = t;
 		}

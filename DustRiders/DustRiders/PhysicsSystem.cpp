@@ -100,22 +100,14 @@ PhysicsSystem::PhysicsSystem()
 //	return position;
 //}
 
-long i = 0;
 
-void PhysicsSystem::updatePhysics(double t)
+
+void PhysicsSystem::updatePhysics(double dt)
 {
-	if (i < 15) { // First few renders should be simulated with manual step to avoid objects clipping through ground
-		gScene->simulate(1.f / 60.f);
-		i++;
-	}
-	else
-		gScene->simulate((t - lastTime) / 1.f);
+	gScene->simulate(dt);
 	gScene->fetchResults(true);
 
-	this->updateTransforms();
-	lastTime = t;
-
-	
+	this->updateTransforms();	
 }
 
 void PhysicsSystem::updateTransforms()
