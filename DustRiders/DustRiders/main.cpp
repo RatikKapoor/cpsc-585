@@ -48,8 +48,6 @@ int main()
 	Overlay overlay;
 	Camera camera(glm::radians(0.0f), glm::radians(0.0f), 80.0);
 
-	std::vector<Entity *> entityList;
-
 	std::vector<Vertex> cubeVerts{
 			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
 			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
@@ -89,7 +87,9 @@ int main()
 
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
+	std::vector<Entity *> entityList;
 	entityList.reserve(465);
+	physics.transformList.reserve(465);
 	for (int i = 0; i < 465; i++)
 	{
 		entityList.emplace_back(new Entity());
@@ -112,8 +112,7 @@ int main()
 
 		glfwPollEvents();
 
-		physics.gScene->simulate(1.f / 60.f);
-		physics.gScene->fetchResults(true);
+		physics.updatePhysics();
 
 		// auto position = physics.getPosition();
 
