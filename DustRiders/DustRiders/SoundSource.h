@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "Shlwapi.lib")
 #include <AL\al.h>
 class SoundSource
 {
