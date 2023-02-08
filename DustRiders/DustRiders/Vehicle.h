@@ -31,7 +31,7 @@ public:
 
 	bool initVehicle();
 	void initMaterialFrictionTable();
-	void stepPhysics();
+	void stepPhysics(double);
 
 	PxPhysics* gPhysics;
 	PxMaterial* gMaterial;
@@ -56,4 +56,7 @@ public:
 	PxVehiclePhysXMaterialFriction gPhysXMaterialFrictions[16];
 	PxU32 gNbPhysXMaterialFrictions = 1;
 	PxReal gPhysXDefaultMaterialFriction = 1.0f;
+
+private:
+	PhysicsSystem* ps;
 };
