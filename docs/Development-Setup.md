@@ -40,6 +40,7 @@ To do so, either run `cpsc-585/vckpg-packages.bat`, or manually install the foll
  openal-soft:x64-windows-static
  stb:x64-windows-static
  rapidjson:x64-windows-static
+ assimp:x64-windows-static
  ```
 After running `cpsc-585/vcpkg-packages.bat` or manually installing the packages, run cmd.exe as an administrator and run the following:
 

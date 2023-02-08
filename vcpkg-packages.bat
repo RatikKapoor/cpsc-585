@@ -36,3 +36,4 @@ CLS
 %1 install  openal-soft:x64-windows-static
 %1 install  stb:x64-windows-static
 %1 install  rapidjson:x64-windows-static
+%1 install  assimp:x64-windows-static
