@@ -22,6 +22,7 @@
 #include "RenderingSystem.h"
 #include "InputHandler.h"
 #include "Camera.h"
+#include "Vehicle.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -88,16 +89,16 @@ int main()
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
 	std::vector<Entity *> entityList;
-	entityList.reserve(465);
-	physics.transformList.reserve(465);
-	for (int i = 0; i < 465; i++)
-	{
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList[i];
+	//entityList.reserve(465);
+	//physics.transformList.reserve(465);
+	//for (int i = 0; i < 465; i++)
+	//{
+	//	entityList.emplace_back(new Entity());
+	//	entityList.back()->transform = physics.transformList[i];
 
-		entityList.back()->model = cubeModel;
-		entityList.back()->shaderProgram = basicShader;
-	}
+	//	entityList.back()->model = cubeModel;
+	//	entityList.back()->shaderProgram = basicShader;
+	//}
 
 	// camera.setFocusEntity(entityList[0]);
 
@@ -105,23 +106,41 @@ int main()
 
 	JoystickHandler::addJS(GLFW_JOYSTICK_1);
 
+	Vehicle v(physics);
+	v.initVehicle();
+
+	//{
+	//	entityList.emplace_back(new Entity());
+	//	physics.transformList.emplace_back(new Transform());
+	//	entityList.back()->transform = physics.transformList.back();
+	//	entityList.back()->model = cubeModel;
+	//	entityList.back()->shaderProgram = basicShader;
+	//}
+
+	double lastTime = 0.0f;
+
 	while (!window.shouldClose())
 	{
-		// Game Section
-		// processInput(window.get);
+		auto t = glfwGetTime();
+		if (t - lastTime > 0.0167) { // FIXME: Set program to run at 60 FPS, there's definitely a better way to do this using real clock time
 
-		glfwPollEvents();
+			// Game Section
+			// processInput(window.get);
 
-		physics.updatePhysics();
+			glfwPollEvents();
 
-		// auto position = physics.getPosition();
+			v.stepPhysics();
+			physics.updatePhysics(t);
 
-		window.swapBuffers();
-		renderer.updateRender(entityList, camera);
+			window.swapBuffers();
+			renderer.updateRender(entityList, camera);
 
-		overlay.RenderOverlay();
+			overlay.RenderOverlay();
 
-		camera.incrementTheta(0.5f);
+			camera.incrementTheta(0.5f);
+
+			lastTime = t;
+		}
 	}
 
 	overlay.Cleanup();

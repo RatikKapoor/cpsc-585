@@ -66,9 +66,10 @@ void Overlay::RenderOverlay()
 	// End the window.
 	ImGui::End();
 	// Render window
-	ImGui::Render();																				// Render the ImGui window
+	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Some middleware thing
-																													// End ImGui
+	
+	// End ImGui
 }
 
 void Overlay::Cleanup()
