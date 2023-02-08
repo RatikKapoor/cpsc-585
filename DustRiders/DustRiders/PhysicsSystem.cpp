@@ -78,12 +78,20 @@ PhysicsSystem::PhysicsSystem()
 	updateTransforms();
 }
 
-physx::PxVec3 PhysicsSystem::getPosition()
-{
-	// Get the global position data from a physics collider as a vec3
-	physx::PxVec3 position = rigidDynamicList[50]->getGlobalPose().p;
+//physx::PxVec3 PhysicsSystem::getPosition()
+//{
+//	// Get the global position data from a physics collider as a vec3
+//	physx::PxVec3 position = rigidDynamicList[50]->getGlobalPose().p;
+//
+//	return position;
+//}
 
-	return position;
+void PhysicsSystem::updatePhysics()
+{
+	gScene->simulate(1.f / 60.f);
+	gScene->fetchResults(true);
+
+	this->updateTransforms();
 }
 
 void PhysicsSystem::updateTransforms()

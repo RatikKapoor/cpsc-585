@@ -24,6 +24,7 @@ public:
 
 	PhysicsSystem();
 
-	physx::PxVec3 getPosition();
+	//physx::PxVec3 getPosition();
+	void updatePhysics();
 	void updateTransforms();
 };
