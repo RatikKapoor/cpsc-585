@@ -43,6 +43,38 @@ class DustRidersWindowCallbacks {
 
 };
 
+CarAction isBeepBeep(int jsID);
+
+CarAction isBeepBeep(int jsID) {
+	if (glfwJoystickPresent(jsID)) {
+		int count;
+
+		const unsigned char* buttons = glfwGetJoystickButtons(jsID, &count);
+
+		const float* axis = glfwGetJoystickAxes(jsID, &count);
+
+		if (buttons[XBOX_RB]) {
+			return ACCEL;
+		}
+		else if(axis[XBOX_R_XAXIS] > 0.01f) {
+			return RIGHT;
+		}
+		else if (axis[XBOX_R_XAXIS]< -0.01f) {
+			return LEFT;
+		}
+		else if (buttons[XBOX_LB]) {
+			return BRAKE;
+		}
+		else {
+			return IDLE;
+		}
+	}
+	else {
+		return IDLE;
+	}
+}
+
+
 int main()
 {
 	glfwInit();
@@ -90,6 +122,8 @@ int main()
 	Model *cubeModel = new Model();
 	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
 	cubeModel = renderer.addModel("cube", cubeModel);
+
+
 
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
@@ -139,7 +173,7 @@ int main()
 
 			glfwPollEvents();
 
-			v.stepPhysics(deltaT, ACCEL);
+			v.stepPhysics(deltaT, isBeepBeep(GLFW_JOYSTICK_1));
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
