@@ -1,17 +1,20 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <vector>
+#include "Mesh.h"
+#include "ShaderProgram.h"
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 color;
-};
+# include <vector>
+
 
 class Model
 {
 public:
-	std::vector<Vertex> verticies;
-	glm::mat4 modelMatrix;
+	std::vector<Mesh> meshes;
+
+	void draw(ShaderProgram& shader) {
+		for (int i = 0; i < meshes.size(); i++) {
+			meshes[i].draw(shader);
+		}
+	}
 };
+

@@ -14,6 +14,7 @@
 
 #include "Window.h"
 #include "Entity.h"
+#include "Mesh.h"
 #include "PhysicsSystem.h"
 #include "Overlay.h"
 #include "ShaderProgram.h"
@@ -21,6 +22,9 @@
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
+#include "RenderingSystem.h"
+#include "InputHandler.h"
+#include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -39,61 +43,94 @@ void processInput(GLFWwindow *window)
 
 int main()
 {
-	//PhysicsSystem physics;
+	glfwInit();
+	Window window(800, 800, "DustRiders");
+
+	PhysicsSystem physics;
+	RenderingSystem renderer;
 	Overlay overlay;
+	Camera camera(glm::radians(0.0f), glm::radians(0.0f), 80.0);
 
 	std::vector<Entity *> entityList;
+
+	std::vector<Vertex> cubeVerts{
+		Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)}};
+	std::vector<unsigned int> cubeIndices{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// right face
+		4, 0, 3,
+		4, 3, 7,
+
+		// back face
+		5, 4, 7,
+		5, 7, 6,
+
+		// left face
+		1, 5, 6,
+		1, 6, 2,
+
+		// top face
+		0, 4, 5,
+		0, 5, 1,
+
+		// bottom face
+		2, 3, 7,
+		2, 7, 6};
+	Model *cubeModel = new Model();
+	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
+	cubeModel = renderer.addModel("cube", cubeModel);
+
+	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
+
 	entityList.reserve(465);
 	for (int i = 0; i < 465; i++)
 	{
 		entityList.emplace_back(new Entity());
-		//entityList.back()->transform = physics.transformList[i];
+		entityList.back()->transform = physics.transformList[i];
+
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
 	}
 
-	glfwInit();
-	Window window(800, 800, "DustRiders");
-
-	ShaderProgram basicShader("../DustRiders/basic.vert", "../DustRiders/basic.frag");
-
-	GPU_Geometry triangle;
-	triangle.setVerts(std::vector<glm::vec3>{ glm::vec3{ 0.0f, 0.5f, 0.0f }, glm::vec3{ -0.5f, -0.5f, 0.0f }, glm::vec3{ 0.5f, -0.5f, 0.0f } });
-	triangle.setCols(std::vector<glm::vec3>{ glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 1.0f, 1.0f } });
+	// camera.setFocusEntity(entityList[0]);
 
 	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
-	SoundDevice* mysounddevice = SoundDevice::get();
+	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
-
 
 	SoundSource mySpeaker;
 	mySpeaker.Play(sound1);
+
+	JoystickHandler::addJS(GLFW_JOYSTICK_1);
 
 	while (!window.shouldClose())
 	{
 		// Game Section
 		// processInput(window.get);
 
-		//physics.gScene->simulate(1.f / 60.f);
-		//physics.gScene->fetchResults(true);
-
-		//auto position = physics.getPosition();
-
-		window.swapBuffers();
 		glfwPollEvents();
 
-		// Rendering Objects
-		glEnable(GL_FRAMEBUFFER_SRGB);
-		glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		physics.gScene->simulate(1.f / 60.f);
+		physics.gScene->fetchResults(true);
 
-		basicShader.use();
-		triangle.bind();
+		// auto position = physics.getPosition();
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		
-
-		glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+		window.swapBuffers();
+		renderer.updateRender(entityList, camera);
 
 		overlay.RenderOverlay();
+
+		camera.incrementTheta(0.5f);
 	}
 
 	overlay.Cleanup();

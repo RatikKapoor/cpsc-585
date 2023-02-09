@@ -162,11 +162,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ElementBuffer.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GLDebug.cpp" />
     <ClCompile Include="GLHandles.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Overlay.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="snippetrender\SnippetCamera.cpp" />
@@ -193,13 +198,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLDebug.h" />
     <ClInclude Include="GLHandles.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Overlay.h" />
+    <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="snippetrender\SnippetCamera.h" />
