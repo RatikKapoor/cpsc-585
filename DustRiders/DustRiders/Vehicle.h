@@ -21,7 +21,8 @@ enum CarAction
 	ACCEL,
 	BRAKE,
 	LEFT,
-	RIGHT
+	RIGHT,
+	IDLE
 };
 
 //Commands are issued to the vehicle in a pre-choreographed sequence.

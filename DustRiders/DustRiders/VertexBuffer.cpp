@@ -10,7 +10,7 @@ VertexBuffer::VertexBuffer(std::vector <GLint> sizes, std::vector <GLenum> dataT
 	bind();
 	int offset = 0;
 	for (int i = 0; i < sizes.size(); i++) {
-		glVertexAttribPointer(i, sizes[i], dataTypes[i], GL_FALSE, stride, (void*)offset);
+		glVertexAttribPointer(i, sizes[i], dataTypes[i], GL_FALSE, stride, (void*)(offset * sizeof(float)));
 		glEnableVertexAttribArray(i);
 
 		offset += sizes[i];

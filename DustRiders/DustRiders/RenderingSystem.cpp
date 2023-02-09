@@ -109,8 +109,9 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 view = cam.getView();
 
