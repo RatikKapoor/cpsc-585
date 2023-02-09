@@ -7,7 +7,7 @@ Command gCommands[] =
 	{0.5f, 0.0f, 0.0f, 5.0f},		//brake for 5 seconds
 	{0.0f, 0.5f, 0.0f, 5.0f},		//throttle for 5 seconds
 	{0.0f, 0.1f, 0.5f, 5.0f},		//light throttle and steer for 5 seconds.
-	{0.5f, 0.0f, 0.0f, 2.f}
+	{0.5f, 0.0f, 0.0f, 2.f}			//brake for 2s
 };
 const PxU32 gNbCommands = sizeof(gCommands) / sizeof(Command);
 PxReal gCommandTime = 0.0f;			//Time spent on current command
@@ -76,17 +76,22 @@ bool Vehicle::initVehicle() {
 	return true;
 }
 
-void Vehicle::stepPhysics(double timestep)
+void Vehicle::stepPhysics(double timestep, CarAction a)
 {
 	if (gNbCommands == gCommandProgress)
 		return;
 
 	//Apply the brake, throttle and steer to the command state of the direct drive vehicle.
-	const Command& command = gCommands[gCommandProgress];
-	gVehicle.mCommandState.brakes[0] = command.brake;
+	//const Command& command = gCommands[gCommandProgress];
+	gVehicle.mCommandState.brakes[0] = (a == BRAKE) ? 1 : 0;
 	gVehicle.mCommandState.nbBrakes = 1;
-	gVehicle.mCommandState.throttle = command.throttle;
-	gVehicle.mCommandState.steer = command.steer;
+	gVehicle.mCommandState.throttle = (a == ACCEL) ? 1 : 0;
+	if (a == LEFT)
+		gVehicle.mCommandState.steer = -1;
+	else if (a == RIGHT)
+		gVehicle.mCommandState.steer = 1;
+	else
+		gVehicle.mCommandState.steer = 0;
 
 	//Forward integrate the vehicle by a single timestep.
 	gVehicle.step(timestep, gVehicleSimulationContext);
@@ -97,10 +102,10 @@ void Vehicle::stepPhysics(double timestep)
 
 	//Increment the time spent on the current command.
 	//Move to the next command in the list if enough time has lapsed.
-	gCommandTime += timestep;
-	if (gCommandTime > gCommands[gCommandProgress].duration)
-	{
-		gCommandProgress++;
-		gCommandTime = 0.0f;
-	}
+	//gCommandTime += timestep;
+	//if (gCommandTime > gCommands[gCommandProgress].duration)
+	//{
+	//	gCommandProgress++;
+	//	gCommandTime = 0.0f;
+	//}
 }

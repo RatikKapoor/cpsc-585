@@ -16,6 +16,14 @@ using namespace physx::vehicle2;
 //Give the vehicle a name so it can be identified in PVD.
 const char gVehicleName[] = "directDrive";
 
+enum CarAction
+{
+	ACCEL,
+	BRAKE,
+	LEFT,
+	RIGHT
+};
+
 //Commands are issued to the vehicle in a pre-choreographed sequence.
 struct Command
 {
@@ -31,7 +39,7 @@ public:
 
 	bool initVehicle();
 	void initMaterialFrictionTable();
-	void stepPhysics(double);
+	void stepPhysics(double, CarAction);
 
 	PxPhysics* gPhysics;
 	PxMaterial* gMaterial;

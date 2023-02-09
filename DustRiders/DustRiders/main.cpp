@@ -39,6 +39,10 @@ void processInput(GLFWwindow *window)
 	}
 }
 
+class DustRidersWindowCallbacks {
+
+};
+
 int main()
 {
 	glfwInit();
@@ -111,7 +115,6 @@ int main()
 
 	{
 		entityList.emplace_back(new Entity());
-		//physics.transformList.emplace_back(physics.transformList[0]);
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
@@ -130,17 +133,19 @@ int main()
 				i++;
 			}
 			// Game Section
-			// processInput(window.get);
+			//processInput(window, BRA);
 
 			glfwPollEvents();
 
-			v.stepPhysics(deltaT);
+			v.stepPhysics(deltaT, ACCEL);
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
 			renderer.updateRender(entityList, camera);
 
 			overlay.RenderOverlay();
+
+			camera.setFocusEntity(entityList[0]);
 
 			//camera.incrementTheta(0.5f);
 
