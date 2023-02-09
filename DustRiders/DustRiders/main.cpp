@@ -51,17 +51,18 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	Camera camera(glm::radians(0.0f), glm::radians(0.0f), 80.0);
+	Camera camera(glm::radians(45.0f), glm::radians(0.0f), 10.0);
 
 	std::vector<Vertex> cubeVerts{
-			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3(0.0f), glm::vec2(0.0f)}};
+			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec2(0.0f)}
+	};
 	std::vector<unsigned int> cubeIndices{
 			// front face
 			0, 1, 2,
@@ -119,6 +120,7 @@ int main()
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
 	}
+	camera.setFocusEntity(entityList[0]);
 
 	double lastTime = 0.0f;
 	int i = 0;
@@ -144,10 +146,6 @@ int main()
 			renderer.updateRender(entityList, camera);
 
 			overlay.RenderOverlay();
-
-			camera.setFocusEntity(entityList[0]);
-
-			//camera.incrementTheta(0.5f);
 
 			lastTime = t;
 		}
