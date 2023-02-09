@@ -41,6 +41,8 @@ public:
 	bool initVehicle();
 	void initMaterialFrictionTable();
 	void stepPhysics(double, CarAction);
+	void stepPhysics(double, float, float);
+
 
 	PxPhysics* gPhysics;
 	PxMaterial* gMaterial;

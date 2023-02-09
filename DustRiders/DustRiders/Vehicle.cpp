@@ -109,3 +109,55 @@ void Vehicle::stepPhysics(double timestep, CarAction a)
 	//	gCommandTime = 0.0f;
 	//}
 }
+void Vehicle::stepPhysics(double timestep, float gas, float steer)
+{
+	if (gNbCommands == gCommandProgress)
+		return;
+
+	float analogThreshold = 0.1f;
+	gVehicle.mCommandState.nbBrakes = 1;
+
+	//Apply the brake, throttle and steer to the command state of the direct drive vehicle.
+	//const Command& command = gCommands[gCommandProgress];
+
+	if (gas > analogThreshold) {
+		gVehicle.mCommandState.brakes[0] = gas;
+		gVehicle.mCommandState.throttle = 0;
+	}
+	else if (gas < -1.f * analogThreshold) {
+		gVehicle.mCommandState.brakes[0] = 0;
+		gVehicle.mCommandState.throttle = -1*gas;
+	}
+	else {
+		gVehicle.mCommandState.throttle = 0;
+		gVehicle.mCommandState.brakes[0] = 0;
+
+	}
+
+	if (steer > analogThreshold) {
+		gVehicle.mCommandState.steer = steer;
+
+	}
+	else if (steer < -1.f* analogThreshold) {
+		gVehicle.mCommandState.steer = steer;
+	}
+	else {
+		gVehicle.mCommandState.steer = 0;
+		
+	}
+	//Forward integrate the vehicle by a single timestep.
+	gVehicle.step(timestep, gVehicleSimulationContext);
+
+	//Forward integrate the phsyx scene by a single timestep.
+	//gScene->simulate(timestep);
+	//gScene->fetchResults(true);
+
+	//Increment the time spent on the current command.
+	//Move to the next command in the list if enough time has lapsed.
+	//gCommandTime += timestep;
+	//if (gCommandTime > gCommands[gCommandProgress].duration)
+	//{
+	//	gCommandProgress++;
+	//	gCommandTime = 0.0f;
+	//}
+}
