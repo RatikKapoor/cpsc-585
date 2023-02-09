@@ -33,37 +33,47 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 CarAction currentAction = CarAction::IDLE;
 
-class DustRidersWindowCallbacks: public CallbackInterface {
-	virtual void keyCallback(int key, int scancode, int action, int mods) {
-		if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+class DustRidersWindowCallbacks : public CallbackInterface
+{
+	virtual void keyCallback(int key, int scancode, int action, int mods)
+	{
+		if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		{
 			// Forward pressed
 			currentAction = CarAction::ACCEL;
 		}
-		else if (key == GLFW_KEY_W && action == GLFW_RELEASE) {
+		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+		{
 			// Forward released
 			currentAction = CarAction::IDLE;
 		}
-		else if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+		else if (key == GLFW_KEY_S && action == GLFW_PRESS)
+		{
 			// Back pressed
 			currentAction = CarAction::BRAKE;
 		}
-		else if (key == GLFW_KEY_S && action == GLFW_RELEASE) {
+		else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+		{
 			// Back released
 			currentAction = CarAction::IDLE;
 		}
-		else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+		else if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		{
 			currentAction = CarAction::LEFT;
 			// Left pressed
 		}
-		else if (key == GLFW_KEY_A && action == GLFW_RELEASE) {
+		else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+		{
 			// Left released
 			currentAction = CarAction::IDLE;
 		}
-		else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+		else if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		{
 			// Right pressed
 			currentAction = CarAction::RIGHT;
 		}
-		else if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
+		else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+		{
 			// Right released
 			currentAction = CarAction::IDLE;
 		}
@@ -75,36 +85,73 @@ class DustRidersWindowCallbacks: public CallbackInterface {
 };
 
 CarAction isBeepBeep(int jsID);
+float beepSteer(int jsID);
+float beepGas(int jsID);
 
-CarAction isBeepBeep(int jsID) {
-	if (glfwJoystickPresent(jsID)) {
+float beepGas(int jsID)
+{
+	if (glfwJoystickPresent(jsID))
+	{
 		int count;
-
-		const unsigned char* buttons = glfwGetJoystickButtons(jsID, &count);
-
-		const float* axis = glfwGetJoystickAxes(jsID, &count);
-
-		if (buttons[XBOX_RB]) {
-			return ACCEL;
-		}
-		else if(axis[XBOX_R_XAXIS] > 0.01f) {
-			return RIGHT;
-		}
-		else if (axis[XBOX_R_XAXIS]< -0.01f) {
-			return LEFT;
-		}
-		else if (buttons[XBOX_LB]) {
-			return BRAKE;
-		}
-		else {
-			return IDLE;
-		}
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		return axis[XBOX_L_YAXIS];
 	}
-	else {
-		return IDLE;
+	else
+	{
+		return 0.0f;
 	}
 }
 
+float beepSteer(int jsID)
+{
+	if (glfwJoystickPresent(jsID))
+	{
+		int count;
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		return axis[XBOX_R_XAXIS];
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+CarAction isBeepBeep(int jsID)
+{
+	if (glfwJoystickPresent(jsID))
+	{
+		int count;
+
+		const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
+
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
+
+		if (buttons[XBOX_RB])
+		{
+			return ACCEL;
+		}
+		else if (axis[XBOX_R_XAXIS] > 0.01f)
+		{
+			return RIGHT;
+		}
+		else if (axis[XBOX_R_XAXIS] < -0.01f)
+		{
+			return LEFT;
+		}
+		else if (buttons[XBOX_LB])
+		{
+			return BRAKE;
+		}
+		else
+		{
+			return IDLE;
+		}
+	}
+	else
+	{
+		return IDLE;
+	}
+}
 
 int main()
 {
@@ -118,15 +165,14 @@ int main()
 	Camera camera(glm::radians(45.0f), glm::radians(0.0f), 10.0);
 
 	std::vector<Vertex> cubeVerts{
-			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec2(0.0f)}
-	};
+			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
 	std::vector<unsigned int> cubeIndices{
 			// front face
 			0, 1, 2,
@@ -155,14 +201,12 @@ int main()
 	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
 	cubeModel = renderer.addModel("cube", cubeModel);
 
-
-
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
 	std::vector<Entity *> entityList;
-	//entityList.reserve(465);
-	//physics.transformList.reserve(465);
-	//for (int i = 0; i < 465; i++)
+	// entityList.reserve(465);
+	// physics.transformList.reserve(465);
+	// for (int i = 0; i < 465; i++)
 	//{
 	//	entityList.emplace_back(new Entity());
 	//	entityList.back()->transform = physics.transformList[i];
@@ -193,18 +237,20 @@ int main()
 	while (!window.shouldClose())
 	{
 		auto t = glfwGetTime();
-		if (t - lastTime > 0.0167) {
+		if (t - lastTime > 0.0167)
+		{
 			auto deltaT = t - lastTime;
 			// First few renders should be simulated with manual step to avoid objects clipping through ground
-			if (i < 15) {
+			if (i < 15)
+			{
 				deltaT = (1.f / 60.f);
 				i++;
 			}
 
-
 			// Game Section
 			glfwPollEvents();
-			v.stepPhysics(deltaT, glfwJoystickPresent(GLFW_JOYSTICK_1) ? isBeepBeep(GLFW_JOYSTICK_1) : currentAction);
+
+			v.stepPhysics(deltaT, beepGas(GLFW_JOYSTICK_1), beepSteer(GLFW_JOYSTICK_1));
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
