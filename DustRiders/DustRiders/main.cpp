@@ -31,16 +31,47 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, true);
+CarAction currentAction = CarAction::IDLE;
+
+class DustRidersWindowCallbacks: public CallbackInterface {
+	virtual void keyCallback(int key, int scancode, int action, int mods) {
+		if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+			// Forward pressed
+			currentAction = CarAction::ACCEL;
+		}
+		else if (key == GLFW_KEY_W && action == GLFW_RELEASE) {
+			// Forward released
+			currentAction = CarAction::IDLE;
+		}
+		else if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+			// Back pressed
+			currentAction = CarAction::BRAKE;
+		}
+		else if (key == GLFW_KEY_S && action == GLFW_RELEASE) {
+			// Back released
+			currentAction = CarAction::IDLE;
+		}
+		else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+			currentAction = CarAction::LEFT;
+			// Left pressed
+		}
+		else if (key == GLFW_KEY_A && action == GLFW_RELEASE) {
+			// Left released
+			currentAction = CarAction::IDLE;
+		}
+		else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+			// Right pressed
+			currentAction = CarAction::RIGHT;
+		}
+		else if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
+			// Right released
+			currentAction = CarAction::IDLE;
+		}
 	}
-}
-
-class DustRidersWindowCallbacks {
-
+	virtual void mouseButtonCallback(int button, int action, int mods) {}
+	virtual void cursorPosCallback(double xpos, double ypos) {}
+	virtual void scrollCallback(double xoffset, double yoffset) {}
+	virtual void windowSizeCallback(int width, int height) { glViewport(0, 0, width, height); }
 };
 
 CarAction isBeepBeep(int jsID);
@@ -79,6 +110,7 @@ int main()
 {
 	glfwInit();
 	Window window(800, 800, "DustRiders");
+	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>());
 
 	PhysicsSystem physics;
 	RenderingSystem renderer;
@@ -168,12 +200,11 @@ int main()
 				deltaT = (1.f / 60.f);
 				i++;
 			}
+
+
 			// Game Section
-			//processInput(window, BRA);
-
 			glfwPollEvents();
-
-			v.stepPhysics(deltaT, isBeepBeep(GLFW_JOYSTICK_1));
+			v.stepPhysics(deltaT, glfwJoystickPresent(GLFW_JOYSTICK_1) ? isBeepBeep(GLFW_JOYSTICK_1) : currentAction);
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
