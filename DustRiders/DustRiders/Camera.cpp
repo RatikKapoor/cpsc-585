@@ -23,10 +23,16 @@ glm::mat4 Camera::getView() {
 
 glm::vec3 Camera::getPos() {
 	glm::vec3 position(0.0f, 0.0f, 0.0f);
-	if (focusEntity != nullptr)
-		position = focusEntity->transform->position;
+	glm::vec3 direction{ 0.0f, 0.0f, 1.0f };
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	return radius * glm::vec3(std::cos(theta) * std::sin(phi), std::sin(theta), std::cos(theta) * std::cos(phi)) + position;
+	if (focusEntity != nullptr) {
+		position = focusEntity->transform->position;
+		direction = -(focusEntity->transform->rotation * direction);
+	}
+	direction = glm::rotate(glm::mat4(1.0f), theta, glm::cross(direction, up)) * glm::vec4{ direction, 0.0f };
+
+	return radius * direction + position;
 }
 
 void Camera::incrementTheta(float dt) {
