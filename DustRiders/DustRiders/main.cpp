@@ -33,6 +33,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 CarAction currentAction = CarAction::IDLE;
 bool hasStarted = false;
+int gameState = 0; // 0 - need to start, 1 - playing, 2 - won, 3 - lost
 
 class DustRidersWindowCallbacks : public CallbackInterface
 {
@@ -41,8 +42,10 @@ class DustRidersWindowCallbacks : public CallbackInterface
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
-			if (!hasStarted)
+			if (!hasStarted) {
 				hasStarted = true;
+				gameState = 1;
+			}
 			currentAction = CarAction::ACCEL;
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -101,6 +104,7 @@ float beepGas(int jsID)
 		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
 		{
 			hasStarted = true;
+			gameState = 1;
 		}
 
 		return axis[XBOX_L_YAXIS];
@@ -293,10 +297,9 @@ int main()
 			auto gasValue = beepGas(GLFW_JOYSTICK_1);
 			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
 
-			if (hasStarted)
-			{
-				if (glfwJoystickPresent(GLFW_JOYSTICK_1))
-				{
+			if (hasStarted) {
+				// Vehicle physics
+				if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
 					v1.stepPhysics(deltaT, gasValue, steerValue);
 				}
 				else
@@ -307,13 +310,23 @@ int main()
 				v2.stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v3.stepPhysics(deltaT, -accel, 0);
+
+				// Win condition
+				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f) {
+					// Game won
+					gameState = 2;
+				}
+				else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f) {
+					// Game lost
+					gameState = 3;
+				}
 			}
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
 			renderer.updateRender(entityList, camera);
 
-			overlay.RenderOverlay();
+			overlay.RenderOverlay(gameState);
 
 			lastTime = t;
 		}
