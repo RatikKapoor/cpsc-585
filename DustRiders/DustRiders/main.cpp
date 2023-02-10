@@ -211,7 +211,7 @@ int main()
 	Vehicle v1(physics);
 	{
 		// Setup v1
-		v1.initVehicle();
+		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
@@ -220,7 +220,16 @@ int main()
 	Vehicle v2(physics);
 	{
 		// Setup v2
-		v2.initVehicle();
+		v2.initVehicle(PxVec3(-2.f, 0.5f, 0.f));
+		entityList.emplace_back(new Entity());
+		entityList.back()->transform = physics.transformList.back();
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
+	}
+	Vehicle v3(physics);
+	{
+		// Setup v2
+		v3.initVehicle(PxVec3(2.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
@@ -253,7 +262,10 @@ int main()
 			else {
 				v1.stepPhysics(deltaT, currentAction);
 			}
-			v2.stepPhysics(deltaT, HALF_ACCEL);
+			auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+			v2.stepPhysics(deltaT, -accel, 0);
+			accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+			v3.stepPhysics(deltaT, -accel, 0);
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();

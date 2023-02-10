@@ -33,7 +33,7 @@ void Vehicle::initMaterialFrictionTable()
 	gNbPhysXMaterialFrictions = 1;
 }
 
-bool Vehicle::initVehicle() {
+bool Vehicle::initVehicle(PxVec3 p) {
 	initMaterialFrictionTable();
 
 	//Load the params from json or set directly.
@@ -53,7 +53,7 @@ bool Vehicle::initVehicle() {
 	gVehicle.mTransmissionCommandState.gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
 
 	//Apply a start pose to the physx actor and add it to the physx scene.
-	PxTransform pose(PxVec3(-5.0f, 0.5f, 0.0f), PxQuat(PxIdentity));
+	PxTransform pose(p, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
 	this->ps->rigidDynamicList.push_back((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody);
 	this->ps->transformList.emplace_back(new Transform());
