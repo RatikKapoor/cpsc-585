@@ -123,5 +123,6 @@ void PhysicsSystem::updateTransforms()
 		transformList[i]->rotation.x = rigidDynamicList[i]->getGlobalPose().q.x;
 		transformList[i]->rotation.y = rigidDynamicList[i]->getGlobalPose().q.y;
 		transformList[i]->rotation.z = rigidDynamicList[i]->getGlobalPose().q.z;
+		transformList[i]->rotation.w = rigidDynamicList[i]->getGlobalPose().q.w;
 	}
 }
