@@ -41,7 +41,8 @@ class DustRidersWindowCallbacks : public CallbackInterface
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
-			if (!hasStarted) hasStarted = true;
+			if (!hasStarted)
+				hasStarted = true;
 			currentAction = CarAction::ACCEL;
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -96,8 +97,9 @@ float beepGas(int jsID)
 	{
 		int count;
 		const float *axis = glfwGetJoystickAxes(jsID, &count);
-		
-		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted) {
+
+		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
+		{
 			hasStarted = true;
 		}
 
@@ -173,38 +175,38 @@ int main()
 
 #pragma region Verts
 	std::vector<Vertex> cubeVerts{
-			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
+		Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
+		Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
 	std::vector<unsigned int> cubeIndices{
-			// front face
-			0, 1, 2,
-			0, 2, 3,
+		// front face
+		0, 1, 2,
+		0, 2, 3,
 
-			// right face
-			4, 0, 3,
-			4, 3, 7,
+		// right face
+		4, 0, 3,
+		4, 3, 7,
 
-			// back face
-			5, 4, 7,
-			5, 7, 6,
+		// back face
+		5, 4, 7,
+		5, 7, 6,
 
-			// left face
-			1, 5, 6,
-			1, 6, 2,
+		// left face
+		1, 5, 6,
+		1, 6, 2,
 
-			// top face
-			0, 4, 5,
-			0, 5, 1,
+		// top face
+		0, 4, 5,
+		0, 5, 1,
 
-			// bottom face
-			2, 3, 7,
-			2, 7, 6};
+		// bottom face
+		2, 3, 7,
+		2, 7, 6};
 	Model *cubeModel = new Model();
 	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
 	cubeModel = renderer.addModel("cube", cubeModel);
@@ -222,7 +224,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
+		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
 	}
 	Vehicle v2(physics);
 	{
@@ -232,7 +234,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
+		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
 	}
 	Vehicle v3(physics);
 	{
@@ -242,27 +244,30 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
+		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
 	}
 
 	// Follow the Player Vehicle
 	Camera camera(entityList[0], glm::radians(45.0f), 20.0);
 
 	int obstacleCount = 0;
-	for (float dist = 0; dist <= 200.5f; dist += 10.0f) {
+	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
+	{
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = new Transform();
 
-		if (obstacleCount % 2 == 0) {
-			entityList.back()->transform->position = glm::vec3{ -7.0f, 0.0f, dist };
+		if (obstacleCount % 2 == 0)
+		{
+			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
 		}
-		else {
-			entityList.back()->transform->position = glm::vec3{ 7.0f, 0.0f, dist };
+		else
+		{
+			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
 		}
 
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 3.0f, 1.0f, 0.5f };
+		entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
 
 		obstacleCount++;
 	}
@@ -284,15 +289,18 @@ int main()
 
 			// Game Section
 			glfwPollEvents();
-			
+
 			auto gasValue = beepGas(GLFW_JOYSTICK_1);
 			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
 
-			if (hasStarted) {
-				if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+			if (hasStarted)
+			{
+				if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+				{
 					v1.stepPhysics(deltaT, gasValue, steerValue);
 				}
-				else {
+				else
+				{
 					v1.stepPhysics(deltaT, currentAction);
 				}
 				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
