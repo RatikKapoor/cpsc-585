@@ -215,6 +215,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
 	}
 	Vehicle v2(physics);
 	{
@@ -224,6 +225,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
 	}
 	Vehicle v3(physics);
 	{
@@ -233,6 +235,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->scale = glm::vec3{ 1.0f, 1.0f, 2.0f };
 	}
 
 	// Follow the Player Vehicle
