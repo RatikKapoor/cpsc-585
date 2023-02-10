@@ -125,7 +125,7 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam
 		glm::mat4 model(1.0f);
 		model = glm::translate(model, entity->transform->position);
 		model = model * glm::toMat4(entity->transform->rotation);
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, entity->scale);
 		
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
