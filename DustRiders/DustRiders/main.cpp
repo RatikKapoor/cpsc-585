@@ -175,7 +175,7 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
+	ShaderProgram *basicShader = renderer.compileShader("basic", "basic.vert", "basic.frag");
 
 #pragma region Verts
 	std::vector<Vertex> cubeVerts{
