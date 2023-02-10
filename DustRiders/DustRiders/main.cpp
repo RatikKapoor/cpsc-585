@@ -162,7 +162,6 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	Camera camera(glm::radians(45.0f), glm::radians(0.0f), 10.0);
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
 #pragma region Verts
@@ -236,7 +235,8 @@ int main()
 		entityList.back()->shaderProgram = basicShader;
 	}
 
-	camera.setFocusEntity(entityList[0]);
+	// Follow the Player Vehicle
+	Camera camera(entityList[0], glm::radians(45.0f), 20.0);
 
 	double lastTime = 0.0f;
 	int i = 0;
