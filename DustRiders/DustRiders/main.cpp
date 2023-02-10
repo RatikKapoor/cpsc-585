@@ -163,7 +163,9 @@ int main()
 	RenderingSystem renderer;
 	Overlay overlay;
 	Camera camera(glm::radians(45.0f), glm::radians(0.0f), 10.0);
+	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
+#pragma region Verts
 	std::vector<Vertex> cubeVerts{
 			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
 			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
@@ -200,36 +202,31 @@ int main()
 	Model *cubeModel = new Model();
 	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
 	cubeModel = renderer.addModel("cube", cubeModel);
-
-	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
+#pragma endregion
 
 	std::vector<Entity *> entityList;
-	// entityList.reserve(465);
-	// physics.transformList.reserve(465);
-	// for (int i = 0; i < 465; i++)
-	//{
-	//	entityList.emplace_back(new Entity());
-	//	entityList.back()->transform = physics.transformList[i];
-
-	//	entityList.back()->model = cubeModel;
-	//	entityList.back()->shaderProgram = basicShader;
-	//}
-
-	// camera.setFocusEntity(entityList[0]);
-
-	// glfwSetFramebufferSizeCallback(window., framebuffer_size_callback);
 
 	JoystickHandler::addJS(GLFW_JOYSTICK_1);
 
-	Vehicle v(physics);
-	v.initVehicle();
-
+	Vehicle v1(physics);
 	{
+		// Setup v1
+		v1.initVehicle();
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = cubeModel;
 		entityList.back()->shaderProgram = basicShader;
 	}
+	Vehicle v2(physics);
+	{
+		// Setup v2
+		v2.initVehicle();
+		entityList.emplace_back(new Entity());
+		entityList.back()->transform = physics.transformList.back();
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
+	}
+
 	camera.setFocusEntity(entityList[0]);
 
 	double lastTime = 0.0f;
@@ -250,7 +247,13 @@ int main()
 			// Game Section
 			glfwPollEvents();
 
-			v.stepPhysics(deltaT, beepGas(GLFW_JOYSTICK_1), beepSteer(GLFW_JOYSTICK_1));
+			if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+				v1.stepPhysics(deltaT, beepGas(GLFW_JOYSTICK_1), beepSteer(GLFW_JOYSTICK_1));
+			}
+			else {
+				v1.stepPhysics(deltaT, currentAction);
+			}
+			v2.stepPhysics(deltaT, HALF_ACCEL);
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();

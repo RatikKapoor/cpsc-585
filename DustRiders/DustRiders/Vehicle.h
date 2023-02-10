@@ -19,6 +19,7 @@ const char gVehicleName[] = "directDrive";
 enum CarAction
 {
 	ACCEL,
+	HALF_ACCEL,
 	BRAKE,
 	LEFT,
 	RIGHT,

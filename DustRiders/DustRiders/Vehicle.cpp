@@ -86,6 +86,7 @@ void Vehicle::stepPhysics(double timestep, CarAction a)
 	gVehicle.mCommandState.brakes[0] = (a == BRAKE) ? 1 : 0;
 	gVehicle.mCommandState.nbBrakes = 1;
 	gVehicle.mCommandState.throttle = (a == ACCEL) ? 1 : 0;
+	if (a == HALF_ACCEL) gVehicle.mCommandState.throttle = 0.2;
 	if (a == LEFT)
 		gVehicle.mCommandState.steer = -1;
 	else if (a == RIGHT)
@@ -95,19 +96,6 @@ void Vehicle::stepPhysics(double timestep, CarAction a)
 
 	//Forward integrate the vehicle by a single timestep.
 	gVehicle.step(timestep, gVehicleSimulationContext);
-
-	//Forward integrate the phsyx scene by a single timestep.
-	//gScene->simulate(timestep);
-	//gScene->fetchResults(true);
-
-	//Increment the time spent on the current command.
-	//Move to the next command in the list if enough time has lapsed.
-	//gCommandTime += timestep;
-	//if (gCommandTime > gCommands[gCommandProgress].duration)
-	//{
-	//	gCommandProgress++;
-	//	gCommandTime = 0.0f;
-	//}
 }
 void Vehicle::stepPhysics(double timestep, float gas, float steer)
 {
@@ -135,11 +123,11 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	}
 
 	if (steer > analogThreshold) {
-		gVehicle.mCommandState.steer = steer;
+		gVehicle.mCommandState.steer = -1.f * steer;
 
 	}
 	else if (steer < -1.f* analogThreshold) {
-		gVehicle.mCommandState.steer = steer;
+		gVehicle.mCommandState.steer = -1.f * steer;
 	}
 	else {
 		gVehicle.mCommandState.steer = 0;
@@ -147,17 +135,4 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	}
 	//Forward integrate the vehicle by a single timestep.
 	gVehicle.step(timestep, gVehicleSimulationContext);
-
-	//Forward integrate the phsyx scene by a single timestep.
-	//gScene->simulate(timestep);
-	//gScene->fetchResults(true);
-
-	//Increment the time spent on the current command.
-	//Move to the next command in the list if enough time has lapsed.
-	//gCommandTime += timestep;
-	//if (gCommandTime > gCommands[gCommandProgress].duration)
-	//{
-	//	gCommandProgress++;
-	//	gCommandTime = 0.0f;
-	//}
 }
