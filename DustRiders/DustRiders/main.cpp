@@ -248,6 +248,25 @@ int main()
 	// Follow the Player Vehicle
 	Camera camera(entityList[0], glm::radians(45.0f), 20.0);
 
+	int obstacleCount = 0;
+	for (float dist = 0; dist <= 200.5f; dist += 10.0f) {
+		entityList.emplace_back(new Entity());
+		entityList.back()->transform = new Transform();
+
+		if (obstacleCount % 2 == 0) {
+			entityList.back()->transform->position = glm::vec3{ -7.0f, 0.0f, dist };
+		}
+		else {
+			entityList.back()->transform->position = glm::vec3{ 7.0f, 0.0f, dist };
+		}
+
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->scale = glm::vec3{ 3.0f, 1.0f, 0.5f };
+
+		obstacleCount++;
+	}
+
 	double lastTime = 0.0f;
 	int i = 0;
 	while (!window.shouldClose())
