@@ -32,6 +32,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 
 CarAction currentAction = CarAction::IDLE;
+bool hasStarted = false;
 
 class DustRidersWindowCallbacks : public CallbackInterface
 {
@@ -40,6 +41,7 @@ class DustRidersWindowCallbacks : public CallbackInterface
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
+			if (!hasStarted) hasStarted = true;
 			currentAction = CarAction::ACCEL;
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -94,6 +96,11 @@ float beepGas(int jsID)
 	{
 		int count;
 		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		
+		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted) {
+			hasStarted = true;
+		}
+
 		return axis[XBOX_L_YAXIS];
 	}
 	else
@@ -258,17 +265,22 @@ int main()
 
 			// Game Section
 			glfwPollEvents();
+			
+			auto gasValue = beepGas(GLFW_JOYSTICK_1);
+			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
 
-			if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
-				v1.stepPhysics(deltaT, beepGas(GLFW_JOYSTICK_1), beepSteer(GLFW_JOYSTICK_1));
+			if (hasStarted) {
+				if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+					v1.stepPhysics(deltaT, gasValue, steerValue);
+				}
+				else {
+					v1.stepPhysics(deltaT, currentAction);
+				}
+				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+				v2.stepPhysics(deltaT, -accel, 0);
+				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+				v3.stepPhysics(deltaT, -accel, 0);
 			}
-			else {
-				v1.stepPhysics(deltaT, currentAction);
-			}
-			auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-			v2.stepPhysics(deltaT, -accel, 0);
-			accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-			v3.stepPhysics(deltaT, -accel, 0);
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();

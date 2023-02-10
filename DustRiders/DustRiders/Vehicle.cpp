@@ -88,9 +88,9 @@ void Vehicle::stepPhysics(double timestep, CarAction a)
 	gVehicle.mCommandState.throttle = (a == ACCEL) ? 1 : 0;
 	if (a == HALF_ACCEL) gVehicle.mCommandState.throttle = 0.2;
 	if (a == LEFT)
-		gVehicle.mCommandState.steer = -1;
-	else if (a == RIGHT)
 		gVehicle.mCommandState.steer = 1;
+	else if (a == RIGHT)
+		gVehicle.mCommandState.steer = -1;
 	else
 		gVehicle.mCommandState.steer = 0;
 
