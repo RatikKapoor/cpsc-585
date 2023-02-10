@@ -39,7 +39,7 @@ class Vehicle {
 public:
 	Vehicle(PhysicsSystem &ps);
 
-	bool initVehicle();
+	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 	void stepPhysics(double, CarAction);
 	void stepPhysics(double, float, float);
