@@ -7,11 +7,14 @@
 #include <string>
 
 #include <glm/glm.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 class Texture {
 public:
-	Texture(std::string path, GLint interpolation);
+	Texture(const char* path, GLint interpolation);
 
 	// Because we're using the TextureHandle to do RAII for the texture for us
 	// and our other types are trivial or provide their own RAII
@@ -31,10 +34,21 @@ public:
 	void bind() { glBindTexture(GL_TEXTURE_2D, textureID); }
 	void unbind() { glBindTexture(GL_TEXTURE_2D, textureID); }
 
+	void setID(GLint iD) { this->textureID = iD; }
+	void setPath(std::string path) { this->path = path; }
+	void setInterpolation(GLint interpolation) { this->interpolation = interpolation; }
+	void setType(std::string type) { this->type = type; }
+
+	void textureFromFile(const char* path);
+	void textureFromFile(const char* path, const std::string &directory);
+
+
 private:
-	TextureHandle textureID;
+	GLuint textureID;
 	std::string path;
 	GLint interpolation;
+	std::string type;
+	
 
 
 	// Although uint might make more sense here, went with int under the assumption

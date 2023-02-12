@@ -28,10 +28,10 @@ public:
 	Model* loadModelFromFile(std::string name, std::string filepath);
 	void processNode(aiNode* node, const aiScene* scene, Model* model);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-	//std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 
 	ShaderProgram* compileShader(std::string name, const std::string& vertexPath, const std::string& fragmentPath);
-	Texture* loadTexture(std::string name, std::string path, GLint interpolation);
+	Texture loadTexture(std::string name, std::string path, GLint interpolation);
 
 	void updateRender(std::vector<Entity*>& entityList, Camera& cam);
 };

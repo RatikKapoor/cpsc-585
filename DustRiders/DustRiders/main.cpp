@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <memory>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -42,7 +43,8 @@ class DustRidersWindowCallbacks : public CallbackInterface
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
-			if (!hasStarted) {
+			if (!hasStarted)
+			{
 				hasStarted = true;
 				gameState = 1;
 			}
@@ -172,53 +174,87 @@ int main()
 	Window window(800, 800, "DustRiders");
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>());
 
+	// Disable at your own risk, will not start the game until there is a valid controller connected
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+	{
+		JoystickHandler::addJS(GLFW_JOYSTICK_1);
+	}
+	else
+	{
+		while (!glfwJoystickPresent(GLFW_JOYSTICK_1))
+		{
+			std::cout << "PLEASE CONNECT A CONTROLLER" << std::endl;
+			glfwPollEvents();
+		}
+	}
+
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
 	ShaderProgram *basicShader = renderer.compileShader("basic", "basic.vert", "basic.frag");
 
 #pragma region Verts
+
 	std::vector<Vertex> cubeVerts{
-		Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
-		Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
+			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
+			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
 	std::vector<unsigned int> cubeIndices{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
+			// front face
+			0, 1, 2,
+			0, 2, 3,
+			// front face
+			0, 1, 2,
+			0, 2, 3,
 
-		// right face
-		4, 0, 3,
-		4, 3, 7,
+			// right face
+			4, 0, 3,
+			4, 3, 7,
+			// right face
+			4, 0, 3,
+			4, 3, 7,
 
-		// back face
-		5, 4, 7,
-		5, 7, 6,
+			// back face
+			5, 4, 7,
+			5, 7, 6,
+			// back face
+			5, 4, 7,
+			5, 7, 6,
 
-		// left face
-		1, 5, 6,
-		1, 6, 2,
+			// left face
+			1, 5, 6,
+			1, 6, 2,
+			// left face
+			1, 5, 6,
+			1, 6, 2,
 
-		// top face
-		0, 4, 5,
-		0, 5, 1,
+			// top face
+			0, 4, 5,
+			0, 5, 1,
+			// top face
+			0, 4, 5,
+			0, 5, 1,
 
-		// bottom face
-		2, 3, 7,
-		2, 7, 6};
+			// bottom face
+			2, 3, 7,
+			2, 7, 6};
+
+	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/test-car.obj");
+
 	Model *cubeModel = new Model();
-	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices));
+	std::vector<Texture> cubeTexture;
+	cubeTexture.push_back(Texture("../DustRiders/assets/textures/water.jpg", GL_LINEAR));
+	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices, cubeTexture));
 	cubeModel = renderer.addModel("cube", cubeModel);
+
 #pragma endregion
 
 	std::vector<Entity *> entityList;
-
-	JoystickHandler::addJS(GLFW_JOYSTICK_1);
 
 	Vehicle v1(physics);
 	{
@@ -226,9 +262,9 @@ int main()
 		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = cubeModel;
+		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
+		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 1.0f};
 	}
 	Vehicle v2(physics);
 	{
@@ -255,26 +291,26 @@ int main()
 	Camera camera(entityList[0], glm::radians(45.0f), 20.0);
 
 	int obstacleCount = 0;
-	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
-	{
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = new Transform();
+	// for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
+	// {
+	// 	entityList.emplace_back(new Entity());
+	// 	entityList.back()->transform = new Transform();
 
-		if (obstacleCount % 2 == 0)
-		{
-			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
-		}
-		else
-		{
-			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
-		}
+	// 	if (obstacleCount % 2 == 0)
+	// 	{
+	// 		entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
+	// 	}
+	// 	else
+	// 	{
+	// 		entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
+	// 	}
 
-		entityList.back()->model = cubeModel;
-		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
+	// 	entityList.back()->model = cubeModel;
+	// 	entityList.back()->shaderProgram = basicShader;
+	// 	entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
 
-		obstacleCount++;
-	}
+	// 	obstacleCount++;
+	// }
 
 	double lastTime = 0.0f;
 	int i = 0;
@@ -297,9 +333,11 @@ int main()
 			auto gasValue = beepGas(GLFW_JOYSTICK_1);
 			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
 
-			if (hasStarted) {
+			if (hasStarted)
+			{
 				// Vehicle physics
-				if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+				if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+				{
 					v1.stepPhysics(deltaT, gasValue, steerValue);
 				}
 				else
@@ -312,11 +350,13 @@ int main()
 				v3.stepPhysics(deltaT, -accel, 0);
 
 				// Win condition
-				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f) {
+				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
+				{
 					// Game won
 					gameState = 2;
 				}
-				else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f) {
+				else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f)
+				{
 					// Game lost
 					gameState = 3;
 				}

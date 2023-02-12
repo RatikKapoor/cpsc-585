@@ -17,6 +17,14 @@ VertexBuffer::VertexBuffer(std::vector <GLint> sizes, std::vector <GLenum> dataT
 	}
 }
 
+VertexBuffer::VertexBuffer(GLuint index, GLint size, GLenum dataType)
+	: bufferID{}
+{
+	bind();
+	glVertexAttribPointer(index, size, dataType, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(index);
+}
+
 
 void VertexBuffer::uploadData(GLsizeiptr size, const void* data, GLenum usage) {
 	bind();
