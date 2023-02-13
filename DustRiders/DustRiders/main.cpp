@@ -244,7 +244,8 @@ int main()
 			2, 3, 7,
 			2, 7, 6};
 
-	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/test-car.obj");
+	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/better-car.obj");
+	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "../DustRiders/assets/models/ground-plane.obj");
 
 	Model *cubeModel = new Model();
 	std::vector<Texture> cubeTexture;
@@ -264,17 +265,30 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 1.0f};
+		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
 	}
+
+	// Adds ground plane
+	Transform planeTransform = *physics.transformList.back();
+
+	entityList.emplace_back(new Entity());
+	entityList.back()->transform = &planeTransform;
+
+	// For now, it just uses the position of the player's car, then is shifted down slightly.
+	entityList.back()->transform->position += glm::vec3(0.f, -0.5f, 0.f);
+	entityList.back()->model = groundPlane;
+	entityList.back()->shaderProgram = basicShader;
+	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+
 	Vehicle v2(physics);
 	{
 		// Setup v2
 		v2.initVehicle(PxVec3(-2.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = cubeModel;
+		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
+		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
 	}
 	Vehicle v3(physics);
 	{
@@ -282,9 +296,9 @@ int main()
 		v3.initVehicle(PxVec3(2.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = cubeModel;
+		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.0f, 1.0f, 2.0f};
+		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
 	}
 
 	// Follow the Player Vehicle
@@ -348,8 +362,12 @@ int main()
 				v2.stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v3.stepPhysics(deltaT, -accel, 0);
+<<<<<<< HEAD
 
 				// Win condition
+=======
+				//	Win condition
+>>>>>>> f6d089c (feat: Added test car model with working texture)
 				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
 				{
 					// Game won

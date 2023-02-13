@@ -76,7 +76,6 @@ Mesh RenderingSystem::processMesh(aiMesh *mesh, const aiScene *scene)
 		else
 			vertex.texCoord = glm::vec2(0.0f, 0.0f);
 
-		texCoords.push_back(vertex.texCoord);
 		vertices.push_back(vertex);
 	}
 
@@ -160,6 +159,7 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 		model = glm::translate(model, entity->transform->position);
 		model = model * glm::toMat4(entity->transform->rotation);
 		model = glm::scale(model, entity->scale);
+		glm::vec3 lightPos = glm::vec3(1000.f, 75.f, 0.f);
 
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
@@ -169,6 +169,10 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 
 		location = glGetUniformLocation(shader, "P");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(perspective));
+
+		location = glGetUniformLocation(shader, "lightPos");
+		glUniform3fv(location, 1, glm::value_ptr(lightPos));
+
 
 		entity->model->draw(shader);
 	}

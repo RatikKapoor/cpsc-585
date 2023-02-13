@@ -37,10 +37,9 @@ public:
 	{
 		geometry.bind();
 		geometry.setVerts(verts);
-
 		std::vector<glm::vec2> texCoords;
-		for (auto verts : v) {
-			texCoords.push_back(verts.texCoord);
+		for (auto vert : v) {
+			texCoords.push_back(vert.texCoord);
 		}
 		geometry.setTexCoords(texCoords);
 		geometry.setIndices(indices);
