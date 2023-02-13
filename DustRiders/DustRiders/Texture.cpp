@@ -10,9 +10,9 @@ Texture::Texture(const char* path, GLint interpolation)
 	textureID = 0;
 	glGenTextures(1, &textureID);
 	int numComponents;
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(false);
 	const char* pathData = path;
-unsigned char* data = stbi_load(pathData, &width, &height, &numComponents, 0);
+	unsigned char* data = stbi_load(pathData, &width, &height, &numComponents, 0);
 	if (data != nullptr)
 	{
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);		//Set alignment to be 1
@@ -42,8 +42,8 @@ unsigned char* data = stbi_load(pathData, &width, &height, &numComponents, 0);
 		//Loads texture data into bound texture
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolation);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolation);
 
