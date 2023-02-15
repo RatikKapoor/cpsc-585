@@ -69,23 +69,32 @@ void Overlay::RenderOverlay(int state)
 
 	std::map<int, Joystick> tMap = JoystickHandler::getJSMap();
 
-	auto jsItr = tMap.begin();
+	ImGui::Text("NumJS: %d", tMap.size());
 
-	while (jsItr != tMap.end())
-	{
-		jsItr->second.updateInputs();
-		ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
-		ImGui::Text("%s", jsItr->second.triggerList().c_str());
-		ImGui::Text("%s", jsItr->second.axisList().c_str());
-		jsItr++;
+	if (tMap.size() == 0) {
+		ImGui::Text("Buttons: N/A");
+		ImGui::Text("Triggers N/A");
+		ImGui::Text("Axes N/A");
+	}
+	else {
+
+		auto jsItr = tMap.begin();
+		while (jsItr != tMap.end())
+		{
+			jsItr->second.updateInputs();
+			ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
+			ImGui::Text("%s", jsItr->second.triggerList().c_str());
+			ImGui::Text("%s", jsItr->second.axisList().c_str());
+			jsItr++;
+		}
 	}
 
 	// End the window.
 	ImGui::End();
 	// Render window
-	ImGui::Render(); // Render the ImGui window
+	ImGui::Render();																				// Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Some middleware thing
-	
+
 	// End ImGui
 }
 

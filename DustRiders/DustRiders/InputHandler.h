@@ -91,6 +91,15 @@ public:
 	std::string triggerList();
 	std::string axisList();
 
+	/**
+	 * @brief Update all inputs (buttons and analog axes) for the controller
+	 * 				Should only be called oncer per controller per main game loop.
+	 *
+	 * @return true
+	 * @return false
+	 */
+	bool updateAllInputs();
+
 private:
 	unsigned char buttons[14];
 	float analogs[6];
@@ -101,17 +110,33 @@ private:
 	bool updateAnalogs(int jsID);
 	bool updateInputs(int jsID);
 };
-
 class JoystickHandler
 {
 public:
-	// Adds one controller by default
 	JoystickHandler() {}
 
 	static bool addJS(int jsID);
 	static bool removeJS(int jsID);
 
 	static std::map<int, Joystick> getJSMap();
+	static void printJSMap();
+	static Joystick getJoystick(int jsID);
+
+	/**
+	 * @brief Update the inputs for all the joysticks in the map.
+	 *
+	 * @return true
+	 * @return false
+	 */
+	static void updateAll();
+	/**
+	 * @brief Checks if all expected joysticks are still present.
+	 *
+	 *
+	 * @return true if all expected joysticks are present
+	 * @return false if an expected joystick is not present
+	 */
+	static bool checkPresent();
 
 private:
 	static std::map<int, Joystick> jsMap;
