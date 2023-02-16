@@ -43,11 +43,11 @@ public:
 	void textureFromFile(const char* path, const std::string &directory);
 
 
+	std::string type;
 private:
 	GLuint textureID;
 	std::string path;
 	GLint interpolation;
-	std::string type;
 	
 
 

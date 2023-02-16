@@ -191,7 +191,10 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram *basicShader = renderer.compileShader("basic", "basic.vert", "basic.frag");
+	ShaderProgram *carShader = renderer.compileShader("car", "../DustRiders/car.vert", "../DustRiders/car.frag");
+	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
+	ShaderProgram *carShader = renderer.compileShader("car", "../DustRiders/car.vert", "../DustRiders/car.frag");
+	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
 #pragma region Verts
 
@@ -244,7 +247,7 @@ int main()
 			2, 3, 7,
 			2, 7, 6};
 
-	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/better-car.obj");
+	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/better-car-v2.obj");
 	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "../DustRiders/assets/models/ground-plane.obj");
 
 	Model *cubeModel = new Model();
@@ -265,7 +268,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 
 	// Adds ground plane
@@ -288,7 +291,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 	Vehicle v3(physics);
 	{
@@ -298,33 +301,33 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{0.75f, 0.75f, 0.75f};
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::radians(45.0f), 20.0);
+	Camera camera(entityList[0], glm::radians(25.0f), 20.0);
 
 	int obstacleCount = 0;
-	// for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
-	// {
-	// 	entityList.emplace_back(new Entity());
-	// 	entityList.back()->transform = new Transform();
+	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
+	{
+		entityList.emplace_back(new Entity());
+		entityList.back()->transform = new Transform();
 
-	// 	if (obstacleCount % 2 == 0)
-	// 	{
-	// 		entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
-	// 	}
-	// 	else
-	// 	{
-	// 		entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
-	// 	}
+		if (obstacleCount % 2 == 0)
+		{
+			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
+		}
+		else
+		{
+			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
+		}
 
-	// 	entityList.back()->model = cubeModel;
-	// 	entityList.back()->shaderProgram = basicShader;
-	// 	entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
+		entityList.back()->model = cubeModel;
+		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
 
-	// 	obstacleCount++;
-	// }
+		obstacleCount++;
+	}
 
 	double lastTime = 0.0f;
 	int i = 0;
@@ -365,10 +368,10 @@ int main()
 <<<<<<< HEAD
 
 				// Win condition
-=======
-				//	Win condition
+				== == == =
+										 //	Win condition
 >>>>>>> f6d089c (feat: Added test car model with working texture)
-				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
+						if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
 				{
 					// Game won
 					gameState = 2;

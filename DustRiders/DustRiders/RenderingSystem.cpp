@@ -92,7 +92,6 @@ Mesh RenderingSystem::processMesh(aiMesh *mesh, const aiScene *scene)
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 		int matIndex = mesh->mMaterialIndex;
-		std::cout << mesh->mMaterialIndex << std::endl;
 		std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
 			aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -129,7 +128,6 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 		mat->GetTexture(type, i, &str);
 		std::string strDir = "../DustRiders/assets/models/";
 		strDir.append(std::string(str.C_Str()));
-		std::cout << str.C_Str() << std::endl;
 		Texture texture(strDir.c_str(), GL_LINEAR);
 		texture.setType(typeName);
 		textures.push_back(texture);
@@ -146,6 +144,7 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 view = cam.getView();
+	glm::vec3 camPos = cam.getPos();
 
 	float aspect = 1.0f;
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
@@ -159,7 +158,9 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 		model = glm::translate(model, entity->transform->position);
 		model = model * glm::toMat4(entity->transform->rotation);
 		model = glm::scale(model, entity->scale);
-		glm::vec3 lightPos = glm::vec3(1000.f, 75.f, 0.f);
+		glm::vec3 lightPos = glm::vec3(0.f, 40.f, 0.f);
+		glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
+
 
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
@@ -172,7 +173,12 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 
 		location = glGetUniformLocation(shader, "lightPos");
 		glUniform3fv(location, 1, glm::value_ptr(lightPos));
+		
+		location = glGetUniformLocation(shader, "lightCol");
+		glUniform3fv(location, 1, glm::value_ptr(lightCol));
 
+		location = glGetUniformLocation(shader, "cameraPos");
+		glUniform3fv(location, 1, glm::value_ptr(camPos));
 
 		entity->model->draw(shader);
 	}
