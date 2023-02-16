@@ -10,14 +10,15 @@
 #include "VertexBuffer.h"
 #include "ElementBuffer.h"
 
-//#include <GL/glew.h>
+// #include <GL/glew.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 #include <vector>
 
-struct Vertex {
+struct Vertex
+{
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
@@ -32,15 +33,17 @@ public:
 
 	// Public interface
 	void bind() { vao.bind(); }
-	void setVerts(const std::vector<Vertex>& verts);
-	void setIndices(const std::vector<unsigned int>& indices);
-	void setTexCoords(const std::vector<glm::vec2>& texCoords);
+	void setVerts(const std::vector<Vertex> &verts);
+	void setIndices(const std::vector<unsigned int> &indices);
+	void setTexCoords(const std::vector<glm::vec2> &texCoords);
+	void setNorms(const std::vector<glm::vec3> &norms);
 
 private:
 	// note: due to how OpenGL works, vao needs to be
 	// defined and initialized before the vertex buffers
 	VertexArray vao;
 	VertexBuffer vertBuffer;
-	ElementBuffer indexBuffer;
+	VertexBuffer normBuffer;
 	VertexBuffer texCoordBuffer;
+	ElementBuffer indexBuffer;
 };

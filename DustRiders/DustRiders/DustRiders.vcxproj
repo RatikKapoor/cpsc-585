@@ -236,6 +236,8 @@
     <None Include=".\\Main.vert" />
     <None Include="basic.vert" />
     <None Include="basic.frag" />
+    <None Include="car.frag" />
+    <None Include="car.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -233,5 +233,7 @@
     <None Include="basic.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="car.frag" />
+    <None Include="car.vert" />
   </ItemGroup>
 </Project>
