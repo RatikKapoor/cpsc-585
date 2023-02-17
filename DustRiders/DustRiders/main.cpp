@@ -193,70 +193,13 @@ int main()
 	Overlay overlay;
 	ShaderProgram *carShader = renderer.compileShader("car", "../DustRiders/car.vert", "../DustRiders/car.frag");
 	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
-	ShaderProgram *carShader = renderer.compileShader("car", "../DustRiders/car.vert", "../DustRiders/car.frag");
-	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
 
-#pragma region Verts
 
-	std::vector<Vertex> cubeVerts{
-			Vertex{glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, 0.5f}, glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, 0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, 0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 1.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{-0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)},
-			Vertex{glm::vec3{0.5f, -0.5f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}, glm::vec2(0.0f)}};
-	std::vector<unsigned int> cubeIndices{
-			// front face
-			0, 1, 2,
-			0, 2, 3,
-			// front face
-			0, 1, 2,
-			0, 2, 3,
-
-			// right face
-			4, 0, 3,
-			4, 3, 7,
-			// right face
-			4, 0, 3,
-			4, 3, 7,
-
-			// back face
-			5, 4, 7,
-			5, 7, 6,
-			// back face
-			5, 4, 7,
-			5, 7, 6,
-
-			// left face
-			1, 5, 6,
-			1, 6, 2,
-			// left face
-			1, 5, 6,
-			1, 6, 2,
-
-			// top face
-			0, 4, 5,
-			0, 5, 1,
-			// top face
-			0, 4, 5,
-			0, 5, 1,
-
-			// bottom face
-			2, 3, 7,
-			2, 7, 6};
-
+	// To load in a model, just use "loadModelFromFile". Textures are handled automatically. 
 	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/better-car-v2.obj");
+	Model *testRock = renderer.loadModelFromFile("TestRock", "../DustRiders/assets/models/test-obstacle-rock.obj");
 	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "../DustRiders/assets/models/ground-plane.obj");
 
-	Model *cubeModel = new Model();
-	std::vector<Texture> cubeTexture;
-	cubeTexture.push_back(Texture("../DustRiders/assets/textures/water.jpg", GL_LINEAR));
-	cubeModel->meshes.push_back(Mesh(cubeVerts, cubeIndices, cubeTexture));
-	cubeModel = renderer.addModel("cube", cubeModel);
-
-#pragma endregion
 
 	std::vector<Entity *> entityList;
 
@@ -272,13 +215,9 @@ int main()
 	}
 
 	// Adds ground plane
-	Transform planeTransform = *physics.transformList.back();
-
 	entityList.emplace_back(new Entity());
-	entityList.back()->transform = &planeTransform;
-
-	// For now, it just uses the position of the player's car, then is shifted down slightly.
-	entityList.back()->transform->position += glm::vec3(0.f, -0.5f, 0.f);
+	entityList.back()->transform = new Transform();
+	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
 	entityList.back()->model = groundPlane;
 	entityList.back()->shaderProgram = basicShader;
 	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
@@ -305,7 +244,7 @@ int main()
 	}
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::radians(25.0f), 20.0);
+	Camera camera(entityList[0], glm::radians(15.0f), 10.0);
 
 	int obstacleCount = 0;
 	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
@@ -322,9 +261,9 @@ int main()
 			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
 		}
 
-		entityList.back()->model = cubeModel;
+		entityList.back()->model = testRock;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{3.0f, 1.0f, 0.5f};
+		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
 
 		obstacleCount++;
 	}
@@ -365,13 +304,7 @@ int main()
 				v2.stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v3.stepPhysics(deltaT, -accel, 0);
-<<<<<<< HEAD
-
-				// Win condition
-				== == == =
-										 //	Win condition
->>>>>>> f6d089c (feat: Added test car model with working texture)
-						if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
+				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
 				{
 					// Game won
 					gameState = 2;
