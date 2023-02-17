@@ -248,7 +248,7 @@ int main()
 	}
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::radians(15.0f), 10.0);
+	Camera camera(entityList[0], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 50.0);
 
 	int obstacleCount = 0;
 	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
