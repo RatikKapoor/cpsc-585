@@ -43,7 +43,6 @@ public:
 
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
-	void stepPhysics(double, CarAction);
 	void stepPhysics(double, float, float);
 	void stepPhysics(double timeStep, Joystick js);
 

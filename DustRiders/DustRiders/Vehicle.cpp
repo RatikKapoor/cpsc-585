@@ -78,28 +78,6 @@ bool Vehicle::initVehicle(PxVec3 p)
 	return true;
 }
 
-void Vehicle::stepPhysics(double timestep, CarAction a)
-{
-	if (gNbCommands == gCommandProgress)
-		return;
-
-	// Apply the brake, throttle and steer to the command state of the direct drive vehicle.
-	// const Command& command = gCommands[gCommandProgress];
-	gVehicle.mCommandState.brakes[0] = (a == BRAKE) ? 1 : 0;
-	gVehicle.mCommandState.nbBrakes = 1;
-	gVehicle.mCommandState.throttle = (a == ACCEL) ? 1 : 0;
-	if (a == HALF_ACCEL)
-		gVehicle.mCommandState.throttle = 0.2;
-	if (a == LEFT)
-		gVehicle.mCommandState.steer = 1;
-	else if (a == RIGHT)
-		gVehicle.mCommandState.steer = -1;
-	else
-		gVehicle.mCommandState.steer = 0;
-
-	// Forward integrate the vehicle by a single timestep.
-	gVehicle.step(timestep, gVehicleSimulationContext);
-}
 void Vehicle::stepPhysics(double timestep, float gas, float steer)
 {
 	if (gNbCommands == gCommandProgress)
@@ -151,49 +129,35 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 	const unsigned char *buttons = js.getButtons();
 	gVehicle.mCommandState.nbBrakes = 1;
 
+	if (buttons[XBOX_A])
+	{
+		std::cout << "Weapon Fired" << std::endl;
+	}
+
 	if (gNbCommands == gCommandProgress)
 		return;
 
-	float speed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
+	float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
 	physx::vehicle2::PxVehicleDirectDriveTransmissionCommandState::Enum gearState = gVehicle.mTransmissionCommandState.gear;
 	gVehicle.mTransmissionCommandState.gear = gearState;
-	std::cout << "Speed: " << speed << std::endl;
+
+	// By default, no throttle and turn on the brakes to slow down (and stop) the vehicle
 	float throttle = 0.f;
-	int brake = 0;
+	int brake = 1;
 
-	if (speed > 0.01f) // If the vehicle is actively moving
+	if (buttons[XBOX_LB])
 	{
-		if (gearState == physx::vehicle2::PxVehicleDirectDriveTransmissionCommandState::Enum::eFORWARD) // If moving forward
-		{
-
-			throttle = analogs[XBOX_R_TRIGGER] + 1.f;
-			throttle /= 2.f;
-			brake = (int)(analogs[XBOX_L_TRIGGER] > -1.f);
-		}
-		else if (gearState == gVehicle.mTransmissionCommandState.eREVERSE)
-		{
-			throttle = analogs[XBOX_L_TRIGGER] + 1.f;
-			throttle /= 2.f;
-			brake = (int)(analogs[XBOX_R_TRIGGER] > -1.f);
-		}
+		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
 	}
-	else // If the vehicle is currently standing still
+	else
 	{
-		if (analogs[XBOX_R_TRIGGER] > 0.0f)
-		{
-			throttle = (analogs[XBOX_R_TRIGGER] + 2.f) / 2.f;
-			brake = 0;
-			gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
-		}
-		else
-		{
-			throttle = (analogs[XBOX_L_TRIGGER] + 2.f) / 2.f;
-			brake = 0;
-			gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
-		}
+		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
 	}
 
-	std::cout << "Throttle: " << throttle << std::endl;
+	throttle = analogs[XBOX_R_TRIGGER] + 1.f;
+	throttle /= 2.f;
+	brake = (int)(analogs[XBOX_L_TRIGGER] > -1.f);
+
 	gVehicle.mCommandState.throttle = throttle;
 	gVehicle.mCommandState.brakes[0] = brake;
 
