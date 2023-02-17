@@ -9,6 +9,7 @@ uniform bool shouldUseLighting;
 uniform vec3 cameraPos;
 in vec2 tc;
 
+
 uniform sampler2D sampler;
 
 out vec4 color;

@@ -12,6 +12,7 @@ class VertexBuffer {
 
 public:
 	VertexBuffer(std::vector<GLint> sizes, std::vector<GLenum> dataTypes, int stride);
+	VertexBuffer(GLuint index, GLint size, GLenum dataType);
 
 	// Because we're using the VertexBufferHandle to do RAII for the buffer for us
 	// and our other types are trivial or provide their own RAII

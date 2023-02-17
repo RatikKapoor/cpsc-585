@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <iostream>
 
 std::map<int, Joystick> JoystickHandler::jsMap;
 
@@ -201,6 +202,30 @@ bool Joystick::updateInputs(int jsID)
   return setInputs(glfwGetJoystickButtons(jsID, &countB), glfwGetJoystickAxes(jsID, &countA));
 }
 
+bool Joystick::updateAllInputs()
+{
+  if (!glfwJoystickPresent(jsID)) // Check that controller is connected
+  {
+    return false; // If not connected, return false
+  }
+
+  int countButtons;
+  const unsigned char *tempButtons = glfwGetJoystickButtons(jsID, &countButtons);
+  for (int i = 0; i < countButtons; i++)
+  {
+    buttons[i] = tempButtons[i];
+  }
+
+  int countAnalogs;
+  const float *tempAnalogs = glfwGetJoystickAxes(jsID, &countAnalogs);
+  for (int i = 0; i < countAnalogs; i++)
+  {
+    analogs[i] = tempAnalogs[i];
+  }
+
+  return true;
+}
+
 bool JoystickHandler::addJS(int jsID)
 {
   if (glfwJoystickPresent(jsID))
@@ -220,15 +245,74 @@ bool JoystickHandler::addJS(int jsID)
 
 bool JoystickHandler::removeJS(int jsID)
 {
-  if (!glfwJoystickPresent(jsID))
+
+  JoystickHandler::jsMap.erase(jsID);
+  auto jsIter = JoystickHandler::jsMap.find(jsID);
+
+  if (jsIter == JoystickHandler::jsMap.end() || JoystickHandler::jsMap.size() == 0)
   {
-    JoystickHandler::jsMap.erase(jsID);
+    return true;
   }
-  return true;
+  else
+  {
+    return false;
+  }
 }
 
 std::map<int, Joystick> JoystickHandler::getJSMap()
 {
   std::map<int, Joystick> varMap = JoystickHandler::jsMap;
   return varMap;
+}
+
+void JoystickHandler::printJSMap()
+{
+  std::cout << "Joysticks: " << std::endl;
+  for (auto js : JoystickHandler::jsMap)
+  {
+    std::cout << js.first << std::endl;
+  }
+  std::cout << "LIST END" << std::endl;
+}
+
+void JoystickHandler::updateAll()
+{
+  auto jsIter = jsMap.begin();
+  while (jsIter != jsMap.end())
+  {
+    jsIter->second.updateAllInputs();
+    jsIter++;
+  }
+  return;
+}
+
+bool JoystickHandler::checkPresent()
+{
+  if (jsMap.size() == 0)
+  {
+    return true;
+  }
+
+  auto jsIter = jsMap.begin();
+
+  while (jsIter != jsMap.end())
+  {
+    if (!glfwJoystickPresent(jsIter->first))
+    {
+      return false;
+    }
+    jsIter++;
+  }
+  return true;
+}
+
+Joystick JoystickHandler::getJoystick(int jsID) {
+    auto jsIter = jsMap.find(jsID);
+    if (jsIter == jsMap.end()) {
+        return Joystick();
+    }
+    else {
+        return jsIter->second;
+    }
+
 }

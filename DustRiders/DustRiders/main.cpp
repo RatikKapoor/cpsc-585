@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <iostream>
 #include <memory>
 
 #include "imgui.h"
@@ -37,7 +38,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 CarAction currentAction = CarAction::IDLE;
-bool hasStarted = false;
+bool hasStarted = true;
 int gameState = 0; // 0 - need to start, 1 - playing, 2 - won, 3 - lost
 
 class DustRidersWindowCallbacks : public CallbackInterface
@@ -90,6 +91,7 @@ class DustRidersWindowCallbacks : public CallbackInterface
 			currentAction = CarAction::IDLE;
 		}
 	}
+
 	virtual void mouseButtonCallback(int button, int action, int mods) {}
 	virtual void cursorPosCallback(double xpos, double ypos) {}
 	virtual void scrollCallback(double xoffset, double yoffset) {}
@@ -195,17 +197,15 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram* carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
-	ShaderProgram* basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
+	ShaderProgram *carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
+	ShaderProgram *basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
 
+	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
+	Model *testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
+	Model *testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
+	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
-	// To load in a model, just use "loadModelFromFile". Textures are handled automatically. 
-	Model* testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
-	Model* testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
-	Model* groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
-
-
-	std::vector<Entity*> entityList;
+	std::vector<Entity *> entityList;
 
 	Vehicle v1(physics);
 	{
@@ -312,6 +312,7 @@ int main()
 
 			// Game Section
 			glfwPollEvents();
+			JoystickHandler::updateAll();
 
 			auto gasValue = beepGas(GLFW_JOYSTICK_1);
 			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
@@ -321,7 +322,7 @@ int main()
 				// Vehicle physics
 				if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 				{
-					v1.stepPhysics(deltaT, gasValue, steerValue);
+					v1.stepPhysics(deltaT, JoystickHandler::getJoystick(GLFW_JOYSTICK_1));
 				}
 				else
 				{
@@ -331,6 +332,8 @@ int main()
 				v2.stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v3.stepPhysics(deltaT, -accel, 0);
+
+				// Win condition
 				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
 				{
 					// Game won
