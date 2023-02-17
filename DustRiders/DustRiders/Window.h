@@ -43,12 +43,14 @@ class Window {
 
 public:
 	Window(
-		std::shared_ptr<CallbackInterface> callbacks, int width, int height,
+		std::shared_ptr<CallbackInterface> callbacks,
 		const char* title, GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL
 	);
-	Window(int width, int height, const char* title, GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+	Window(const char* title, GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 
 	void setCallbacks(std::shared_ptr<CallbackInterface> callbacks);
+
+	float getAspectRatio() { return aspectRatio; }
 
 	glm::ivec2 getPos() const;
 	glm::ivec2 getSize() const;
@@ -66,6 +68,7 @@ public:
 private:
 	std::unique_ptr<GLFWwindow, WindowDeleter> window; // owning ptr (from GLFW)
 	std::shared_ptr<CallbackInterface> callbacks;      // optional shared owning ptr (user provided)
+	float aspectRatio;
 
 	void connectCallbacks();
 
