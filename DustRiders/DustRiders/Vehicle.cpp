@@ -127,10 +127,14 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 	float axisThreshold = 0.15f;
 	const float *analogs = js.getAnalogs();
 	const unsigned char *buttons = js.getButtons();
+
 	gVehicle.mCommandState.nbBrakes = 1;
 
+	// TODO Add method of checking if button was previously pressed to stop "weapon fired" from being called
+	// every time stepPhysics is called.
 	if (buttons[XBOX_A])
 	{
+
 		std::cout << "Weapon Fired" << std::endl;
 	}
 
