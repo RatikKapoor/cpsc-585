@@ -25,11 +25,14 @@
 #include "InputHandler.h"
 #include "Camera.h"
 #include "Vehicle.h"
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
+#include "MusicBuffer.h"
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void joystick_callback(int jid, int event);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
@@ -104,7 +107,7 @@ float beepGas(int jsID)
 	if (glfwJoystickPresent(jsID))
 	{
 		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		const float* axis = glfwGetJoystickAxes(jsID, &count);
 
 		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
 		{
@@ -125,7 +128,7 @@ float beepSteer(int jsID)
 	if (glfwJoystickPresent(jsID))
 	{
 		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		const float* axis = glfwGetJoystickAxes(jsID, &count);
 		return axis[XBOX_R_XAXIS];
 	}
 	else
@@ -140,9 +143,9 @@ CarAction isBeepBeep(int jsID)
 	{
 		int count;
 
-		const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
+		const unsigned char* buttons = glfwGetJoystickButtons(jsID, &count);
 
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
+		const float* axis = glfwGetJoystickAxes(jsID, &count);
 
 		if (buttons[XBOX_RB])
 		{
@@ -212,7 +215,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
 	}
 
 	// Adds ground plane
@@ -221,7 +224,7 @@ int main()
 	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
 	entityList.back()->model = groundPlane;
 	entityList.back()->shaderProgram = basicShader;
-	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+	entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
 
 	Vehicle v2(physics);
 	{
@@ -231,7 +234,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
 	}
 	Vehicle v3(physics);
 	{
@@ -241,7 +244,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
 	}
 
 	// Follow the Player Vehicle
@@ -255,24 +258,47 @@ int main()
 
 		if (obstacleCount % 2 == 0)
 		{
-			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
+			entityList.back()->transform->position = glm::vec3{ -7.0f, 0.0f, dist };
 		}
 		else
 		{
-			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
+			entityList.back()->transform->position = glm::vec3{ 7.0f, 0.0f, dist };
 		}
 
 		entityList.back()->model = testRock;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
+		entityList.back()->scale = glm::vec3{ 2.0f, 2.0f, 2.0f };
 
 		obstacleCount++;
 	}
+
+	SoundDevice* mysounddevice = SoundDevice::get();
+	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
+
+	SoundSource mySpeaker;
+	alSourcePlay(mySpeaker.Play(sound1));
+
+	MusicBuffer myMusic("../sound/TownTheme.wav");
+	std::cout << "playing town theme music...\n";
+	myMusic.Play();
+
+
+	ALint state = AL_PLAYING;
+	std::cout << "playing sound\n";
+
 
 	double lastTime = 0.0f;
 	int i = 0;
 	while (!window.shouldClose())
 	{
+		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		{
+			myMusic.UpdateBufferStream();
+
+			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
+		}
+
+
 		auto t = glfwGetTime();
 		if (t - lastTime > 0.0167)
 		{

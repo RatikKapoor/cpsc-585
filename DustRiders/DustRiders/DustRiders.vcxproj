@@ -169,6 +169,7 @@
     <ClCompile Include="GLHandles.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -188,6 +189,9 @@
     <ClCompile Include="snippetvehicle2common\SnippetVehicleHelpers.cpp" />
     <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleDirectDrive.cpp" />
     <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleRender.cpp" />
+    <ClCompile Include="SoundBuffer.cpp" />
+    <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="VertexArray.cpp" />
@@ -206,6 +210,7 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderingSystem.h" />
@@ -224,6 +229,9 @@
     <ClInclude Include="snippetvehicle2common\serialization\EngineDrivetrainSerialization.h" />
     <ClInclude Include="snippetvehicle2common\serialization\SerializationCommon.h" />
     <ClInclude Include="snippetvehicle2common\SnippetVehicleHelpers.h" />
+    <ClInclude Include="SoundBuffer.h" />
+    <ClInclude Include="SoundDevice.h" />
+    <ClInclude Include="SoundSource.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vehicle.h" />
