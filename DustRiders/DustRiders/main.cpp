@@ -177,7 +177,8 @@ CarAction isBeepBeep(int jsID)
 int main()
 {
 	glfwInit();
-	Window window(800, 800, "DustRiders");
+
+	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>());
 
 	// Disable at your own risk, will not start the game until there is a valid controller connected
@@ -348,7 +349,7 @@ int main()
 			physics.updatePhysics(deltaT);
 
 			window.swapBuffers();
-			renderer.updateRender(entityList, camera);
+			renderer.updateRender(entityList, camera, window.getAspectRatio());
 
 			overlay.RenderOverlay(gameState);
 

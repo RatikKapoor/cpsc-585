@@ -45,7 +45,7 @@ void Window::windowSizeMetaCallback(GLFWwindow *window, int width, int height)
 // ----------------------
 
 Window::Window(
-	std::shared_ptr<CallbackInterface> callbacks, int width, int height,
+	std::shared_ptr<CallbackInterface> callbacks,
 	const char *title, GLFWmonitor *monitor, GLFWwindow *share)
 	: window(nullptr), callbacks(callbacks)
 {
@@ -56,8 +56,11 @@ Window::Window(
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // needed for mac?
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
+	const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
+	aspectRatio = float(vidMode->width) / float(vidMode->height);
+
 	// create window
-	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(width, height, title, monitor, share));
+	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(vidMode->width, vidMode->height, title, monitor, share));
 	if (window == nullptr)
 	{
 		std::cout << ("WINDOW failed to create GLFW window");
@@ -92,8 +95,8 @@ Window::Window(
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 }
 
-Window::Window(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
-	: Window(nullptr, width, height, title, monitor, share)
+Window::Window(const char *title, GLFWmonitor *monitor, GLFWwindow *share)
+	: Window(nullptr, title, monitor, share)
 {
 }
 
