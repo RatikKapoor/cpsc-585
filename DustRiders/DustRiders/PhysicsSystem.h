@@ -4,6 +4,9 @@
 #include <vector>
 
 #include "PxPhysicsAPI.h"
+#include "vehicle2/PxVehicleAPI.h"
+#include "snippetvehicle2common/serialization/BaseSerialization.h"
+
 #include "Transform.h"
 
 class PhysicsSystem
@@ -21,9 +24,11 @@ public:
 	physx::PxScene* gScene = NULL;
 	physx::PxMaterial* gMaterial = NULL;
 	physx::PxPvd* gPvd = NULL;
+	physx::PxRigidStatic* groundPlane = NULL;
 
 	PhysicsSystem();
 
-	physx::PxVec3 getPosition();
+	//physx::PxVec3 getPosition();
+	void updatePhysics(double);
 	void updateTransforms();
 };

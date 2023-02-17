@@ -9,7 +9,7 @@ Overlay::Overlay()
 	lastTime = glfwGetTime();
 }
 
-void Overlay::RenderOverlay()
+void Overlay::RenderOverlay(int state)
 {
 	// Framerate calculations
 	double currentTime = glfwGetTime();
@@ -17,7 +17,7 @@ void Overlay::RenderOverlay()
 	if (currentTime - lastTime >= 1.0)
 	{ // If last prinf() was more than 1 sec ago
 		// printf and reset timer
-		printf("%f ms/frame\n", 1000.0 / double(nbFrames));
+		// printf("%f ms/frame\n", 1000.0 / double(nbFrames));
 		currentFps = nbFrames;
 		nbFrames = 0;
 		lastTime += 1.0;
@@ -44,6 +44,23 @@ void Overlay::RenderOverlay()
 	// Begin a new window with these flags. (bool *)0 is the "default" value for its argument.
 	ImGui::Begin("DustRiders", (bool *)0, textWindowFlags);
 	ImGui::Text("FPS: %i", currentFps);
+	switch (state)
+	{
+	case 0:
+		ImGui::Text("Press forward to start playing");
+		break;
+	case 1:
+		ImGui::Text("Playing game");
+		break;
+	case 2:
+		ImGui::Text("Game won!");
+		break;
+	case 3:
+		ImGui::Text("Game lost :(");
+		break;
+	default:
+		break;
+	}
 
 	// Current buttons being pressed
 	// ImGui::Text("%s", Joystick::getButtonStr(GLFW_JOYSTICK_1).c_str());
@@ -66,9 +83,10 @@ void Overlay::RenderOverlay()
 	// End the window.
 	ImGui::End();
 	// Render window
-	ImGui::Render();																				// Render the ImGui window
+	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Some middleware thing
-																													// End ImGui
+	
+	// End ImGui
 }
 
 void Overlay::Cleanup()

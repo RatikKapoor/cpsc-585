@@ -17,8 +17,7 @@
 //
 // These are the default implementations. You can write your own class that
 // extends this one and overrides the implementations with your own
-class CallbackInterface {
-public:
+struct CallbackInterface {
 	virtual void keyCallback(int key, int scancode, int action, int mods) {}
 	virtual void mouseButtonCallback(int button, int action, int mods) {}
 	virtual void cursorPosCallback(double xpos, double ypos) {}

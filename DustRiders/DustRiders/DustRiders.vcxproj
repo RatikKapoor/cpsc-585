@@ -193,6 +193,7 @@
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="SoundSource.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vehicle.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Window.h" />

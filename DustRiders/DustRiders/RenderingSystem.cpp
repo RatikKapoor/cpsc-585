@@ -109,8 +109,9 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 view = cam.getView();
 
@@ -124,7 +125,7 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam
 		glm::mat4 model(1.0f);
 		model = glm::translate(model, entity->transform->position);
 		model = model * glm::toMat4(entity->transform->rotation);
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, entity->scale);
 		
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));

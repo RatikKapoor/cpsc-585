@@ -12,6 +12,6 @@ private:
 
 public:
 	Overlay();
-	void RenderOverlay();
+	void RenderOverlay(int);
 	void Cleanup();
 };
