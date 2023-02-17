@@ -22,6 +22,7 @@
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
+#include "MusicBuffer.h"
 #include "RenderingSystem.h"
 #include "InputHandler.h"
 #include "Camera.h"
@@ -109,14 +110,31 @@ int main()
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
 
 	SoundSource mySpeaker;
-	mySpeaker.Play(sound1);
+	alSourcePlay(mySpeaker.Play(sound1));
+
+	MusicBuffer myMusic("../sound/TownTheme.wav");
+	std::cout << "playing town theme music...\n";
+	myMusic.Play();
+
+
+	ALint state = AL_PLAYING;
+	std::cout << "playing sound\n";
+
+
 
 	JoystickHandler::addJS(GLFW_JOYSTICK_1);
 
 	while (!window.shouldClose())
 	{
+
 		// Game Section
 		// processInput(window.get);
+		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		{
+			myMusic.UpdateBufferStream();
+
+			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
+		}
 
 		glfwPollEvents();
 

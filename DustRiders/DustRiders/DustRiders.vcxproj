@@ -169,6 +169,7 @@
     <ClCompile Include="GLHandles.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderingSystem.h" />

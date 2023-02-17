@@ -7,7 +7,7 @@ public:
 	SoundSource();
 	~SoundSource();
 
-	void Play(const ALuint buffer_to_play);
+	ALuint Play(const ALuint buffer_to_play);
 
 private:
 	ALuint p_Source;
