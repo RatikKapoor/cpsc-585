@@ -75,6 +75,18 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.gravity = gGravity;
 	gVehicleSimulationContext.physxScene = gScene;
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
+
+	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
+	for (physx::PxU32 i = 0; i < shapes; i++)
+	{
+		physx::PxShape* shape = NULL;
+		gVehicle.mPhysXState.physxActor.rigidBody->getShapes(&shape, 1, i);
+
+		shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+		shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+		shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
+
 	return true;
 }
 
