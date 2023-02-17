@@ -4,8 +4,9 @@
 class Camera
 {
 public:
-	Camera(Entity* focus, float t, float r);
+	Camera(Entity* focus, glm::vec3 offset, float t, float r);
 
+	void setFocusEntity(Entity* newFocus);
 	glm::mat4 getView();
 	glm::vec3 getPos();
 	void incrementTheta(float dt);
@@ -16,5 +17,6 @@ private:
 	float radius;
 
 	Entity* focusEntity;
+	glm::vec3 focusOffset;
 };
 
