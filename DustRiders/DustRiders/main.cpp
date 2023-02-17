@@ -191,14 +191,14 @@ int main()
 	PhysicsSystem physics;
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram *carShader = renderer.compileShader("car", "../DustRiders/car.vert", "../DustRiders/car.frag");
-	ShaderProgram *basicShader = renderer.compileShader("basic", "../DustRiders/basic.vert", "../DustRiders/basic.frag");
+	ShaderProgram *carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
+	ShaderProgram *basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
 
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically. 
-	Model *testCarModel = renderer.loadModelFromFile("TestCar", "../DustRiders/assets/models/better-car-v2.obj");
-	Model *testRock = renderer.loadModelFromFile("TestRock", "../DustRiders/assets/models/test-obstacle-rock.obj");
-	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "../DustRiders/assets/models/ground-plane.obj");
+	Model *testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
+	Model *testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
+	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
 
 	std::vector<Entity *> entityList;

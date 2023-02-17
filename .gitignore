@@ -447,3 +447,6 @@ FodyWeavers.xsd
 # Static libraries that need to be included
 !DustRiders/DustRiders/Debug/
 !DustRiders/DustRiders/Release/
+
+
+!DustRiders/DustRiders/assets/models/*.obj
