@@ -64,6 +64,7 @@ public:
 	int shouldClose() { return glfwWindowShouldClose(window.get()); }
 	void makeContextCurrent() { glfwMakeContextCurrent(window.get()); }
 	void swapBuffers() { glfwSwapBuffers(window.get()); }
+	void close() { glfwSetWindowShouldClose(window.get(), true); }
 
 private:
 	std::unique_ptr<GLFWwindow, WindowDeleter> window; // owning ptr (from GLFW)

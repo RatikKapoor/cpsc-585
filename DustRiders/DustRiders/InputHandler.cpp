@@ -204,7 +204,7 @@ bool Joystick::updateInputs(int jsID)
 
 bool Joystick::updateAllInputs()
 {
-  if (!glfwJoystickPresent(jsID)) // Check that controller is connected
+  if (pseudo || !glfwJoystickPresent(jsID)) // Check that controller is connected and not a pseudo controller
   {
     return false; // If not connected, return false
   }
@@ -241,6 +241,23 @@ bool JoystickHandler::addJS(int jsID)
   {
     return false;
   }
+}
+
+
+
+bool JoystickHandler::addJS(Joystick& js)
+{
+    int jsID = js.getID();
+    auto jsIter = JoystickHandler::jsMap.find(jsID);
+    if (jsIter == JoystickHandler::jsMap.end() || JoystickHandler::jsMap.size() == 0)
+    {
+        JoystickHandler::jsMap[jsID] = js;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool JoystickHandler::removeJS(int jsID)
@@ -306,13 +323,15 @@ bool JoystickHandler::checkPresent()
   return true;
 }
 
-Joystick JoystickHandler::getJoystick(int jsID) {
-    auto jsIter = jsMap.find(jsID);
-    if (jsIter == jsMap.end()) {
-        return Joystick();
-    }
-    else {
-        return jsIter->second;
-    }
-
+Joystick JoystickHandler::getJoystick(int jsID)
+{
+  auto jsIter = jsMap.find(jsID);
+  if (jsIter == jsMap.end())
+  {
+    return Joystick();
+  }
+  else
+  {
+    return jsIter->second;
+  }
 }

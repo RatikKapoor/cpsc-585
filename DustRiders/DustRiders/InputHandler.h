@@ -32,8 +32,19 @@
 class Joystick
 {
 public:
-	Joystick(int jsID) : jsID(jsID) {}
-	Joystick() : jsID(-1) {}
+	Joystick(int jsID) : jsID(jsID), pseudo(false) {}
+	Joystick() : jsID(-1), pseudo(true) {
+		for (int i = 0; i < 14; i++)
+		{
+			this->buttons[i] = false;
+		}
+		for (int i = 0; i < 6; i++)
+		{
+			this->analogs[i] = false;
+		}
+		analogs[XBOX_L_TRIGGER] = -1.f;
+		analogs[XBOX_R_TRIGGER] = -1.f;
+	}
 
 	Joystick(const Joystick &js)
 	{
@@ -46,6 +57,7 @@ public:
 			this->analogs[i] = js.analogs[i];
 		}
 		this->jsID = js.jsID;
+		this->pseudo = js.pseudo;
 	}
 
 	Joystick &operator=(const Joystick &js)
@@ -61,6 +73,8 @@ public:
 				this->analogs[i] = js.analogs[i];
 			}
 			this->jsID = js.jsID;
+			this->pseudo = js.pseudo;
+
 		}
 		return *this;
 	}
@@ -76,12 +90,13 @@ public:
 
 	bool setInputs(const unsigned char *buttons, const float *analogs);
 
-	bool updateButtons() { return updateButtons(this->jsID); }
-	bool updateAnalogs() { return updateAnalogs(this->jsID); }
-	bool updateInputs() { return updateInputs(this->jsID); }
+	bool updateButtons() {return ( (!pseudo) ? (updateButtons(this->jsID)) :  false); }
+	bool updateAnalogs() { return ((!pseudo) ? (updateAnalogs(this->jsID)) : false); }
+	bool updateInputs() { return ((!pseudo) ? (updateInputs(this->jsID)) : false); }
 
 	bool getButton(int buttonIndex) { return buttons[buttonIndex]; }
 	float getAnalog(int analogIndex) { return analogs[analogIndex]; }
+	int getID() { return jsID; }
 
 	const float *getAnalogs() { return analogs; }
 	const unsigned char *getButtons() { return buttons; };
@@ -100,27 +115,57 @@ public:
 	 */
 	bool updateAllInputs();
 
-private:
+
+	void pressW() { if(pseudo) analogs[XBOX_R_TRIGGER] = 1.f; }
+	void releaseW() { if (pseudo) analogs[XBOX_R_TRIGGER] = -1.f; }
+	void pressS() { if (pseudo)  analogs[XBOX_L_TRIGGER] = 1.f; }
+	void releaseS() { if (pseudo) analogs[XBOX_L_TRIGGER] = -1.f; }
+	void pressA() { if (pseudo)  analogs[XBOX_L_XAXIS] = analogs[XBOX_L_XAXIS] - 1.f; }
+	void releaseA() { if (pseudo) analogs[XBOX_L_XAXIS] = analogs[XBOX_L_XAXIS] + 1.f; }
+	void pressD() { if (pseudo)  analogs[XBOX_L_XAXIS] = analogs[XBOX_L_XAXIS] + 1.f; }
+	void releaseD() { if (pseudo)  analogs[XBOX_L_XAXIS] = analogs[XBOX_L_XAXIS] - 1.f; }
+	void pressLeftShift() { if (pseudo)  buttons[XBOX_LB] = 1; }
+	void releaseLeftShift() { if (pseudo)  buttons[XBOX_LB] = 0; }
+	void pressEnter() { if (pseudo) buttons[XBOX_A] = 1; }
+	void releaseEnter() { if (pseudo) buttons[XBOX_A] = 0; }
+
+
+	bool isPseudo() { return pseudo; }
+
+	void makePseudo() { 
+		pseudo = true; 
+	jsID = -1; }
+
+	void makeReal(int jsID) { this->jsID = jsID; pseudo = false; }
+
+protected:
 	unsigned char buttons[14];
 	float analogs[6];
 	int jsID;
+	bool pseudo;
 
 	// for Testing
 	bool updateButtons(int jsID);
 	bool updateAnalogs(int jsID);
 	bool updateInputs(int jsID);
 };
+
+
 class JoystickHandler
 {
 public:
 	JoystickHandler() {}
 
 	static bool addJS(int jsID);
+	static bool addJS(Joystick& js);
+
+
 	static bool removeJS(int jsID);
 
 	static std::map<int, Joystick> getJSMap();
 	static void printJSMap();
 	static Joystick getJoystick(int jsID);
+	static Joystick& getFirstJS() { return jsMap.begin()->second; }
 
 	/**
 	 * @brief Update the inputs for all the joysticks in the map.
@@ -141,3 +186,5 @@ public:
 private:
 	static std::map<int, Joystick> jsMap;
 };
+
+
