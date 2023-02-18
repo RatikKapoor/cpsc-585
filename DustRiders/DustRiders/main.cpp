@@ -30,9 +30,9 @@
 #include "SoundSource.h"
 #include "MusicBuffer.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
@@ -43,8 +43,19 @@ int gameState = 0; // 0 - need to start, 1 - playing, 2 - won, 3 - lost
 
 class DustRidersWindowCallbacks : public CallbackInterface
 {
+public:
+	DustRidersWindowCallbacks(Window &window) : window(window) {}
 	virtual void keyCallback(int key, int scancode, int action, int mods)
 	{
+		Joystick &js = JoystickHandler::getFirstJS();
+		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		{
+			gameState = -1;
+		}
+		if (!js.isPseudo())
+		{
+			return;
+		}
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
@@ -53,49 +64,72 @@ class DustRidersWindowCallbacks : public CallbackInterface
 				hasStarted = true;
 				gameState = 1;
 			}
-			currentAction = CarAction::ACCEL;
+			js.pressW();
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
 		{
 			// Forward released
-			currentAction = CarAction::IDLE;
+			js.releaseW();
 		}
 		else if (key == GLFW_KEY_S && action == GLFW_PRESS)
 		{
 			// Back pressed
-			currentAction = CarAction::BRAKE;
+			js.pressS();
 		}
 		else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 		{
 			// Back released
-			currentAction = CarAction::IDLE;
+			js.releaseS();
 		}
 		else if (key == GLFW_KEY_A && action == GLFW_PRESS)
 		{
-			currentAction = CarAction::LEFT;
+			js.pressA();
 			// Left pressed
 		}
 		else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
 		{
 			// Left released
-			currentAction = CarAction::IDLE;
+			js.releaseA();
 		}
 		else if (key == GLFW_KEY_D && action == GLFW_PRESS)
 		{
 			// Right pressed
-			currentAction = CarAction::RIGHT;
+			js.pressD();
 		}
 		else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
 		{
 			// Right released
-			currentAction = CarAction::IDLE;
+			js.releaseD();
 		}
+		else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
+		{
+			// Right pressed
+			js.pressLeftShift();
+		}
+		else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
+		{
+			// Right released
+			js.releaseLeftShift();
+		}
+		else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+		{
+			js.pressEnter();
+		}
+		else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
+		{
+			js.releaseEnter();
+		}
+
 	}
 
 	virtual void mouseButtonCallback(int button, int action, int mods) {}
 	virtual void cursorPosCallback(double xpos, double ypos) {}
 	virtual void scrollCallback(double xoffset, double yoffset) {}
 	virtual void windowSizeCallback(int width, int height) { glViewport(0, 0, width, height); }
+
+	Window &window;
+
+protected:
 };
 
 CarAction isBeepBeep(int jsID);
@@ -107,7 +141,7 @@ float beepGas(int jsID)
 	if (glfwJoystickPresent(jsID))
 	{
 		int count;
-		const float* axis = glfwGetJoystickAxes(jsID, &count);
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
 
 		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
 		{
@@ -128,7 +162,7 @@ float beepSteer(int jsID)
 	if (glfwJoystickPresent(jsID))
 	{
 		int count;
-		const float* axis = glfwGetJoystickAxes(jsID, &count);
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
 		return axis[XBOX_R_XAXIS];
 	}
 	else
@@ -143,9 +177,9 @@ CarAction isBeepBeep(int jsID)
 	{
 		int count;
 
-		const unsigned char* buttons = glfwGetJoystickButtons(jsID, &count);
+		const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
 
-		const float* axis = glfwGetJoystickAxes(jsID, &count);
+		const float *axis = glfwGetJoystickAxes(jsID, &count);
 
 		if (buttons[XBOX_RB])
 		{
@@ -178,22 +212,23 @@ int main()
 {
 	glfwInit();
 
-	Window window("DustRiders", glfwGetPrimaryMonitor());
-	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>());
+	Joystick keyboardJS;
 
-	// Disable at your own risk, will not start the game until there is a valid controller connected
+	bool inputIsKeyboard = true;
+
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		JoystickHandler::addJS(GLFW_JOYSTICK_1);
+		inputIsKeyboard = false;
 	}
 	else
 	{
-		while (!glfwJoystickPresent(GLFW_JOYSTICK_1))
-		{
-			std::cout << "PLEASE CONNECT A CONTROLLER" << std::endl;
-			glfwPollEvents();
-		}
+		JoystickHandler::addJS(keyboardJS);
+		inputIsKeyboard = true;
 	}
+
+	Window window("DustRiders", glfwGetPrimaryMonitor());
+	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window)));
 
 	PhysicsSystem physics;
 	RenderingSystem renderer;
@@ -216,7 +251,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 
 	// Adds ground plane
@@ -225,7 +260,7 @@ int main()
 	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
 	entityList.back()->model = groundPlane;
 	entityList.back()->shaderProgram = basicShader;
-	entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
+	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 
 	Vehicle v2(physics);
 	{
@@ -235,7 +270,7 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 	Vehicle v3(physics);
 	{
@@ -245,11 +280,11 @@ int main()
 		entityList.back()->transform = physics.transformList.back();
 		entityList.back()->model = testCarModel;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 1.f, 1.f, 1.f };
+		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 	}
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 50.0);
+	Camera camera(entityList[0], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 50.0);
 
 	int obstacleCount = 0;
 	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
@@ -259,21 +294,21 @@ int main()
 
 		if (obstacleCount % 2 == 0)
 		{
-			entityList.back()->transform->position = glm::vec3{ -7.0f, 0.0f, dist };
+			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
 		}
 		else
 		{
-			entityList.back()->transform->position = glm::vec3{ 7.0f, 0.0f, dist };
+			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
 		}
 
 		entityList.back()->model = testRock;
 		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{ 2.0f, 2.0f, 2.0f };
+		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
 
 		obstacleCount++;
 	}
 
-	SoundDevice* mysounddevice = SoundDevice::get();
+	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
 
 	SoundSource mySpeaker;
@@ -283,22 +318,20 @@ int main()
 	std::cout << "playing town theme music...\n";
 	myMusic.Play();
 
-
 	ALint state = AL_PLAYING;
 	std::cout << "playing sound\n";
 
-
 	double lastTime = 0.0f;
 	int i = 0;
-	while (!window.shouldClose())
+	while (gameState > -1)
 	{
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
+
 			myMusic.UpdateBufferStream();
 
 			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
 		}
-
 
 		auto t = glfwGetTime();
 		if (t - lastTime > 0.0167)
@@ -321,14 +354,14 @@ int main()
 			if (hasStarted)
 			{
 				// Vehicle physics
-				if (glfwJoystickPresent(GLFW_JOYSTICK_1))
-				{
-					v1.stepPhysics(deltaT, JoystickHandler::getJoystick(GLFW_JOYSTICK_1));
-				}
-				else
-				{
-					v1.stepPhysics(deltaT, currentAction);
-				}
+				//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+				//{
+				v1.stepPhysics(deltaT, JoystickHandler::getFirstJS());
+				//}
+				// else
+				//	{
+				//	v1.stepPhysics(deltaT, currentAction);
+				//}
 				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v2.stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
@@ -356,6 +389,7 @@ int main()
 			lastTime = t;
 		}
 	}
+	window.close();
 
 	overlay.Cleanup();
 
