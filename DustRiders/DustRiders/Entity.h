@@ -10,19 +10,16 @@ class Entity
 {
 public:
 	Entity()
-		: name("")
-		, transform(nullptr)
-		, model(nullptr)
-		, shaderProgram(nullptr)
-		, scale(1.0f)
-		, texture(nullptr)
-	{}
+			: name(""), transform(nullptr), model(nullptr), shaderProgram(nullptr), scale(1.0f), texture(nullptr), useMatInt(0)
+	{
+	}
 
 	std::string name;
-	Transform* transform;
+	Transform *transform;
 
-	Model* model;
-	ShaderProgram* shaderProgram;
+	Model *model;
+	ShaderProgram *shaderProgram;
 	glm::vec3 scale;
-	Texture* texture;
+	Texture *texture;
+	unsigned int useMatInt;
 };
