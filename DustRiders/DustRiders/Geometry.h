@@ -35,15 +35,11 @@ public:
 	void bind() { vao.bind(); }
 	void setVerts(const std::vector<Vertex> &verts);
 	void setIndices(const std::vector<unsigned int> &indices);
-	void setTexCoords(const std::vector<glm::vec2> &texCoords);
-	void setNorms(const std::vector<glm::vec3> &norms);
 
 private:
 	// note: due to how OpenGL works, vao needs to be
 	// defined and initialized before the vertex buffers
 	VertexArray vao;
 	VertexBuffer vertBuffer;
-	VertexBuffer normBuffer;
-	VertexBuffer texCoordBuffer;
 	ElementBuffer indexBuffer;
 };

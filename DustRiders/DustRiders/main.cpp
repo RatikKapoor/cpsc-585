@@ -119,7 +119,6 @@ public:
 		{
 			js.releaseEnter();
 		}
-
 	}
 
 	virtual void mouseButtonCallback(int button, int action, int mods) {}
@@ -237,7 +236,7 @@ int main()
 	ShaderProgram *basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
-	Model *testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
+	Model *blueCar = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
 	Model *testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
 	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
@@ -249,9 +248,10 @@ int main()
 		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->model = blueCar;
+		entityList.back()->shaderProgram = carShader;
 		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->useMatInt = 5;
 	}
 
 	// Adds ground plane
@@ -259,7 +259,7 @@ int main()
 	entityList.back()->transform = new Transform();
 	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
 	entityList.back()->model = groundPlane;
-	entityList.back()->shaderProgram = basicShader;
+	entityList.back()->shaderProgram = carShader;
 	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
 
 	Vehicle v2(physics);
@@ -268,9 +268,10 @@ int main()
 		v2.initVehicle(PxVec3(-2.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->model = blueCar;
+		entityList.back()->shaderProgram = carShader;
 		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->useMatInt = 4;
 	}
 	Vehicle v3(physics);
 	{
@@ -278,9 +279,10 @@ int main()
 		v3.initVehicle(PxVec3(2.f, 0.5f, 0.f));
 		entityList.emplace_back(new Entity());
 		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->model = blueCar;
+		entityList.back()->shaderProgram = carShader;
 		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+		entityList.back()->useMatInt = 3;
 	}
 
 	// Follow the Player Vehicle
@@ -302,7 +304,7 @@ int main()
 		}
 
 		entityList.back()->model = testRock;
-		entityList.back()->shaderProgram = basicShader;
+		entityList.back()->shaderProgram = carShader;
 		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
 
 		obstacleCount++;

@@ -15,59 +15,66 @@ public:
 	// These vectors are parallel to represent a vertex overall
 	std::vector<Vertex> verts;
 	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<std::vector<Texture>> materialTextures;
 
 	GPU_Geometry geometry;
 
-	void draw(ShaderProgram& shader) {
+	void draw(ShaderProgram &shader, unsigned int useMatInd)
+	{
 		// Setup Textures and other uniforms that may be needed
-	
+
 		geometry.bind();
-		glUniform1i(glGetUniformLocation(shader, "baseSampler"),0);	
+		glUniform1i(glGetUniformLocation(shader, "baseTex"), 0);
 		glUniform1i(glGetUniformLocation(shader, "specularTex"), 1);
 		glUniform1i(glGetUniformLocation(shader, "emissionTex"), 2);
 
-
-		for (auto t : textures) {
-			if (t.type.compare("texture_specular") == 0) {
-				glActiveTexture(GL_TEXTURE1);
-				t.bind(); 
-			}
-			else if(t.type.compare("texture_diffuse") == 0) {
+		for (auto t : materialTextures[useMatInd])
+		{
+			if (t.type.compare("texture_diffuse") == 0)
+			{
 				glActiveTexture(GL_TEXTURE0);
+				t.bind();
+			}
+			else if (t.type.compare("texture_specular") == 0)
+			{
+				glActiveTexture(GL_TEXTURE1);
+				t.bind();
+			}
+			else if (t.type.compare("texture_emissive") == 0)
+			{
+				glActiveTexture(GL_TEXTURE2);
 				t.bind();
 			}
 		}
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		for (auto t : textures) {
-			if (t.type.compare("texture_specular") == 0) {
+
+		for (auto t : materialTextures[useMatInd])
+		{
+			if (t.type.compare("texture_diffuse") == 0)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				t.unbind();
+			}
+			else if (t.type.compare("texture_specular") == 0)
+			{
 				glActiveTexture(GL_TEXTURE1);
 				t.unbind();
 			}
-			else if (t.type.compare("texture_diffuse") == 0) {
-				glActiveTexture(GL_TEXTURE0);
+			else if (t.type.compare("texture_emissive") == 0)
+			{
+				glActiveTexture(GL_TEXTURE2);
 				t.unbind();
 			}
 		}
 		glBindVertexArray(0);
 	}
 
-
-	Mesh(std::vector<Vertex>& v, std::vector<unsigned int>& i, std::vector<Texture>& textures)
-		: verts(v)
-		, indices(i),
-		textures(textures)
+	Mesh(std::vector<Vertex> &v, std::vector<unsigned int> &i, std::vector<std::vector<Texture>> &materialTextures)
+			: verts(v), indices(i),
+				materialTextures(materialTextures)
 	{
-		std::vector<glm::vec3> norms;
-		std::vector<glm::vec2> texCoords;
-		for (auto v : verts) {
-			norms.push_back(v.normal);
-			texCoords.push_back(v.texCoord);
-		}
 		geometry.bind();
 		geometry.setVerts(verts);
-		geometry.setNorms(norms);
-		geometry.setTexCoords(texCoords);
 		geometry.setIndices(indices);
 	}
 };

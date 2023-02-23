@@ -17,23 +17,24 @@
 class RenderingSystem
 {
 	// storing assets to avoid duplication
-	std::unordered_map<std::string, Model*> models;
-	std::unordered_map<std::string, ShaderProgram*> shaders;
-	std::unordered_map<std::string, Texture*> textures;
+	std::unordered_map<std::string, Model *> models;
+	std::unordered_map<std::string, ShaderProgram *> shaders;
+	std::unordered_map<std::string, Texture *> textures;
 
 public:
+	Model *addModel(std::string name, Model *model);
 
-	Model* addModel(std::string name, Model* model);
+	Model *loadModelFromFile(std::string name, std::string filepath);
 
-	Model* loadModelFromFile(std::string name, std::string filepath);
-	void processNode(aiNode* node, const aiScene* scene, Model* model);
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+	// void processNode(aiNode *node, const aiScene *scene, Model *model);
+	void processNode(aiNode *node, const aiScene *scene, Model *model);
 
-	ShaderProgram* compileShader(std::string name, const std::string& vertexPath, const std::string& fragmentPath);
+	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+
+	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+
+	ShaderProgram *compileShader(std::string name, const std::string &vertexPath, const std::string &fragmentPath);
 	Texture loadTexture(std::string name, std::string path, GLint interpolation);
 
-	void updateRender(std::vector<Entity*>& entityList, Camera& cam, float aspect);
+	void updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect);
 };
-
-
