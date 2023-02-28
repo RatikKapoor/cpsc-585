@@ -4,9 +4,9 @@
 class Camera
 {
 public:
-	Camera(Entity* focus, glm::vec3 offset, float t, float r);
+	Camera(std::shared_ptr<Entity> focus, glm::vec3 offset, float t, float r);
 
-	void setFocusEntity(Entity* newFocus);
+	void setFocusEntity(std::shared_ptr<Entity> newFocus);
 	glm::mat4 getView();
 	glm::vec3 getPos();
 	void incrementTheta(float dt);
@@ -16,7 +16,7 @@ private:
 	float theta;
 	float radius;
 
-	Entity* focusEntity;
+	std::shared_ptr<Entity> focusEntity;
 	glm::vec3 focusOffset;
 };
 

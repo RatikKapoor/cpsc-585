@@ -204,17 +204,20 @@
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ECS.h" />
     <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLDebug.h" />
     <ClInclude Include="GLHandles.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Overlay.h" />
+    <ClInclude Include="PhysicsProvider.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Shader.h" />

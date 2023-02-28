@@ -1,25 +1,27 @@
 #include "Vehicle.h"
 
-Command gCommands[] =
-		{
-				{0.5f, 0.0f, 0.0f, 2.0f}, // brake on and come to rest for 2 seconds
-				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
-				{0.5f, 0.0f, 0.0f, 5.0f}, // brake for 5 seconds
-				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
-				{0.0f, 0.1f, 0.5f, 5.0f}, // light throttle and steer for 5 seconds.
-				{0.5f, 0.0f, 0.0f, 2.f}		// brake for 2s
-};
-const PxU32 gNbCommands = sizeof(gCommands) / sizeof(Command);
-PxReal gCommandTime = 0.0f; // Time spent on current command
-PxU32 gCommandProgress = 0; // The id of the current command.
+//Command gCommands[] =
+//		{
+//				{0.5f, 0.0f, 0.0f, 2.0f}, // brake on and come to rest for 2 seconds
+//				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
+//				{0.5f, 0.0f, 0.0f, 5.0f}, // brake for 5 seconds
+//				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
+//				{0.0f, 0.1f, 0.5f, 5.0f}, // light throttle and steer for 5 seconds.
+//				{0.5f, 0.0f, 0.0f, 2.f}		// brake for 2s
+//};
+//const PxU32 gNbCommands = sizeof(gCommands) / sizeof(Command);
+//PxReal gCommandTime = 0.0f; // Time spent on current command
+//PxU32 gCommandProgress = 0; // The id of the current command.
 
-Vehicle::Vehicle(PhysicsSystem &ps)
+Vehicle::Vehicle(std::string n,
+		std::shared_ptr<Transform> t,
+		Model *m,
+		ShaderProgram *sp,
+		glm::vec3 s,
+		std::shared_ptr<PhysicsProvider> pp,
+		PxVec3 startingPos = {0.f, 0.f, 0.f}): Entity(n, t, m, sp, s), physicsProvider(pp)
 {
-	this->gPhysics = ps.gPhysics;
-	this->gMaterial = ps.gMaterial;
-	this->gScene = ps.gScene;
-
-	this->ps = &ps;
+	initVehicle(startingPos);
 }
 
 void Vehicle::initMaterialFrictionTable()
@@ -29,7 +31,7 @@ void Vehicle::initMaterialFrictionTable()
 	// In this snippet there is only a single material so there can only be a single mapping between material and friction.
 	// In this snippet the same mapping is used by all tires.
 	gPhysXMaterialFrictions[0].friction = 1.0f;
-	gPhysXMaterialFrictions[0].material = gMaterial;
+	gPhysXMaterialFrictions[0].material = physicsProvider->GetPxMaterial().get();
 	gPhysXDefaultMaterialFriction = 1.0f;
 	gNbPhysXMaterialFrictions = 1;
 }
@@ -41,13 +43,13 @@ bool Vehicle::initVehicle(PxVec3 p)
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-														gVehicle.mPhysXParams);
+		gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+		gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Set the states to default.
-	if (!gVehicle.initialize(*gPhysics, PxCookingParams(PxTolerancesScale()), *gMaterial))
+	if (!gVehicle.initialize(*(physicsProvider->GetPxPhysics()), PxCookingParams(PxTolerancesScale()), *(physicsProvider->GetPxMaterial())))
 	{
 		return false;
 	}
@@ -56,10 +58,8 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
-	gVehicle.setUpActor(*gScene, pose, gVehicleName);
-	this->ps->rigidDynamicList.push_back((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody);
-	this->ps->transformList.emplace_back(new Transform());
-	// gVehicle.mBaseState.;
+	gVehicle.setUpActor(*(physicsProvider->GetPxScene()), pose, gVehicleName);
+	physicsProvider->AddEntity((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
 
 	// Set up the simulation context.
 	// The snippet is set up with
@@ -73,7 +73,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.frame.vrtAxis = PxVehicleAxes::ePosY;
 	gVehicleSimulationContext.scale.scale = 1.0f;
 	gVehicleSimulationContext.gravity = gGravity;
-	gVehicleSimulationContext.physxScene = gScene;
+	gVehicleSimulationContext.physxScene = physicsProvider->GetPxScene().get();
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
@@ -92,9 +92,6 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 void Vehicle::stepPhysics(double timestep, float gas, float steer)
 {
-	if (gNbCommands == gCommandProgress)
-		return;
-
 	float analogThreshold = 0.1f;
 	gVehicle.mCommandState.nbBrakes = 1;
 
@@ -137,8 +134,8 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 {
 
 	float axisThreshold = 0.15f;
-	const float *analogs = js.getAnalogs();
-	const unsigned char *buttons = js.getButtons();
+	const float* analogs = js.getAnalogs();
+	const unsigned char* buttons = js.getButtons();
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
@@ -149,9 +146,6 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 
 		std::cout << "Weapon Fired" << std::endl;
 	}
-
-	if (gNbCommands == gCommandProgress)
-		return;
 
 	float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
 	physx::vehicle2::PxVehicleDirectDriveTransmissionCommandState::Enum gearState = gVehicle.mTransmissionCommandState.gear;

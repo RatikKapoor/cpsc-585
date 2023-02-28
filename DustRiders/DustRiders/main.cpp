@@ -15,6 +15,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Window.h"
+#include "ECS.h"
 #include "Entity.h"
 #include "Mesh.h"
 #include "PhysicsSystem.h"
@@ -25,10 +26,13 @@
 #include "InputHandler.h"
 #include "Camera.h"
 #include "Vehicle.h"
+#include "Ground.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "MusicBuffer.h"
+
+#pragma region Window Callbacks and Keyboard Controls
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -36,10 +40,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
-
-CarAction currentAction = CarAction::IDLE;
-bool hasStarted = true;
-int gameState = 0; // 0 - need to start, 1 - playing, 2 - won, 3 - lost
 
 class DustRidersWindowCallbacks : public CallbackInterface
 {
@@ -50,7 +50,7 @@ public:
 		Joystick &js = JoystickHandler::getFirstJS();
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		{
-			gameState = -1;
+		//	gameState = -1;
 		}
 		if (!js.isPseudo())
 		{
@@ -59,11 +59,11 @@ public:
 		if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		{
 			// Forward pressed
-			if (!hasStarted)
-			{
-				hasStarted = true;
-				gameState = 1;
-			}
+			//if (!hasStarted)
+			//{
+			//	hasStarted = true;
+			//	gameState = 1;
+			//}
 			js.pressW();
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -132,81 +132,7 @@ public:
 protected:
 };
 
-CarAction isBeepBeep(int jsID);
-float beepSteer(int jsID);
-float beepGas(int jsID);
-
-float beepGas(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-
-		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
-		{
-			hasStarted = true;
-			gameState = 1;
-		}
-
-		return axis[XBOX_L_YAXIS];
-	}
-	else
-	{
-		return 0.0f;
-	}
-}
-
-float beepSteer(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-		return axis[XBOX_R_XAXIS];
-	}
-	else
-	{
-		return 0.0f;
-	}
-}
-
-CarAction isBeepBeep(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-
-		const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
-
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-
-		if (buttons[XBOX_RB])
-		{
-			return ACCEL;
-		}
-		else if (axis[XBOX_R_XAXIS] > 0.01f)
-		{
-			return RIGHT;
-		}
-		else if (axis[XBOX_R_XAXIS] < -0.01f)
-		{
-			return LEFT;
-		}
-		else if (buttons[XBOX_LB])
-		{
-			return BRAKE;
-		}
-		else
-		{
-			return IDLE;
-		}
-	}
-	else
-	{
-		return IDLE;
-	}
-}
+#pragma endregion
 
 int main()
 {
@@ -214,99 +140,80 @@ int main()
 
 	Joystick keyboardJS;
 
-	bool inputIsKeyboard = true;
-
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		JoystickHandler::addJS(GLFW_JOYSTICK_1);
-		inputIsKeyboard = false;
 	}
 	else
 	{
 		JoystickHandler::addJS(keyboardJS);
-		inputIsKeyboard = true;
 	}
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window)));
 
-	PhysicsSystem physics;
+	auto physics = std::shared_ptr<PhysicsSystem>(new PhysicsSystem());
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram *carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
-	ShaderProgram *basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
+	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
+	auto basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
-	Model *testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
-	Model *testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
-	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
+	auto testCarModel = renderer.loadModelFromFile("TestCar", "./assets/models/better-car-v2.obj");
+	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
+	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
-	std::vector<Entity *> entityList;
+	//std::vector<Entity *> entityList;
+	const EntityComponentSystem ecs;
 
-	Vehicle v1(physics);
-	{
-		// Setup v1
-		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-	}
+	ecs["car"] = std::shared_ptr<Vehicle>(new Vehicle("car", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f)));
+//	Vehicle v1(physics);
+//	{
+//		// Setup v1
+//		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
+//		ecs["a"] = new Entity();
+//		entityList.emplace_back(new Entity());
+//		entityList.back()->transform = physics.transformList.back();
+//		entityList.back()->model = testCarModel;
+//		entityList.back()->shaderProgram = basicShader;
+//		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+//	}
 
 	// Adds ground plane
-	entityList.emplace_back(new Entity());
-	entityList.back()->transform = new Transform();
-	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
-	entityList.back()->model = groundPlane;
-	entityList.back()->shaderProgram = basicShader;
-	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+	ecs["ground"] = std::shared_ptr<Ground>(new Ground("ground", std::shared_ptr<Transform>(new Transform), groundPlane, basicShader, glm::vec3(1.f)));
 
-	Vehicle v2(physics);
-	{
-		// Setup v2
-		v2.initVehicle(PxVec3(-2.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-	}
-	Vehicle v3(physics);
-	{
-		// Setup v2
-		v3.initVehicle(PxVec3(2.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = testCarModel;
-		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-	}
+	// Add AI cars
+	ecs["car2"] = std::shared_ptr<Vehicle>(new Vehicle("car2", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f)));
+	ecs["car3"] = std::shared_ptr<Vehicle>(new Vehicle("car3", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f)));
+
+	auto v1 = std::dynamic_pointer_cast<Vehicle>(ecs["car"]);
+	auto v2 = std::dynamic_pointer_cast<Vehicle>(ecs["car2"]);
+	auto v3 = std::dynamic_pointer_cast<Vehicle>(ecs["car3"]);
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 50.0);
+	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 50.0);
 
-	int obstacleCount = 0;
-	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
-	{
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = new Transform();
+	//int obstacleCount = 0;
+	//for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
+	//{
+	//	entityList.emplace_back(new Entity());
+	//	entityList.back()->transform = new Transform();
 
-		if (obstacleCount % 2 == 0)
-		{
-			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
-		}
-		else
-		{
-			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
-		}
+	//	if (obstacleCount % 2 == 0)
+	//	{
+	//		entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
+	//	}
+	//	else
+	//	{
+	//		entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
+	//	}
 
-		entityList.back()->model = testRock;
-		entityList.back()->shaderProgram = basicShader;
-		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
+	//	entityList.back()->model = testRock;
+	//	entityList.back()->shaderProgram = basicShader;
+	//	entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
 
-		obstacleCount++;
-	}
+	//	obstacleCount++;
+	//}
 
 	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
@@ -323,7 +230,7 @@ int main()
 
 	double lastTime = 0.0f;
 	int i = 0;
-	while (gameState > -1)
+	while (true)
 	{
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
@@ -348,43 +255,40 @@ int main()
 			glfwPollEvents();
 			JoystickHandler::updateAll();
 
-			auto gasValue = beepGas(GLFW_JOYSTICK_1);
-			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
-
-			if (hasStarted)
+			if (true)
 			{
 				// Vehicle physics
 				//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 				//{
-				v1.stepPhysics(deltaT, JoystickHandler::getFirstJS());
+				v1->stepPhysics(deltaT, JoystickHandler::getFirstJS());
 				//}
 				// else
 				//	{
 				//	v1.stepPhysics(deltaT, currentAction);
 				//}
 				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-				v2.stepPhysics(deltaT, -accel, 0);
+				v2->stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-				v3.stepPhysics(deltaT, -accel, 0);
+				v3->stepPhysics(deltaT, -accel, 0);
 
 				// Win condition
-				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
-				{
-					// Game won
-					gameState = 2;
-				}
-				else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f)
-				{
-					// Game lost
-					gameState = 3;
-				}
+				//if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
+				//{
+				//	// Game won
+				//	gameState = 2;
+				//}
+				//else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f)
+				//{
+				//	// Game lost
+				//	gameState = 3;
+				//}
 			}
-			physics.updatePhysics(deltaT);
+			physics->updatePhysics(deltaT);
 
 			window.swapBuffers();
-			renderer.updateRender(entityList, camera, window.getAspectRatio());
+			renderer.updateRender(ecs.getAll(), camera, window.getAspectRatio());
 
-			overlay.RenderOverlay(gameState);
+			overlay.RenderOverlay(0);
 
 			lastTime = t;
 		}

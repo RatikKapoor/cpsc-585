@@ -9,20 +9,20 @@
 class Entity
 {
 public:
-	Entity()
-		: name("")
-		, transform(nullptr)
-		, model(nullptr)
-		, shaderProgram(nullptr)
-		, scale(1.0f)
-		, texture(nullptr)
+	Entity(std::string n, std::shared_ptr<Transform> t, Model *m, ShaderProgram *sp, glm::vec3 s)
+		: name(n)
+		, transform(t)
+		, model(m)
+		, shaderProgram(sp)
+		, scale(s)
 	{}
 
-	std::string name;
-	Transform* transform;
+	virtual ~Entity() = 0;
 
-	Model* model;
-	ShaderProgram* shaderProgram;
+	std::string name;
+	std::shared_ptr<Transform> transform;
+
+	Model *model;
+	ShaderProgram *shaderProgram;
 	glm::vec3 scale;
-	Texture* texture;
 };

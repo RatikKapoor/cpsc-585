@@ -135,7 +135,7 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	return textures;
 }
 
-void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam, float aspect)
+void RenderingSystem::updateRender(std::vector<std::shared_ptr<Entity>> entityList, Camera& cam, float aspect)
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
@@ -148,7 +148,7 @@ void RenderingSystem::updateRender(std::vector<Entity*>& entityList, Camera& cam
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 
-	for (Entity *entity : entityList)
+	for (std::shared_ptr<Entity> entity : entityList)
 	{
 		ShaderProgram &shader = *entity->shaderProgram;
 		shader.use();

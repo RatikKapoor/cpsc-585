@@ -1,5 +1,6 @@
 #include "Overlay.h"
 #include "InputHandler.h"
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <string>
@@ -9,7 +10,7 @@ Overlay::Overlay()
 	lastTime = glfwGetTime();
 }
 
-void Overlay::RenderOverlay(int state)
+void Overlay::RenderOverlay(int state = 0)
 {
 	// Framerate calculations
 	double currentTime = glfwGetTime();

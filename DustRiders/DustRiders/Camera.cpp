@@ -5,16 +5,15 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-Camera::Camera(Entity* focus, glm::vec3 offset, float t, float r) 
+Camera::Camera(std::shared_ptr<Entity> focus, glm::vec3 offset, float t, float r) 
 	: focusEntity(focus)
 	, focusOffset(offset)
 	, theta(t)
 	, radius(r)
 {}
 
-void Camera::setFocusEntity(Entity* newFocus) {
-	if (newFocus)
-		focusEntity = newFocus;
+void Camera::setFocusEntity(std::shared_ptr<Entity> newFocus) {
+	focusEntity = newFocus;
 }
 
 glm::mat4 Camera::getView() {
