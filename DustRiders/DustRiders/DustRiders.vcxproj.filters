@@ -130,6 +130,9 @@
     <ClCompile Include="Vehicle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StateHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h">
@@ -252,6 +255,9 @@
     <ClInclude Include="Vehicle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StateHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".\\Main.frag">
@@ -270,43 +276,29 @@
     <None Include="car.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="assets\models\better-car-v2.obj">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\ground-plane.obj">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\test-obstacle-rock.obj">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\better-car-v2.mtl">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\concrete.jpg">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\GoodCarBase.png">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\GoodCarBaseCol.png">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\GoodCarEmission.png">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\GoodCarSpecular.png">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\ground-plane.mtl">
-      <Filter>Models</Filter>
-    </Object>
-    <Object Include="assets\models\test-obstacle-rock.mtl">
-      <Filter>Models</Filter>
-    </Object>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="assets\models\test-rock-base.png">
       <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\better-car-v2.mtl" />
+    <Image Include="assets\models\ground-plane.mtl" />
+    <Image Include="assets\models\test-obstacle-rock.mtl" />
+    <Image Include="assets\models\better-car-v2.obj" />
+    <Image Include="assets\models\ground-plane.obj" />
+    <Image Include="assets\models\test-obstacle-rock.obj" />
+    <Image Include="assets\models\concrete.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\models\GoodCarBase.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\models\GoodCarBaseCol.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\models\GoodCarEmission.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\models\GoodCarSpecular.png">
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
 </Project>

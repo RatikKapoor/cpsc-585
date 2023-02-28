@@ -29,6 +29,7 @@
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "MusicBuffer.h"
+#include "WindowCallbacks.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
@@ -37,179 +38,10 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-CarAction currentAction = CarAction::IDLE;
-bool hasStarted = true;
-int gameState = 0; // 0 - need to start, 1 - playing, 2 - won, 3 - lost
-
-class DustRidersWindowCallbacks : public CallbackInterface
-{
-public:
-	DustRidersWindowCallbacks(Window &window) : window(window) {}
-	virtual void keyCallback(int key, int scancode, int action, int mods)
-	{
-		Joystick &js = JoystickHandler::getFirstJS();
-		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		{
-			gameState = -1;
-		}
-		if (!js.isPseudo())
-		{
-			return;
-		}
-		if (key == GLFW_KEY_W && action == GLFW_PRESS)
-		{
-			// Forward pressed
-			if (!hasStarted)
-			{
-				hasStarted = true;
-				gameState = 1;
-			}
-			js.pressW();
-		}
-		else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		{
-			// Forward released
-			js.releaseW();
-		}
-		else if (key == GLFW_KEY_S && action == GLFW_PRESS)
-		{
-			// Back pressed
-			js.pressS();
-		}
-		else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		{
-			// Back released
-			js.releaseS();
-		}
-		else if (key == GLFW_KEY_A && action == GLFW_PRESS)
-		{
-			js.pressA();
-			// Left pressed
-		}
-		else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		{
-			// Left released
-			js.releaseA();
-		}
-		else if (key == GLFW_KEY_D && action == GLFW_PRESS)
-		{
-			// Right pressed
-			js.pressD();
-		}
-		else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		{
-			// Right released
-			js.releaseD();
-		}
-		else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
-		{
-			// Right pressed
-			js.pressLeftShift();
-		}
-		else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
-		{
-			// Right released
-			js.releaseLeftShift();
-		}
-		else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-		{
-			js.pressEnter();
-		}
-		else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
-		{
-			js.releaseEnter();
-		}
-	}
-
-	virtual void mouseButtonCallback(int button, int action, int mods) {}
-	virtual void cursorPosCallback(double xpos, double ypos) {}
-	virtual void scrollCallback(double xoffset, double yoffset) {}
-	virtual void windowSizeCallback(int width, int height) { glViewport(0, 0, width, height); }
-
-	Window &window;
-
-protected:
-};
-
-CarAction isBeepBeep(int jsID);
-float beepSteer(int jsID);
-float beepGas(int jsID);
-
-float beepGas(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-
-		if (axis[XBOX_L_YAXIS] < -0.1 && !hasStarted)
-		{
-			hasStarted = true;
-			gameState = 1;
-		}
-
-		return axis[XBOX_L_YAXIS];
-	}
-	else
-	{
-		return 0.0f;
-	}
-}
-
-float beepSteer(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-		return axis[XBOX_R_XAXIS];
-	}
-	else
-	{
-		return 0.0f;
-	}
-}
-
-CarAction isBeepBeep(int jsID)
-{
-	if (glfwJoystickPresent(jsID))
-	{
-		int count;
-
-		const unsigned char *buttons = glfwGetJoystickButtons(jsID, &count);
-
-		const float *axis = glfwGetJoystickAxes(jsID, &count);
-
-		if (buttons[XBOX_RB])
-		{
-			return ACCEL;
-		}
-		else if (axis[XBOX_R_XAXIS] > 0.01f)
-		{
-			return RIGHT;
-		}
-		else if (axis[XBOX_R_XAXIS] < -0.01f)
-		{
-			return LEFT;
-		}
-		else if (buttons[XBOX_LB])
-		{
-			return BRAKE;
-		}
-		else
-		{
-			return IDLE;
-		}
-	}
-	else
-	{
-		return IDLE;
-	}
-}
-
 int main()
 {
 	glfwInit();
+	StateHandler stateHandle;
 
 	Joystick keyboardJS;
 
@@ -227,7 +59,9 @@ int main()
 	}
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
-	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window)));
+	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
+	int windowHeight = window.getHeight();
+	int windowWidth = window.getWidth();
 
 	PhysicsSystem physics;
 	RenderingSystem renderer;
@@ -325,8 +159,9 @@ int main()
 
 	double lastTime = 0.0f;
 	int i = 0;
-	while (gameState > -1)
+	while (stateHandle.getGState() != StateHandler::GameState::Exit)
 	{
+		glfwPollEvents();
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
 
@@ -335,61 +170,66 @@ int main()
 			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
 		}
 
-		auto t = glfwGetTime();
-		if (t - lastTime > 0.0167)
+		if (stateHandle.getGState() == StateHandler::GameState::StartMenu)
 		{
-			auto deltaT = t - lastTime;
-			// First few renders should be simulated with manual step to avoid objects clipping through ground
-			if (i < 15)
-			{
-				deltaT = (1.f / 60.f);
-				i++;
-			}
-
-			// Game Section
-			glfwPollEvents();
-			JoystickHandler::updateAll();
-
-			auto gasValue = beepGas(GLFW_JOYSTICK_1);
-			auto steerValue = beepSteer(GLFW_JOYSTICK_1);
-
-			if (hasStarted)
-			{
-				// Vehicle physics
-				//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
-				//{
-				v1.stepPhysics(deltaT, JoystickHandler::getFirstJS());
-				//}
-				// else
-				//	{
-				//	v1.stepPhysics(deltaT, currentAction);
-				//}
-				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-				v2.stepPhysics(deltaT, -accel, 0);
-				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-				v3.stepPhysics(deltaT, -accel, 0);
-
-				// Win condition
-				if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
-				{
-					// Game won
-					gameState = 2;
-				}
-				else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f)
-				{
-					// Game lost
-					gameState = 3;
-				}
-			}
-			physics.updatePhysics(deltaT);
-
+			overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
 			window.swapBuffers();
-			renderer.updateRender(entityList, camera, window.getAspectRatio());
-
-			overlay.RenderOverlay(gameState);
-
-			lastTime = t;
 		}
+		else
+		{
+
+
+			auto t = glfwGetTime();
+			if (t - lastTime > 0.0167)
+			{
+				auto deltaT = t - lastTime;
+				if (deltaT > 0.1f)
+				{
+					deltaT = 0.1f;
+				}
+					if (stateHandle.getGState() == StateHandler::GameState::PauseMenu) {
+						deltaT = 0.0f;
+						overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+					}
+				// First few renders should be simulated with manual step to avoid objects clipping through ground
+				if (i < 15)
+				{
+					deltaT = (1.f / 60.f);
+					i++;
+				}
+
+				// Game Section
+
+				if (stateHandle.getGState() == StateHandler::GameState::Playing || stateHandle.getGState() == StateHandler::GameState::PauseMenu)
+				{
+					// Vehicle physics
+					//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+					//{
+					v1.stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
+					//}
+					// else
+					//	{
+					//	v1.stepPhysics(deltaT, currentAction);
+					//}
+					auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+					v2.stepPhysics(deltaT, -accel, 0);
+					accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+					v3.stepPhysics(deltaT, -accel, 0);
+				}
+					physics.updatePhysics(deltaT);
+				
+					window.swapBuffers();
+
+
+					renderer.updateRender(entityList, camera, window.getAspectRatio());
+				overlay.RenderOverlay(stateHandle.getGState());
+
+				lastTime = t;
+			}
+		}
+		glfwPollEvents();
+		JoystickHandler::updateAll();
+		stateHandle.processJS(JoystickHandler::getFirstJS());
 	}
 	window.close();
 
