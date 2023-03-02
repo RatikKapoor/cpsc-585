@@ -7,29 +7,29 @@
 
 class EntityComponentSystem {
 private:
-	static std::map<std::string, std::shared_ptr<Entity>> map;
+	std::map<std::string, Entity*> map;
 
 public:
-	static std::shared_ptr<Entity> get(std::string s) {
+	Entity* get(std::string s) {
 		return map[s];
 	}
 
-	static void set(std::string s, std::shared_ptr<Entity> e) {
+	void set(std::string s, Entity* e) {
 		map[s] = e;
 	}
 
-	static std::vector<std::shared_ptr<Entity>> getAll() {
-		std::vector<std::shared_ptr<Entity>> el;
+	std::vector<Entity*> getAll() {
+		std::vector<Entity*> el;
 
-		//std::transform(map.begin(), map.end(),
-		//	std::back_inserter(el),
-		//	[](const std::pair<std::string, std::shared_ptr<Entity>> p) {
-		//		return p.second;
-		//	});
+		std::transform(map.begin(), map.end(),
+			std::back_inserter(el),
+			[](const std::pair<std::string, Entity*> p) {
+				return p.second;
+			});
 
 		return el;
 	}
 
-	std::shared_ptr<Entity> operator[] (const std::string& s) const { return map[s]; }
-	std::shared_ptr<Entity>& operator[] (const std::string& s) { return map[s]; }
+	Entity* operator[] (const std::string& s) const { return this->map.at(s); }
+	Entity*& operator[] (const std::string& s) { return this->map[s]; }
 };

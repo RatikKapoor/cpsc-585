@@ -5,7 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-Camera::Camera(std::shared_ptr<Entity> focus, glm::vec3 offset, float t, float r) 
+Camera::Camera(Entity* focus, glm::vec3 offset, float t, float r) 
 	: focusEntity(focus)
 	, focusOffset(offset)
 	, theta(t)

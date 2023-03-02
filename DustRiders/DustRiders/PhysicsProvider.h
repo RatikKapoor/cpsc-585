@@ -4,8 +4,8 @@
 
 class PhysicsProvider {
 public:
-	virtual std::shared_ptr<physx::PxPhysics> GetPxPhysics() = 0;
-	virtual std::shared_ptr<physx::PxMaterial> GetPxMaterial() = 0;
-	virtual std::shared_ptr<physx::PxScene> GetPxScene() = 0;
-	virtual void AddEntity(physx::PxRigidDynamic*, std::shared_ptr<Transform>) = 0;
+	virtual physx::PxPhysics* GetPxPhysics() = 0;
+	virtual physx::PxMaterial* GetPxMaterial() = 0;
+	virtual physx::PxScene* GetPxScene() = 0;
+	virtual void AddEntity(physx::PxRigidDynamic*, Transform*) = 0;
 };

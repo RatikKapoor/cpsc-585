@@ -33,11 +33,11 @@ class Vehicle : public Entity
 {
 public:
 	Vehicle(std::string,
-			std::shared_ptr<Transform>,
+			Transform*,
 			Model*,
 			ShaderProgram*,
 			glm::vec3,
-			std::shared_ptr<PhysicsProvider> ,
+			PhysicsProvider*,
 			PxVec3);
 	virtual ~Vehicle() {}
 
@@ -49,7 +49,11 @@ private:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 
-	std::shared_ptr<PhysicsProvider> physicsProvider;
+	PhysicsProvider* physicsProvider;
+
+	PxPhysics* gPhysics;
+	PxMaterial* gMaterial;
+	PxScene* gScene;
 	
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";

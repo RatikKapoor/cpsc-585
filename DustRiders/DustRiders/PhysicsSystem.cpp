@@ -127,23 +127,23 @@ void PhysicsSystem::updateTransforms()
 	}
 }
 
-std::shared_ptr<physx::PxPhysics> PhysicsSystem::GetPxPhysics()
+physx::PxPhysics* PhysicsSystem::GetPxPhysics()
 {
-	return std::shared_ptr<physx::PxPhysics>(this->gPhysics);
+	return this->gPhysics;
 }
 
-std::shared_ptr<physx::PxMaterial> PhysicsSystem::GetPxMaterial()
+physx::PxMaterial* PhysicsSystem::GetPxMaterial()
 {
-	return std::shared_ptr<physx::PxMaterial>(this->gMaterial);
+	return this->gMaterial;
 }
 
-std::shared_ptr<physx::PxScene> PhysicsSystem::GetPxScene() 
+physx::PxScene* PhysicsSystem::GetPxScene() 
 {
-	return std::shared_ptr<physx::PxScene>(this->gScene);
+	return this->gScene;
 }
 
-void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, std::shared_ptr<Transform> t)
+void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, Transform* t)
 {
 	this->rigidDynamicList.push_back(r);
-	this->transformList.emplace_back(t.get());
+	this->transformList.emplace_back(t);
 }

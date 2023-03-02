@@ -33,8 +33,8 @@ public:
 	PhysicsSystem();
 	void updatePhysics(double);
 
-	std::shared_ptr<physx::PxPhysics> GetPxPhysics();
-	std::shared_ptr<physx::PxMaterial> GetPxMaterial();
-	std::shared_ptr<physx::PxScene> GetPxScene();
-	void AddEntity(physx::PxRigidDynamic*, std::shared_ptr<Transform>);
+	physx::PxPhysics* GetPxPhysics();
+	physx::PxMaterial* GetPxMaterial();
+	physx::PxScene* GetPxScene();
+	void AddEntity(physx::PxRigidDynamic*, Transform*);
 };

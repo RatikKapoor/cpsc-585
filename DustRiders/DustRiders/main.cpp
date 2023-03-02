@@ -152,7 +152,7 @@ int main()
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window)));
 
-	auto physics = std::shared_ptr<PhysicsSystem>(new PhysicsSystem());
+	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;
 	Overlay overlay;
 	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
@@ -164,9 +164,9 @@ int main()
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
 	//std::vector<Entity *> entityList;
-	const EntityComponentSystem ecs;
+	EntityComponentSystem ecs;
 
-	ecs["car"] = std::shared_ptr<Vehicle>(new Vehicle("car", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f)));
+	ecs["car"] = new Vehicle("car", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f));
 //	Vehicle v1(physics);
 //	{
 //		// Setup v1
@@ -180,15 +180,15 @@ int main()
 //	}
 
 	// Adds ground plane
-	ecs["ground"] = std::shared_ptr<Ground>(new Ground("ground", std::shared_ptr<Transform>(new Transform), groundPlane, basicShader, glm::vec3(1.f)));
+	ecs["ground"] = new Ground("ground", new Transform, groundPlane, basicShader, glm::vec3(1.f));
 
 	// Add AI cars
-	ecs["car2"] = std::shared_ptr<Vehicle>(new Vehicle("car2", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f)));
-	ecs["car3"] = std::shared_ptr<Vehicle>(new Vehicle("car3", std::shared_ptr<Transform>(new Transform()), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f)));
+	ecs["car2"] = new Vehicle("car2", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f));
+	ecs["car3"] = new Vehicle("car3", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f));
 
-	auto v1 = std::dynamic_pointer_cast<Vehicle>(ecs["car"]);
-	auto v2 = std::dynamic_pointer_cast<Vehicle>(ecs["car2"]);
-	auto v3 = std::dynamic_pointer_cast<Vehicle>(ecs["car3"]);
+	auto v1 = (Vehicle*)ecs["car"];
+	auto v2 = (Vehicle*)ecs["car2"];
+	auto v3 = (Vehicle*)ecs["car3"];
 
 	// Follow the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 50.0);
@@ -258,30 +258,12 @@ int main()
 			if (true)
 			{
 				// Vehicle physics
-				//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
-				//{
 				v1->stepPhysics(deltaT, JoystickHandler::getFirstJS());
-				//}
-				// else
-				//	{
-				//	v1.stepPhysics(deltaT, currentAction);
-				//}
+
 				auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v2->stepPhysics(deltaT, -accel, 0);
 				accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
 				v3->stepPhysics(deltaT, -accel, 0);
-
-				// Win condition
-				//if (physics.transformList[0]->position.z - physics.transformList[1]->position.z > 50.f)
-				//{
-				//	// Game won
-				//	gameState = 2;
-				//}
-				//else if (physics.transformList[0]->position.z - physics.transformList[1]->position.z < -50.f)
-				//{
-				//	// Game lost
-				//	gameState = 3;
-				//}
 			}
 			physics->updatePhysics(deltaT);
 

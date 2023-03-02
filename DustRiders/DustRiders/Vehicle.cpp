@@ -14,13 +14,18 @@
 //PxU32 gCommandProgress = 0; // The id of the current command.
 
 Vehicle::Vehicle(std::string n,
-		std::shared_ptr<Transform> t,
+		Transform* t,
 		Model *m,
 		ShaderProgram *sp,
 		glm::vec3 s,
-		std::shared_ptr<PhysicsProvider> pp,
-		PxVec3 startingPos = {0.f, 0.f, 0.f}): Entity(n, t, m, sp, s), physicsProvider(pp)
+		PhysicsProvider* pp,
+		PxVec3 startingPos = {0.f, 0.f, 0.f}): Entity(n, t, m, sp, s)
 {
+	physicsProvider = pp;
+	this->gPhysics = pp->GetPxPhysics();
+	this->gMaterial = pp->GetPxMaterial();
+	this->gScene = pp->GetPxScene();
+
 	initVehicle(startingPos);
 }
 
@@ -31,7 +36,7 @@ void Vehicle::initMaterialFrictionTable()
 	// In this snippet there is only a single material so there can only be a single mapping between material and friction.
 	// In this snippet the same mapping is used by all tires.
 	gPhysXMaterialFrictions[0].friction = 1.0f;
-	gPhysXMaterialFrictions[0].material = physicsProvider->GetPxMaterial().get();
+	gPhysXMaterialFrictions[0].material = this->gMaterial;
 	gPhysXDefaultMaterialFriction = 1.0f;
 	gNbPhysXMaterialFrictions = 1;
 }
@@ -58,7 +63,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
-	gVehicle.setUpActor(*(physicsProvider->GetPxScene()), pose, gVehicleName);
+	gVehicle.setUpActor(*gScene, pose, gVehicleName);
 	physicsProvider->AddEntity((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
 
 	// Set up the simulation context.
@@ -73,7 +78,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.frame.vrtAxis = PxVehicleAxes::ePosY;
 	gVehicleSimulationContext.scale.scale = 1.0f;
 	gVehicleSimulationContext.gravity = gGravity;
-	gVehicleSimulationContext.physxScene = physicsProvider->GetPxScene().get();
+	gVehicleSimulationContext.physxScene = gScene;
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
