@@ -10,6 +10,25 @@ Model *RenderingSystem::addModel(std::string name, Model *model)
 	return model;
 }
 
+// Model *RenderingSystem::loadModelFromFile(std::string name, std::string filepath)
+// {
+// 	Model *newModel = new Model();
+
+// 	Assimp::Importer import;
+// 	const aiScene *scene = import.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+// 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+// 	{
+// 		std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+// 		return nullptr;
+// 	}
+
+// 	processNode(scene->mRootNode, scene, newModel);
+
+// 	models.emplace(std::make_pair(name, newModel));
+// 	return newModel;
+// }
+
 Model *RenderingSystem::loadModelFromFile(std::string name, std::string filepath)
 {
 	Model *newModel = new Model();
@@ -48,8 +67,8 @@ Mesh RenderingSystem::processMesh(aiMesh *mesh, const aiScene *scene)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
 	std::vector<glm::vec2> texCoords;
+	std::vector<std::vector<Texture>> materialTextures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -88,19 +107,20 @@ Mesh RenderingSystem::processMesh(aiMesh *mesh, const aiScene *scene)
 
 	// process materials / textures
 
-	if (mesh->mMaterialIndex >= 0)
+	for (int i = mesh->mMaterialIndex; i > -1; i--)
 	{
-		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-		int matIndex = mesh->mMaterialIndex;
-		std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
-			aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<Texture> textures;
+		aiMaterial *material = scene->mMaterials[i];
+		std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		std::vector<Texture> specularMaps = loadMaterialTextures(material,
-			aiTextureType_SPECULAR, "texture_specular");
+		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		std::vector<Texture> emissiveMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_emissive");
+		textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());
+		materialTextures.push_back(textures);
 	}
 
-	return Mesh(vertices, indices, textures);
+	return Mesh(vertices, indices, materialTextures);
 }
 
 ShaderProgram *RenderingSystem::compileShader(std::string name, const std::string &vertexPath, const std::string &fragmentPath)
@@ -110,14 +130,6 @@ ShaderProgram *RenderingSystem::compileShader(std::string name, const std::strin
 
 	return s;
 }
-
-// Texture RenderingSystem::loadTexture(std::string name, std::string path, GLint interpolation)
-// {
-// 	Texture t = Texture(path.c_str(), interpolation);
-// 	textures.emplace(std::make_pair(name, t));
-
-// 	return t;
-// }
 
 std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
@@ -135,7 +147,7 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	return textures;
 }
 
-void RenderingSystem::updateRender(std::vector<Entity*> entityList, Camera& cam, float aspect)
+void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect)
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
@@ -157,9 +169,8 @@ void RenderingSystem::updateRender(std::vector<Entity*> entityList, Camera& cam,
 		model = glm::translate(model, entity->transform->position);
 		model = model * glm::toMat4(entity->transform->rotation);
 		model = glm::scale(model, entity->scale);
-		glm::vec3 lightPos = glm::vec3(0.f, 40.f, 0.f);
+		glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
 		glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
-
 
 		GLuint location = glGetUniformLocation(shader, "M");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
@@ -172,14 +183,14 @@ void RenderingSystem::updateRender(std::vector<Entity*> entityList, Camera& cam,
 
 		location = glGetUniformLocation(shader, "lightPos");
 		glUniform3fv(location, 1, glm::value_ptr(lightPos));
-		
+
 		location = glGetUniformLocation(shader, "lightCol");
 		glUniform3fv(location, 1, glm::value_ptr(lightCol));
 
 		location = glGetUniformLocation(shader, "cameraPos");
 		glUniform3fv(location, 1, glm::value_ptr(camPos));
 
-		entity->model->draw(shader);
+		entity->model->draw(shader, entity->useMatInt);
 	}
 
 	glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui

@@ -84,7 +84,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)
 	{
-		physx::PxShape* shape = NULL;
+		physx::PxShape *shape = NULL;
 		gVehicle.mPhysXState.physxActor.rigidBody->getShapes(&shape, 1, i);
 
 		shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
@@ -135,21 +135,19 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	gVehicle.step(timestep, gVehicleSimulationContext);
 }
 
-void Vehicle::stepPhysics(double timeStep, Joystick js)
+void Vehicle::stepPhysics(double timeStep, Joystick &js)
 {
 
 	float axisThreshold = 0.15f;
-	const float* analogs = js.getAnalogs();
-	const unsigned char* buttons = js.getButtons();
+	const float *analogs = js.getAnalogs();
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
-	// TODO Add method of checking if button was previously pressed to stop "weapon fired" from being called
-	// every time stepPhysics is called.
-	if (buttons[XBOX_A])
+	if (js.getButton(Xbox::Button::XBOX_A))
 	{
 
-		std::cout << "Weapon Fired" << std::endl;
+		std::cout << "Weapon Fired" << std::endl;	
+		if(js.isPseudo()) js.releaseEnter();
 	}
 
 	float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
@@ -160,7 +158,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 	float throttle = 0.f;
 	int brake = 1;
 
-	if (buttons[XBOX_LB])
+	if (js.getButtonRaw(Xbox::Button::XBOX_LB))
 	{
 		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
 	}
@@ -169,13 +167,13 @@ void Vehicle::stepPhysics(double timeStep, Joystick js)
 		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
 	}
 
-	throttle = analogs[XBOX_R_TRIGGER] + 1.f;
+	throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
 	throttle /= 2.f;
-	brake = (int)(analogs[XBOX_L_TRIGGER] > -1.f);
+	brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
 
 	gVehicle.mCommandState.throttle = throttle;
 	gVehicle.mCommandState.brakes[0] = brake;
 
-	gVehicle.mCommandState.steer = -1.f * analogs[XBOX_L_XAXIS]; // Need to flip the direction of the input
+	gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 }

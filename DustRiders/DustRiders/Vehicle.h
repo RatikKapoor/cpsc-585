@@ -43,7 +43,7 @@ public:
 
 
 	void stepPhysics(double, float, float);
-	void stepPhysics(double timeStep, Joystick js);
+	void stepPhysics(double timeStep, Joystick& js);
 
 private:
 	bool initVehicle(PxVec3);
