@@ -57,10 +57,13 @@ Window::Window(
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
-	aspectRatio = float(vidMode->width) / float(vidMode->height);
+#ifdef _DEBUG
 	aspectRatio = 1;
-	// create window
 	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(800, 800, title, NULL, NULL));
+#else
+	aspectRatio = float(vidMode->width) / float(vidMode->height);
+	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(vidMode->width, vidMode->height, title, monitor, share));
+#endif // DEBUG
 	if (window == nullptr)
 	{
 		std::cout << ("WINDOW failed to create GLFW window");

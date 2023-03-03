@@ -91,20 +91,15 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entit
 	if (ImGui::CollapsingHeader("Controllers")) {
 		ImGui::Text("NumJS: %d", tMap.size());
 
-		if (tMap.size() == 0) {
-			ImGui::Text("Buttons: N/A");
-			ImGui::Text("Triggers N/A");
-			ImGui::Text("Axes N/A");
-		}
-		else {
-			auto jsItr = tMap.begin();
-			while (jsItr != tMap.end())
-			{
-				ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
-				ImGui::Text("%s", jsItr->second.triggerList().c_str());
-				ImGui::Text("%s", jsItr->second.axisList().c_str());
-				jsItr++;
-			}
+		auto jsItr = tMap.begin();
+		while (jsItr != tMap.end())
+		{
+			jsItr->second.updateAllInputs();
+			ImGui::Text("All Buttons: %s", jsItr->second.buttonListRaw().c_str());
+			ImGui::Text("New Buttons: %s", jsItr->second.buttonList().c_str());
+			ImGui::Text("%s", jsItr->second.triggerList().c_str());
+			ImGui::Text("%s", jsItr->second.axisList().c_str());
+			jsItr++;
 		}
 	}
 
@@ -129,23 +124,23 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 
 	// Setting flags
 	ImGuiWindowFlags textWindowFlags =
-			ImGuiWindowFlags_NoMove |						// text "window" should not move
-			ImGuiWindowFlags_NoResize |					// should not resize
-			ImGuiWindowFlags_NoCollapse |				// should not collapse
-			ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
-			ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
-			ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
-			ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
-			ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
+		ImGuiWindowFlags_NoMove |						// text "window" should not move
+		ImGuiWindowFlags_NoResize |					// should not resize
+		ImGuiWindowFlags_NoCollapse |				// should not collapse
+		ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+		ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+		ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
+		ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
+		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
-	ImGui::Begin("DustRiderTitle", (bool *)0, textWindowFlags);
+	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(5.0f);
 	ImGui::Text("DustRiders");
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
-	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
+	ImGui::Begin("ScoreText", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 
 	if (isKeyboard)
@@ -162,7 +157,7 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 	}
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.2, windowHeight * 1.6));
-	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
+	ImGui::Begin("ControlInput", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 	if (isKeyboard)
 	{
@@ -200,23 +195,23 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 
 	// Setting flags
 	ImGuiWindowFlags textWindowFlags =
-			ImGuiWindowFlags_NoMove |						// text "window" should not move
-			ImGuiWindowFlags_NoResize |					// should not resize
-			ImGuiWindowFlags_NoCollapse |				// should not collapse
-			ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
-			ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
-			ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
-			ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
-			ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
+		ImGuiWindowFlags_NoMove |						// text "window" should not move
+		ImGuiWindowFlags_NoResize |					// should not resize
+		ImGuiWindowFlags_NoCollapse |				// should not collapse
+		ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+		ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+		ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
+		ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
+		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
-	ImGui::Begin("DustRiderTitle", (bool *)0, textWindowFlags);
+	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(5.0f);
 	ImGui::Text("DustRiders");
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
-	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
+	ImGui::Begin("ScoreText", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 
 	if (isKeyboard)
@@ -233,7 +228,7 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	}
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.2, windowHeight * 1.6));
-	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
+	ImGui::Begin("ControlInput", (bool*)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 	if (isKeyboard)
 	{
