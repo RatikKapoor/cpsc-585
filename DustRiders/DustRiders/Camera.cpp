@@ -12,7 +12,7 @@ Camera::Camera(Entity* focus, glm::vec3 offset, float t, float r)
 	, radius(r)
 {}
 
-void Camera::setFocusEntity(std::shared_ptr<Entity> newFocus) {
+void Camera::setFocusEntity(Entity* newFocus) {
 	focusEntity = newFocus;
 }
 
