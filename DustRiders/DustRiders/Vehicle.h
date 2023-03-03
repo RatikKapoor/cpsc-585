@@ -38,7 +38,9 @@ public:
 			ShaderProgram*,
 			glm::vec3,
 			PhysicsProvider*,
-			PxVec3);
+			PxVec3,
+			unsigned int
+		);
 	virtual ~Vehicle() {}
 
 

@@ -19,7 +19,8 @@ Vehicle::Vehicle(std::string n,
 		ShaderProgram *sp,
 		glm::vec3 s,
 		PhysicsProvider* pp,
-		PxVec3 startingPos = {0.f, 0.f, 0.f}): Entity(n, t, m, sp, s)
+		PxVec3 startingPos = {0.f, 0.f, 0.f},
+		unsigned int mat = 0): Entity(n, t, m, sp, s, mat)
 {
 	physicsProvider = pp;
 	this->gPhysics = pp->GetPxPhysics();

@@ -60,7 +60,7 @@ int main()
 
 	// Shaders
 	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
-	auto basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
+	auto mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
 	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
@@ -70,14 +70,14 @@ int main()
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Create main car
-	ecs["car"] = new Vehicle("car", new Transform(), carModel, basicShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f));
+	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 5);
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", new Transform, groundPlane, basicShader, glm::vec3(1.f));
+	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Add AI cars
-	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, basicShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f));
-	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, basicShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f));
+	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f), 4);
+	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f), 3);
 
 	// Vehicle references
 	auto v1 = (Vehicle*)ecs["car"];
