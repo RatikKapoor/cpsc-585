@@ -261,10 +261,8 @@ int main()
 
 			window.swapBuffers();
 			auto entities = ecs.getAll();
-			//renderer.updateRender(entities, camera, window.getAspectRatio());
-			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+			renderer.updateRender(entities, camera, window.getAspectRatio());
 			overlay.RenderOverlay(entities);
-			glEnable(GL_FRAMEBUFFER_SRGB);
 
 			lastTime = t;
 		}
