@@ -7,11 +7,12 @@
 #include "vehicle2/PxVehicleAPI.h"
 #include "snippetvehicle2common/serialization/BaseSerialization.h"
 
+#include "PhysicsProvider.h"
 #include "Transform.h"
 
-class PhysicsSystem
+class PhysicsSystem: public PhysicsProvider
 {
-public:
+private:
 	std::vector<physx::PxRigidDynamic*> rigidDynamicList;
 	std::vector<Transform*> transformList;
 
@@ -26,9 +27,14 @@ public:
 	physx::PxPvd* gPvd = NULL;
 	physx::PxRigidStatic* groundPlane = NULL;
 
-	PhysicsSystem();
-
-	//physx::PxVec3 getPosition();
-	void updatePhysics(double);
 	void updateTransforms();
+
+public:
+	PhysicsSystem();
+	void updatePhysics(double);
+
+	physx::PxPhysics* GetPxPhysics();
+	physx::PxMaterial* GetPxMaterial();
+	physx::PxScene* GetPxScene();
+	void AddEntity(physx::PxRigidDynamic*, Transform*);
 };

@@ -20,6 +20,12 @@
     <Filter Include="Models">
       <UniqueIdentifier>{d7d715c7-376f-43ef-ad1b-41229cd37a9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{6b14f1bd-3ed3-4727-828d-d66f347b9d16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{cc46bb93-1f34-4c43-b20f-59552752976c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Overlay.cpp">
@@ -128,6 +134,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vehicle.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StateHandler.cpp">
@@ -252,8 +261,17 @@
     <ClInclude Include="InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vehicle.h">
+    <ClInclude Include="PhysicsProvider.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vehicle.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="StateHandler.h">
       <Filter>Header Files</Filter>

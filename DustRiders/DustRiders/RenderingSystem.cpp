@@ -160,7 +160,7 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 
-	for (Entity *entity : entityList)
+	for (Entity* entity : entityList)
 	{
 		ShaderProgram &shader = *entity->shaderProgram;
 		shader.use();

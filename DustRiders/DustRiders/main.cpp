@@ -15,6 +15,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Window.h"
+#include "ECS.h"
 #include "Entity.h"
 #include "Mesh.h"
 #include "PhysicsSystem.h"
@@ -25,18 +26,12 @@
 #include "InputHandler.h"
 #include "Camera.h"
 #include "Vehicle.h"
+#include "Ground.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "MusicBuffer.h"
 #include "WindowCallbacks.h"
-
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
 
 int main()
 {
@@ -45,106 +40,81 @@ int main()
 
 	Joystick keyboardJS;
 
-	bool inputIsKeyboard = true;
-
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		JoystickHandler::addJS(GLFW_JOYSTICK_1);
-		inputIsKeyboard = false;
 	}
 	else
 	{
 		JoystickHandler::addJS(keyboardJS);
-		inputIsKeyboard = true;
 	}
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
+#ifdef _DEBUG
+	int windowHeight = 800;
+	int windowWidth = 1422;
+#else
 	int windowHeight = window.getHeight();
 	int windowWidth = window.getWidth();
+#endif // _DEBUG
 
-	PhysicsSystem physics;
+	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;
 	Overlay overlay;
-	ShaderProgram *carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
-	ShaderProgram *basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
+
+	// Shaders
+	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
+	auto mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
-	Model *blueCar = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
-	Model *testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
-	Model *groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
+	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
+	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
+	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
-	std::vector<Entity *> entityList;
+	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
-	Vehicle v1(physics);
-	{
-		// Setup v1
-		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = blueCar;
-		entityList.back()->shaderProgram = carShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-		entityList.back()->useMatInt = 5;
-	}
+	// Create main car
+	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 5);
 
 	// Adds ground plane
-	entityList.emplace_back(new Entity());
-	entityList.back()->transform = new Transform();
-	entityList.back()->transform->position = glm::vec3(0.f, -0.5f, 0.f);
-	entityList.back()->model = groundPlane;
-	entityList.back()->shaderProgram = carShader;
-	entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
+	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
-	Vehicle v2(physics);
-	{
-		// Setup v2
-		v2.initVehicle(PxVec3(-2.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = blueCar;
-		entityList.back()->shaderProgram = carShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-		entityList.back()->useMatInt = 4;
-	}
-	Vehicle v3(physics);
-	{
-		// Setup v2
-		v3.initVehicle(PxVec3(2.f, 0.5f, 0.f));
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = physics.transformList.back();
-		entityList.back()->model = blueCar;
-		entityList.back()->shaderProgram = carShader;
-		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-		entityList.back()->useMatInt = 3;
-	}
+	// Add AI cars
+	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f), 4);
+	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f), 3);
+
+	// Vehicle references
+	auto v1 = (Vehicle*)ecs["car"];
+	auto v2 = (Vehicle*)ecs["car2"];
+	auto v3 = (Vehicle*)ecs["car3"];
 
 	// Follow the Player Vehicle
-	Camera camera(entityList[0], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 50.0);
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 50.0);
 
-	int obstacleCount = 0;
-	for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
-	{
-		entityList.emplace_back(new Entity());
-		entityList.back()->transform = new Transform();
+	//int obstacleCount = 0;
+	//for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
+	//{
+	//	entityList.emplace_back(new Entity());
+	//	entityList.back()->transform = new Transform();
 
-		if (obstacleCount % 2 == 0)
-		{
-			entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
-		}
-		else
-		{
-			entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
-		}
+	//	if (obstacleCount % 2 == 0)
+	//	{
+	//		entityList.back()->transform->position = glm::vec3{-7.0f, 0.0f, dist};
+	//	}
+	//	else
+	//	{
+	//		entityList.back()->transform->position = glm::vec3{7.0f, 0.0f, dist};
+	//	}
 
-		entityList.back()->model = testRock;
-		entityList.back()->shaderProgram = carShader;
-		entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
+	//	entityList.back()->model = testRock;
+	//	entityList.back()->shaderProgram = basicShader;
+	//	entityList.back()->scale = glm::vec3{2.0f, 2.0f, 2.0f};
 
-		obstacleCount++;
-	}
+	//	obstacleCount++;
+	//}
 
-	SoundDevice *mysounddevice = SoundDevice::get();
+	SoundDevice* mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
 
 	SoundSource mySpeaker;
@@ -177,8 +147,6 @@ int main()
 		}
 		else
 		{
-
-
 			auto t = glfwGetTime();
 			if (t - lastTime > 0.0167)
 			{
@@ -187,10 +155,10 @@ int main()
 				{
 					deltaT = 0.1f;
 				}
-					if (stateHandle.getGState() == StateHandler::GameState::PauseMenu) {
-						deltaT = 0.0f;
-						overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
-					}
+				if (stateHandle.getGState() == StateHandler::GameState::PauseMenu) {
+					deltaT = 0.0f;
+					overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+				}
 				// First few renders should be simulated with manual step to avoid objects clipping through ground
 				if (i < 15)
 				{
@@ -199,30 +167,22 @@ int main()
 				}
 
 				// Game Section
-
 				if (stateHandle.getGState() == StateHandler::GameState::Playing || stateHandle.getGState() == StateHandler::GameState::PauseMenu)
 				{
 					// Vehicle physics
-					//	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
-					//{
-					v1.stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
-					//}
-					// else
-					//	{
-					//	v1.stepPhysics(deltaT, currentAction);
-					//}
+					v1->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
 					auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v2.stepPhysics(deltaT, -accel, 0);
+					v2->stepPhysics(deltaT, -accel, 0);
 					accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v3.stepPhysics(deltaT, -accel, 0);
+					v3->stepPhysics(deltaT, -accel, 0);
 				}
-					physics.updatePhysics(deltaT);
-				
-					window.swapBuffers();
+				physics->updatePhysics(deltaT);
 
+				window.swapBuffers();
 
-					renderer.updateRender(entityList, camera, window.getAspectRatio());
-				overlay.RenderOverlay(stateHandle.getGState());
+				auto entities = ecs.getAll();
+				renderer.updateRender(entities, camera, window.getAspectRatio());
+				overlay.RenderOverlay(stateHandle.getGState(), entities);
 
 				lastTime = t;
 			}

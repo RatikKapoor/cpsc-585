@@ -2,13 +2,16 @@
 
 #include "PxPhysicsAPI.h"
 #include "vehicle2/PxVehicleAPI.h"
-#include "InputHandler.h"
 
 #include "snippetvehicle2common/directdrivetrain/DirectDrivetrain.h"
 #include "snippetvehicle2common/serialization/BaseSerialization.h"
 #include "snippetvehicle2common/serialization/DirectDrivetrainSerialization.h"
 #include "snippetvehicle2common/SnippetVehicleHelpers.h"
-#include "PhysicsSystem.h"
+
+#include "InputHandler.h"
+#include "PhysicsProvider.h"
+#include "Entity.h"
+
 using namespace snippetvehicle2;
 
 using namespace physx;
@@ -16,16 +19,6 @@ using namespace physx::vehicle2;
 
 // Give the vehicle a name so it can be identified in PVD.
 const char gVehicleName[] = "directDrive";
-
-enum CarAction
-{
-	ACCEL,
-	HALF_ACCEL,
-	BRAKE,
-	LEFT,
-	RIGHT,
-	IDLE
-};
 
 // Commands are issued to the vehicle in a pre-choreographed sequence.
 struct Command
@@ -36,20 +29,34 @@ struct Command
 	PxF32 duration;
 };
 
-class Vehicle
+class Vehicle : public Entity
 {
 public:
-	Vehicle(PhysicsSystem &ps);
+	Vehicle(std::string,
+			Transform*,
+			Model*,
+			ShaderProgram*,
+			glm::vec3,
+			PhysicsProvider*,
+			PxVec3,
+			unsigned int
+		);
+	virtual ~Vehicle() {}
 
-	bool initVehicle(PxVec3);
-	void initMaterialFrictionTable();
+
 	void stepPhysics(double, float, float);
 	void stepPhysics(double timeStep, Joystick& js);
 
-	PxPhysics *gPhysics;
-	PxMaterial *gMaterial;
-	PxScene *gScene;
+private:
+	bool initVehicle(PxVec3);
+	void initMaterialFrictionTable();
 
+	PhysicsProvider* physicsProvider;
+
+	PxPhysics* gPhysics;
+	PxMaterial* gMaterial;
+	PxScene* gScene;
+	
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";
 
@@ -68,7 +75,4 @@ public:
 	PxVehiclePhysXMaterialFriction gPhysXMaterialFrictions[16];
 	PxU32 gNbPhysXMaterialFrictions = 1;
 	PxReal gPhysXDefaultMaterialFriction = 1.0f;
-
-private:
-	PhysicsSystem *ps;
 };

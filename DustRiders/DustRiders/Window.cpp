@@ -58,9 +58,11 @@ Window::Window(
 
 	const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
 	aspectRatio = float(vidMode->width) / float(vidMode->height);
-
-	// create window
+#ifdef _DEBUG
+	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(1422, 800, title, NULL, NULL));
+#else
 	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(vidMode->width, vidMode->height, title, monitor, share));
+#endif // DEBUG
 	if (window == nullptr)
 	{
 		std::cout << ("WINDOW failed to create GLFW window");
@@ -107,8 +109,11 @@ void Window::connectCallbacks()
 
 	// bind meta callbacks to actual callbacks
 	glfwSetKeyCallback(window.get(), keyMetaCallback);
-	glfwSetMouseButtonCallback(window.get(), mouseButtonMetaCallback);
-	glfwSetCursorPosCallback(window.get(), cursorPosMetaCallback);
+	/*
+	* Below two lines commented out otherwise ImGui can't get a hold of mouse
+	*/
+	//glfwSetMouseButtonCallback(window.get(), mouseButtonMetaCallback);
+	//glfwSetCursorPosCallback(window.get(), cursorPosMetaCallback);
 	glfwSetScrollCallback(window.get(), scrollMetaCallback);
 	glfwSetWindowSizeCallback(window.get(), windowSizeMetaCallback);
 }

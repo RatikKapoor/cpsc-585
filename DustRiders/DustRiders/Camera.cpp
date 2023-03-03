@@ -13,8 +13,7 @@ Camera::Camera(Entity* focus, glm::vec3 offset, float t, float r)
 {}
 
 void Camera::setFocusEntity(Entity* newFocus) {
-	if (newFocus)
-		focusEntity = newFocus;
+	focusEntity = newFocus;
 }
 
 glm::mat4 Camera::getView() {

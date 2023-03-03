@@ -126,3 +126,24 @@ void PhysicsSystem::updateTransforms()
 		transformList[i]->rotation.w = rigidDynamicList[i]->getGlobalPose().q.w;
 	}
 }
+
+physx::PxPhysics* PhysicsSystem::GetPxPhysics()
+{
+	return this->gPhysics;
+}
+
+physx::PxMaterial* PhysicsSystem::GetPxMaterial()
+{
+	return this->gMaterial;
+}
+
+physx::PxScene* PhysicsSystem::GetPxScene() 
+{
+	return this->gScene;
+}
+
+void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, Transform* t)
+{
+	this->rigidDynamicList.push_back(r);
+	this->transformList.emplace_back(t);
+}
