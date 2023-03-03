@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ECS.cpp" />
     <ClCompile Include="ElementBuffer.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GLDebug.cpp" />

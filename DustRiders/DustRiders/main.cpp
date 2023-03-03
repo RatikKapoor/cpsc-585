@@ -155,6 +155,8 @@ int main()
 	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;
 	Overlay overlay;
+
+	// Shaders
 	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
 	auto basicShader = renderer.compileShader("basic", "./basic.vert", "./basic.frag");
 
@@ -163,21 +165,10 @@ int main()
 	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
-	//std::vector<Entity *> entityList;
-	EntityComponentSystem ecs;
+	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
+	// Create main car
 	ecs["car"] = new Vehicle("car", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f));
-//	Vehicle v1(physics);
-//	{
-//		// Setup v1
-//		v1.initVehicle(PxVec3(0.f, 0.5f, 0.f));
-//		ecs["a"] = new Entity();
-//		entityList.emplace_back(new Entity());
-//		entityList.back()->transform = physics.transformList.back();
-//		entityList.back()->model = testCarModel;
-//		entityList.back()->shaderProgram = basicShader;
-//		entityList.back()->scale = glm::vec3{1.f, 1.f, 1.f};
-//	}
 
 	// Adds ground plane
 	ecs["ground"] = new Ground("ground", new Transform, groundPlane, basicShader, glm::vec3(1.f));
@@ -186,6 +177,7 @@ int main()
 	ecs["car2"] = new Vehicle("car2", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f));
 	ecs["car3"] = new Vehicle("car3", new Transform(), testCarModel, basicShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f));
 
+	// Vehicle references
 	auto v1 = (Vehicle*)ecs["car"];
 	auto v2 = (Vehicle*)ecs["car2"];
 	auto v3 = (Vehicle*)ecs["car3"];
@@ -253,7 +245,7 @@ int main()
 
 			// Game Section
 			glfwPollEvents();
-			JoystickHandler::updateAll();
+			//JoystickHandler::updateAll();
 
 			if (true)
 			{
@@ -268,9 +260,11 @@ int main()
 			physics->updatePhysics(deltaT);
 
 			window.swapBuffers();
-			renderer.updateRender(ecs.getAll(), camera, window.getAspectRatio());
-
-			overlay.RenderOverlay(0);
+			auto entities = ecs.getAll();
+			//renderer.updateRender(entities, camera, window.getAspectRatio());
+			glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+			overlay.RenderOverlay(entities);
+			glEnable(GL_FRAMEBUFFER_SRGB);
 
 			lastTime = t;
 		}

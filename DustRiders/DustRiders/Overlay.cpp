@@ -8,9 +8,11 @@
 Overlay::Overlay()
 {
 	lastTime = glfwGetTime();
+
+	this->ecs = EntityComponentSystem::getInstance();
 }
 
-void Overlay::RenderOverlay(int state = 0)
+void Overlay::RenderOverlay(std::vector<Entity*> entities)
 {
 	// Framerate calculations
 	double currentTime = glfwGetTime();
@@ -29,23 +31,24 @@ void Overlay::RenderOverlay(int state = 0)
 	// ImGui
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
+
 	ImGui::NewFrame();
 	// Putting the text-containing window in the top-left of the screen.
 	ImGui::SetNextWindowPos(ImVec2(5, 5));
 	// Setting flags
 	ImGuiWindowFlags textWindowFlags =
-			ImGuiWindowFlags_NoMove |						// text "window" should not move
-			ImGuiWindowFlags_NoResize |					// should not resize
-			ImGuiWindowFlags_NoCollapse |				// should not collapse
-			ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
-			ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
-			// ImGuiWindowFlags_NoBackground |		// window should be transparent; only the text should be visible
-			ImGuiWindowFlags_NoDecoration | // no decoration; only the text should be visible
-			ImGuiWindowFlags_NoTitleBar;		// no title; only the text should be visible
-	// Begin a new window with these flags. (bool *)0 is the "default" value for its argument.
-	ImGui::Begin("DustRiders", (bool *)0, textWindowFlags);
+		ImGuiWindowFlags_NoMove |						// text "window" should not move
+		ImGuiWindowFlags_NoResize |					// should not resize
+		ImGuiWindowFlags_NoCollapse |				// should not collapse
+		ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+		ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+		// ImGuiWindowFlags_NoBackground |		// window should be transparent; only the text should be visible
+		ImGuiWindowFlags_NoDecoration | // no decoration; only the text should be visible
+		ImGuiWindowFlags_NoTitleBar;		// no title; only the text should be visible
+// Begin a new window with these flags. (bool *)0 is the "default" value for its argument.
+	ImGui::Begin("DustRiders", (bool*)0, textWindowFlags);
 	ImGui::Text("FPS: %i", currentFps);
-	switch (state)
+	switch (0)
 	{
 	case 0:
 		ImGui::Text("Press forward to start playing");
@@ -63,6 +66,30 @@ void Overlay::RenderOverlay(int state = 0)
 		break;
 	}
 
+	//if (ImGui::BeginCombo("Entities", &selectedEntity[0])) {
+	//	for (auto& entity : entities) {
+	//		if (ImGui::Selectable(&entity->name[0])) {
+	//			selectedEntity = entity->name;
+	//		}
+	//		ImGui::SetItemDefaultFocus();
+	//	}
+	//	ImGui::EndCombo();
+	//}
+	const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+	static const char* item_current = items[0];            // Here our selection is a single pointer stored outside the object.
+	if (ImGui::BeginCombo("combo 1", item_current)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+		{
+			bool is_selected = (item_current == items[n]);
+			if (ImGui::Selectable(items[n], is_selected))
+				item_current = items[n];
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+		}
+		ImGui::EndCombo();
+	}
+
 	// Current buttons being pressed
 	// ImGui::Text("%s", Joystick::getButtonStr(GLFW_JOYSTICK_1).c_str());
 	// ImGui::Text("%s", Joystick::getTriggerStr(GLFW_JOYSTICK_1).c_str());
@@ -70,25 +97,27 @@ void Overlay::RenderOverlay(int state = 0)
 
 	std::map<int, Joystick> tMap = JoystickHandler::getJSMap();
 
-	ImGui::Text("NumJS: %d", tMap.size());
+	if (ImGui::CollapsingHeader("Controllers")) {
+		ImGui::Text("NumJS: %d", tMap.size());
 
-	if (tMap.size() == 0) {
-		ImGui::Text("Buttons: N/A");
-		ImGui::Text("Triggers N/A");
-		ImGui::Text("Axes N/A");
-	}
-	else {
-
-		auto jsItr = tMap.begin();
-		while (jsItr != tMap.end())
-		{
-			jsItr->second.updateInputs();
-			ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
-			ImGui::Text("%s", jsItr->second.triggerList().c_str());
-			ImGui::Text("%s", jsItr->second.axisList().c_str());
-			jsItr++;
+		if (tMap.size() == 0) {
+			ImGui::Text("Buttons: N/A");
+			ImGui::Text("Triggers N/A");
+			ImGui::Text("Axes N/A");
+		}
+		else {
+			auto jsItr = tMap.begin();
+			while (jsItr != tMap.end())
+			{
+				jsItr->second.updateInputs();
+				ImGui::Text("Buttons: %s", jsItr->second.buttonList().c_str());
+				ImGui::Text("%s", jsItr->second.triggerList().c_str());
+				ImGui::Text("%s", jsItr->second.axisList().c_str());
+				jsItr++;
+			}
 		}
 	}
+
 
 	// End the window.
 	ImGui::End();
