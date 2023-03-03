@@ -165,19 +165,19 @@ int main()
 				if (stateHandle.getGState() == StateHandler::GameState::Playing || stateHandle.getGState() == StateHandler::GameState::PauseMenu)
 				{
 					// Vehicle physics
-					v1.stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
+					v1->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
 					auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v2.stepPhysics(deltaT, -accel, 0);
+					v2->stepPhysics(deltaT, -accel, 0);
 					accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v3.stepPhysics(deltaT, -accel, 0);
+					v3->stepPhysics(deltaT, -accel, 0);
 				}
-				physics.updatePhysics(deltaT);
+				physics->updatePhysics(deltaT);
 
 				window.swapBuffers();
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
-				overlay.RenderOverlay(stateHandle.getGState());
+				overlay.RenderOverlay(stateHandle.getGState(), entities);
 
 				lastTime = t;
 			}
