@@ -51,8 +51,13 @@ int main()
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
+#ifdef _DEBUG
+	int windowHeight = 800;
+	int windowWidth = 1422;
+#else
 	int windowHeight = window.getHeight();
 	int windowWidth = window.getWidth();
+#endif // _DEBUG
 
 	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;

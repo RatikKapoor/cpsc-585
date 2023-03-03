@@ -57,11 +57,10 @@ Window::Window(
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
-#ifdef _DEBUG
-	aspectRatio = 1;
-	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(800, 800, title, NULL, NULL));
-#else
 	aspectRatio = float(vidMode->width) / float(vidMode->height);
+#ifdef _DEBUG
+	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(1422, 800, title, NULL, NULL));
+#else
 	window = std::unique_ptr<GLFWwindow, WindowDeleter>(glfwCreateWindow(vidMode->width, vidMode->height, title, monitor, share));
 #endif // DEBUG
 	if (window == nullptr)
