@@ -25,4 +25,10 @@ public:
 	Model *model;
 	ShaderProgram *shaderProgram;
 	glm::vec3 scale;
+
+	operator std::string() {
+		std::string result;
+
+		result.append(name + " ");
+	}
 };

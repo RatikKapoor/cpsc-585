@@ -107,8 +107,11 @@ void Window::connectCallbacks()
 
 	// bind meta callbacks to actual callbacks
 	glfwSetKeyCallback(window.get(), keyMetaCallback);
-	glfwSetMouseButtonCallback(window.get(), mouseButtonMetaCallback);
-	glfwSetCursorPosCallback(window.get(), cursorPosMetaCallback);
+	/*
+	* Below two lines commented out otherwise ImGui can't get a hold of mouse
+	*/
+	//glfwSetMouseButtonCallback(window.get(), mouseButtonMetaCallback);
+	//glfwSetCursorPosCallback(window.get(), cursorPosMetaCallback);
 	glfwSetScrollCallback(window.get(), scrollMetaCallback);
 	glfwSetWindowSizeCallback(window.get(), windowSizeMetaCallback);
 }

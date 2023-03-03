@@ -66,28 +66,20 @@ void Overlay::RenderOverlay(std::vector<Entity*> entities)
 		break;
 	}
 
-	//if (ImGui::BeginCombo("Entities", &selectedEntity[0])) {
-	//	for (auto& entity : entities) {
-	//		if (ImGui::Selectable(&entity->name[0])) {
-	//			selectedEntity = entity->name;
-	//		}
-	//		ImGui::SetItemDefaultFocus();
-	//	}
-	//	ImGui::EndCombo();
-	//}
-	const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
-	static const char* item_current = items[0];            // Here our selection is a single pointer stored outside the object.
-	if (ImGui::BeginCombo("combo 1", item_current)) // The second parameter is the label previewed before opening the combo.
-	{
-		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-		{
-			bool is_selected = (item_current == items[n]);
-			if (ImGui::Selectable(items[n], is_selected))
-				item_current = items[n];
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+	if (ImGui::CollapsingHeader("Entity Introspection")) {
+		if (ImGui::BeginCombo("Entities", &selectedEntity[0])) {
+			for (auto& entity : entities) {
+				if (ImGui::Selectable(&entity->name[0])) {
+					selectedEntity = entity->name;
+				}
+				ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
+
+		if (selectedEntity != "") {
+			ImGui::Text("Data: %s", ecs->get(selectedEntity));
+		}
 	}
 
 	// Current buttons being pressed
