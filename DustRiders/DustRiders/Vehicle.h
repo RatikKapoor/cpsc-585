@@ -48,6 +48,8 @@ public:
 	void reloadTuning();
 
 	void reset();
+	void suspend();
+	void restore();
 
 protected:
 	bool initVehicle(PxVec3);
@@ -78,6 +80,9 @@ protected:
 	PxVehiclePhysXMaterialFriction gPhysXMaterialFrictions[16];
 	PxU32 gNbPhysXMaterialFrictions = 1;
 	PxReal gPhysXDefaultMaterialFriction = 1.0f;
+
+	PxRigidBodyFlags initialFlags;
+	PxActorFlags initialActorFlags;
 
 	PxVec3 initPos;
 };

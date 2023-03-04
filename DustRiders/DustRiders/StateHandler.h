@@ -13,15 +13,22 @@ public:
   class GameState
   {
   public:
+    /**
+     * @brief States where the game is active are greater than 0.
+     * States where the game is inactive (pause, won, lost, etc),
+     * are less than 0
+     *
+     */
     enum State
     {
+      StartMenu = -3,
+      PauseMenu = -2,
       Exit = -1,
       NotStarted = 0,
       Playing = 1,
-      StartMenu = 2,
-      PauseMenu = 3,
-      GameWon = 4,
-      GameLost = 5
+      GameWon = 2,
+      GameLost = 3,
+
     };
 
     operator int() { return static_cast<int>(this->state); }

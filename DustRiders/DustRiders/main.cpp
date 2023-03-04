@@ -8,6 +8,8 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+#include <fstream>
+
 #include <memory>
 
 #include "imgui.h"
@@ -33,6 +35,11 @@
 #include "SoundSource.h"
 #include "MusicBuffer.h"
 #include "WindowCallbacks.h"
+#include "LogWriter.h"
+
+bool LogWriter::firstWriting = true;
+std::string LogWriter::logFileName = "latest_output.log";
+std::ofstream LogWriter::logFile;
 
 int main()
 {
@@ -76,35 +83,35 @@ int main()
 	// NavMesh
 	auto navMesh = new NavMesh();
 	std::vector<glm::vec3> aiPath{
-		glm::vec3(0, 0, 20), 
-		glm::vec3(15, 0, 50),
-		glm::vec3(-15, 0, 100),
-		glm::vec3(5, 0, 150),
-		glm::vec3(20, 0, 200),
-		glm::vec3(-10, 0, 250),
-		glm::vec3(-10, 0, 300),
-		glm::vec3(-10, 0, 350)
-	};
+			glm::vec3(0, 0, 20),
+			glm::vec3(15, 0, 50),
+			glm::vec3(-15, 0, 100),
+			glm::vec3(5, 0, 150),
+			glm::vec3(20, 0, 200),
+			glm::vec3(-10, 0, 250),
+			glm::vec3(-10, 0, 300),
+			glm::vec3(-10, 0, 350)};
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Create main car
-	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 5);
+	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 0);
 
 	// Adds ground plane
 	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
-	//ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
+	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
 
 	// Vehicle references
 	auto playerVehicle = (Vehicle *)ecs["car"];
 	auto botVehicle1 = (AIVehicle *)ecs["car2"];
 	botVehicle1->path = aiPath;
-	//auto botVehicle2 = (Vehicle *)ecs["car3"];
+	// auto botVehicle2 = (Vehicle *)ecs["car3"];
 
 	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1};
+	std::vector<Vehicle *> inactiveVehicles;
 
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
@@ -128,20 +135,7 @@ int main()
 	{
 		glfwPollEvents();
 
-#ifdef _DEBUG
-		// Reset the cars back to where they were and restart the game
-		if (stateHandle.getRState() == StateHandler::ReloadState::GameReset)
-		{
-			for (Vehicle *vehicle : vehicles)
-			{
-				vehicle->reset();
-			}
-			stateHandle.setRState(StateHandler::ReloadState::None);
-			stateHandle.setGState(StateHandler::GameState::Playing);
-		}
-
-#endif
-
+		// The sound buffer should always update, not dependant on game state
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
 			myMusic.UpdateBufferStream();
@@ -149,6 +143,7 @@ int main()
 			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
 		}
 
+		// Game hasn't started, still on the initial start menu
 		if (stateHandle.getGState() == StateHandler::GameState::StartMenu)
 		{
 			overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
@@ -171,25 +166,48 @@ int main()
 					deltaT = (1.f / 60.f);
 					i++;
 				}
+				// Reset the cars back to where they were and restart the game
+				// Not implemented in release version of game
+				if (stateHandle.getRState() == StateHandler::ReloadState::GameReset)
+				{
 
-				if (stateHandle.getGState() == StateHandler::GameState::PauseMenu)
-				{
-					deltaT = 0.0f;
-					overlay.RenderPause(windowHeight / 2, windowWidth / 2);
-				}
-				else if (stateHandle.getGState() == StateHandler::GameState::GameWon)
-				{
-					deltaT = 0.0f;
-					overlay.RenderWin(windowHeight / 2, windowWidth / 2);
-				}
-				else if (stateHandle.getGState() == StateHandler::GameState::GameLost)
-				{
-					deltaT = 0.0f;
-					overlay.RenderLoss(windowHeight / 2, windowWidth / 2);
+					int restoreCount = 0;
+					LogWriter::log("Before reset: " + std::to_string(vehicles.size()) + " vehicles");
+					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
+					inactiveVehicles.clear();
+
+					for (Vehicle *vehicle : vehicles)
+					{
+						vehicle->restore();
+						vehicle->reset();
+					}
+
+					deltaT = 0.f;
+					stateHandle.setRState(StateHandler::ReloadState::None);
+					stateHandle.setGState(StateHandler::GameState::PauseMenu);
 				}
 
-				// Game Section
-				if (stateHandle.getGState() == StateHandler::GameState::Playing || stateHandle.getGState() == StateHandler::GameState::PauseMenu)
+				StateHandler::GameState gState = stateHandle.getGState();
+
+				if (gState < 0 || gState > StateHandler::GameState::Playing) // The game is inactive (paused and similar)
+				{
+					switch (gState)
+					{
+					case StateHandler::GameState::PauseMenu:
+						deltaT = 0.0f;
+						overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+						break;
+					case StateHandler::GameState::GameWon:
+						deltaT = 0.0f;
+						overlay.RenderWin(windowHeight / 2, windowWidth / 2);
+						break;
+					case StateHandler::GameState::GameLost:
+						deltaT = 0.0f;
+						overlay.RenderLoss(windowHeight / 2, windowWidth / 2);
+						break;
+					}
+				}
+				else // The game is active
 				{
 					// Vehicle physics
 					for (Vehicle *vehicle : vehicles)
@@ -205,7 +223,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle*)vehicle)->stepPhysics(deltaT);
+							((AIVehicle *)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -227,8 +245,10 @@ int main()
 						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
+
 						if (drawPos.y / drawPos.z < -1.1f)
 						{
+							LogWriter::log(vehicles[i]->name + "(y, z) = (" + std::to_string(drawPos.y) + ", " + std::to_string(drawPos.z) + "), y/z = " + std::to_string(drawPos.y / drawPos.z));
 							// Vehicle has lost the game
 							if (vehicles[i] == playerVehicle)
 							{
@@ -237,8 +257,13 @@ int main()
 							else
 							{
 								// erasing AI vehicle if it lost
-								ecs.erase(vehicles[i]->name);
+
+								// store inactive vehicles
+								vehicles[i]->suspend();
+								inactiveVehicles.push_back(vehicles[i]);
 								vehicles.erase(vehicles.begin() + i);
+
+								LogWriter::log("Suspended " + inactiveVehicles.back()->name);
 
 								if (vehicles.size() == 1)
 								{
@@ -257,7 +282,7 @@ int main()
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
-				overlay.RenderOverlay(stateHandle.getGState(), entities, &ecs);
+				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
 
 				lastTime = t;
 			}

@@ -94,6 +94,9 @@ bool Vehicle::initVehicle(PxVec3 p)
 		shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 
+	initialFlags = gVehicle.mPhysXState.physxActor.rigidBody->getRigidBodyFlags();
+	initialActorFlags = gVehicle.mPhysXState.physxActor.rigidBody->getActorFlags();
+
 	return true;
 }
 
@@ -209,6 +212,8 @@ void Vehicle::reloadTuning()
 
 void Vehicle::reset()
 {
+	shouldRender = true; // Allow rendering to screen
+
 	initMaterialFrictionTable();
 
 	// Load the params from json or set directly.
@@ -223,9 +228,6 @@ void Vehicle::reset()
 	PxTransform pose(initPos, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
 
-	// Get existing flags for the rigid body
-	auto initFlags = gVehicle.mPhysXState.physxActor.rigidBody->getRigidBodyFlags();
-
 	// Set the body to be kinematic (has to be manually moved)
 	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 
@@ -236,5 +238,15 @@ void Vehicle::reset()
 	gVehicle.mBaseState.rigidBodyState.previousAngularVelocity = PxVec3(0.f, 0.f, 0.f);
 
 	// Restore previous rigid body flags
-	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlags(initFlags);
+	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlags(initialFlags);
+}
+
+void Vehicle::suspend()
+{
+	shouldRender = false; // Don't allow rendering to screen
+}
+
+void Vehicle::restore()
+{
+	shouldRender = true; // Allow rendering to screen
 }
