@@ -92,7 +92,7 @@ class Joystick
 {
 public:
 	Joystick(int jsID) : jsID(jsID), pseudo(false) {}
-	Joystick() : jsID(-1), pseudo(true)
+	Joystick() : jsID(jsID), pseudo(pseudo)
 	{
 		for (int i = 0; i < 14; i++)
 		{

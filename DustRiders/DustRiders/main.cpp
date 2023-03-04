@@ -26,6 +26,7 @@
 #include "InputHandler.h"
 #include "Camera.h"
 #include "Vehicle.h"
+#include "AIVehicle.h"
 #include "Ground.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
@@ -72,6 +73,19 @@ int main()
 	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
+	// NavMesh
+	auto navMesh = new NavMesh();
+	std::vector<glm::vec3> aiPath{
+		glm::vec3(0, 0, 20), 
+		glm::vec3(15, 0, 50),
+		glm::vec3(-15, 0, 100),
+		glm::vec3(5, 0, 150),
+		glm::vec3(20, 0, 200),
+		glm::vec3(-10, 0, 250),
+		glm::vec3(-10, 0, 300),
+		glm::vec3(-10, 0, 350)
+	};
+
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Create main car
@@ -81,15 +95,16 @@ int main()
 	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Add AI cars
-	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4);
-	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3);
+	ecs["car2"] = new AIVehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
+	//ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
 
 	// Vehicle references
 	auto playerVehicle = (Vehicle *)ecs["car"];
-	auto botVehicle1 = (Vehicle *)ecs["car2"];
-	auto botVehicle2 = (Vehicle *)ecs["car3"];
+	auto botVehicle1 = (AIVehicle *)ecs["car2"];
+	botVehicle1->path = aiPath;
+	//auto botVehicle2 = (Vehicle *)ecs["car3"];
 
-	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1, botVehicle2};
+	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1};
 
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
@@ -190,8 +205,7 @@ int main()
 						}
 						else
 						{
-							auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-							vehicle->stepPhysics(deltaT, -accel, 0);
+							((AIVehicle*)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)

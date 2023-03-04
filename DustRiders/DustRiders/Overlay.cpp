@@ -62,7 +62,6 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entit
 	default:
 		break;
 	}
-
 	if (ImGui::CollapsingHeader("Entity Introspection")) {
 		if (ImGui::BeginCombo("Entities", &selectedEntity[0])) {
 			for (auto& entity : entities) {

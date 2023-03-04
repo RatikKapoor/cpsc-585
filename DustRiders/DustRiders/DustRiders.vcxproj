@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIVehicle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="ElementBuffer.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIVehicle.h" />
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ECS.h" />
