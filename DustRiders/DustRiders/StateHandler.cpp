@@ -17,8 +17,16 @@ void StateHandler::processJS(Joystick &js)
     if (pressed[Xbox::Button::XBOX_MENU])
     {
       setGState(GameState::PauseMenu);
-      if (js.isPseudo()) js.releaseEsc();
-      return;
+      if (js.isPseudo())
+        js.releaseEsc();
+    }
+    if (pressed[Xbox::Button::XBOX_UP])
+    {
+      setRState(ReloadState::Tuning);
+      if (js.isPseudo())
+      {
+        js.releaseR();
+      }
     }
   }
   else if (gState == GameState::PauseMenu)
@@ -26,7 +34,8 @@ void StateHandler::processJS(Joystick &js)
     if (pressed[Xbox::Button::XBOX_MENU])
     {
       setGState(prevGState);
-      if (js.isPseudo()) js.releaseEsc();
+      if (js.isPseudo())
+        js.releaseEsc();
       return;
     }
     if (pressed[Xbox::Button::XBOX_X])
@@ -46,7 +55,8 @@ void StateHandler::processJS(Joystick &js)
     else if (pressed[Xbox::Button::XBOX_A])
     {
       setGState(GameState::Playing);
-      if (js.isPseudo()) js.releaseEnter();
+      if (js.isPseudo())
+        js.releaseEnter();
 
       return;
     }
@@ -93,4 +103,14 @@ StateHandler::GameState::operator std::string()
     stateString = "Unknown";
   }
   return stateString;
+}
+
+void StateHandler::setRState(ReloadState rState)
+{
+  this->rState = rState;
+}
+
+StateHandler::ReloadState StateHandler::getRState()
+{
+  return rState;
 }

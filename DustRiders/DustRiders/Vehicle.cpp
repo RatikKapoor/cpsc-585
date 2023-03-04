@@ -1,6 +1,6 @@
 #include "Vehicle.h"
 
-//Command gCommands[] =
+// Command gCommands[] =
 //		{
 //				{0.5f, 0.0f, 0.0f, 2.0f}, // brake on and come to rest for 2 seconds
 //				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
@@ -8,19 +8,19 @@
 //				{0.0f, 0.5f, 0.0f, 5.0f}, // throttle for 5 seconds
 //				{0.0f, 0.1f, 0.5f, 5.0f}, // light throttle and steer for 5 seconds.
 //				{0.5f, 0.0f, 0.0f, 2.f}		// brake for 2s
-//};
-//const PxU32 gNbCommands = sizeof(gCommands) / sizeof(Command);
-//PxReal gCommandTime = 0.0f; // Time spent on current command
-//PxU32 gCommandProgress = 0; // The id of the current command.
+// };
+// const PxU32 gNbCommands = sizeof(gCommands) / sizeof(Command);
+// PxReal gCommandTime = 0.0f; // Time spent on current command
+// PxU32 gCommandProgress = 0; // The id of the current command.
 
 Vehicle::Vehicle(std::string n,
-		Transform* t,
-		Model *m,
-		ShaderProgram *sp,
-		glm::vec3 s,
-		PhysicsProvider* pp,
-		PxVec3 startingPos = {0.f, 0.f, 0.f},
-		unsigned int mat = 0): Entity(n, t, m, sp, s, mat)
+								 Transform *t,
+								 Model *m,
+								 ShaderProgram *sp,
+								 glm::vec3 s,
+								 PhysicsProvider *pp,
+								 PxVec3 startingPos = {0.f, 0.f, 0.f},
+								 unsigned int mat = 0) : Entity(n, t, m, sp, s, mat)
 {
 	physicsProvider = pp;
 	this->gPhysics = pp->GetPxPhysics();
@@ -49,10 +49,10 @@ bool Vehicle::initVehicle(PxVec3 p)
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-		gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-		gVehicle.mPhysXParams);
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Set the states to default.
 	if (!gVehicle.initialize(*(physicsProvider->GetPxPhysics()), PxCookingParams(PxTolerancesScale()), *(physicsProvider->GetPxMaterial())))
@@ -65,7 +65,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
-	physicsProvider->AddEntity((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
+	physicsProvider->AddEntity((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
 
 	// Set up the simulation context.
 	// The snippet is set up with
@@ -147,8 +147,17 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 	if (js.getButton(Xbox::Button::XBOX_A))
 	{
 
-		std::cout << "Weapon Fired" << std::endl;	
-		if(js.isPseudo()) js.releaseEnter();
+		std::cout << "Weapon Fired" << std::endl;
+		if (js.isPseudo())
+			js.releaseEnter();
+	}
+
+	if (js.getButton(Xbox::Button::XBOX_UP))
+	{
+		if (js.isPseudo())
+		{
+			js.releaseR();
+		}
 	}
 
 	float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
@@ -177,4 +186,16 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
 	gVehicle.step(timeStep, gVehicleSimulationContext);
+}
+
+void Vehicle::reloadTuning()
+{
+
+	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
+	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
+	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+	return;
 }
