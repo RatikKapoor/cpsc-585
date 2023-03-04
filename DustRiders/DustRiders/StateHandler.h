@@ -15,13 +15,13 @@ public:
   public:
     enum State
     {
-        Exit = -1,
-        NotStarted = 0,
-        Playing = 1,
-        StartMenu = 2,
-        PauseMenu = 3,
-        GameWon = 4,
-        GameLost = 5
+      Exit = -1,
+      NotStarted = 0,
+      Playing = 1,
+      StartMenu = 2,
+      PauseMenu = 3,
+      GameWon = 4,
+      GameLost = 5
     };
 
     operator int() { return static_cast<int>(this->state); }
@@ -29,9 +29,25 @@ public:
     GameState(State state) : state(state) {}
 
     State state;
+    State reload;
   };
 
-  StateHandler() : gState(GameState::StartMenu), prevGState(GameState::StartMenu)
+  class ReloadState
+  {
+  public:
+    enum State
+    {
+      None = -1,
+      Tuning = 0,
+      GameReset
+    };
+
+    State state;
+    operator int() { return static_cast<int>(this->state); }
+    ReloadState(State state) : state(state) {}
+  };
+
+  StateHandler() : gState(GameState::StartMenu), prevGState(GameState::StartMenu), rState(ReloadState::None)
   {
   }
 
@@ -39,10 +55,13 @@ public:
 
   GameState getGState();
   GameState getPrevGState();
+  ReloadState getRState();
 
   void setGState(GameState gState);
+  void setRState(ReloadState rState);
 
 private:
   GameState gState;
   GameState prevGState;
+  ReloadState rState;
 };

@@ -33,30 +33,30 @@ class Vehicle : public Entity
 {
 public:
 	Vehicle(std::string,
-			Transform*,
-			Model*,
-			ShaderProgram*,
-			glm::vec3,
-			PhysicsProvider*,
-			PxVec3,
-			unsigned int
-		);
+					Transform *,
+					Model *,
+					ShaderProgram *,
+					glm::vec3,
+					PhysicsProvider *,
+					PxVec3,
+					unsigned int);
 	virtual ~Vehicle() {}
 
-
 	void stepPhysics(double, float, float);
-	void stepPhysics(double timeStep, Joystick& js);
+	void stepPhysics(double timeStep, Joystick &js);
+
+	void reloadTuning();
 
 private:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 
-	PhysicsProvider* physicsProvider;
+	PhysicsProvider *physicsProvider;
 
-	PxPhysics* gPhysics;
-	PxMaterial* gMaterial;
-	PxScene* gScene;
-	
+	PxPhysics *gPhysics;
+	PxMaterial *gMaterial;
+	PxScene *gScene;
+
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";
 

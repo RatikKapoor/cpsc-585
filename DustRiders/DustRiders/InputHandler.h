@@ -301,6 +301,31 @@ public:
 		}
 	}
 
+	void pressR()
+	{
+		if (pseudo)
+		{
+			if (!buttons[Xbox::Button::XBOX_UP])
+			{
+				wasPressed[Xbox::Button::XBOX_UP] = 1;
+			}
+			else
+			{
+				wasPressed[Xbox::Button::XBOX_UP] = 0;
+			}
+			buttons[Xbox::Button::XBOX_UP] = 1;
+		}
+	}
+
+	void releaseR()
+	{
+		if (pseudo)
+		{
+			buttons[Xbox::Button::XBOX_UP] = 0;
+			wasPressed[Xbox::Button::XBOX_UP] = 0;
+		}
+	}
+
 	bool isPseudo() { return pseudo; }
 
 	void makePseudo()

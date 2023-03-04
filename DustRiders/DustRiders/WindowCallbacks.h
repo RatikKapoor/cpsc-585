@@ -27,6 +27,15 @@ public:
       }
     }
 
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+      js.pressR();
+    }
+    if (GLFW_KEY_R && action == GLFW_RELEASE)
+    {
+      js.releaseR();
+    }
+
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
       if (js.getButton(Xbox::Button::XBOX_X))
