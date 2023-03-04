@@ -19,6 +19,7 @@ void Camera::setFocusEntity(Entity* newFocus) {
 glm::mat4 Camera::getView() {
 	glm::vec3 eye = getPos();
 	glm::vec3 at = focusEntity->transform->position + focusOffset;
+	at.x = 0;
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	return glm::lookAt(eye, at, up);
@@ -26,6 +27,7 @@ glm::mat4 Camera::getView() {
 
 glm::vec3 Camera::getPos() {
 	glm::vec3 position = focusEntity->transform->position;
+	position.x = 0;
 	glm::vec3 direction{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 

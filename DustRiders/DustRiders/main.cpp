@@ -81,16 +81,18 @@ int main()
 	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Add AI cars
-	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-2.f, 0.5f, 0.f), 4);
-	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(2.f, 0.5f, 0.f), 3);
+	ecs["car2"] = new Vehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4);
+	ecs["car3"] = new Vehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3);
 
 	// Vehicle references
-	auto v1 = (Vehicle*)ecs["car"];
-	auto v2 = (Vehicle*)ecs["car2"];
-	auto v3 = (Vehicle*)ecs["car3"];
+	auto playerVehicle = (Vehicle*)ecs["car"];
+	auto botVehicle1 = (Vehicle*)ecs["car2"];
+	auto botVehicle2 = (Vehicle*)ecs["car3"];
 
-	// Follow the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 50.0);
+	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1, botVehicle2 };
+
+	// Start by focusing on the Player Vehicle
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
 
 	//int obstacleCount = 0;
 	//for (float dist = 0; dist <= 1000.5f; dist += 10.0f)
@@ -170,15 +172,25 @@ int main()
 				if (stateHandle.getGState() == StateHandler::GameState::Playing || stateHandle.getGState() == StateHandler::GameState::PauseMenu)
 				{
 					// Vehicle physics
-					v1->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
-					auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v2->stepPhysics(deltaT, -accel, 0);
-					accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-					v3->stepPhysics(deltaT, -accel, 0);
+					for (Vehicle* vehicle : vehicles) {
+						if (vehicle == playerVehicle) {
+							vehicle->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
+						}
+						else {
+							auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+							vehicle->stepPhysics(deltaT, -accel, 0);
+						}
+					}
 				}
 				physics->updatePhysics(deltaT);
 
 				window.swapBuffers();
+
+				// Updating camera focus based on z position of vehicles
+				Entity* newFocus = nullptr;
+				for (Entity* vehicle : vehicles)
+					if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z) newFocus = vehicle;
+				camera.setFocusEntity(newFocus);
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
