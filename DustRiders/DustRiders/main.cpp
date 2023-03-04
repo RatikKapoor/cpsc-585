@@ -136,7 +136,6 @@ int main()
 		glfwPollEvents();
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
-
 			myMusic.UpdateBufferStream();
 
 			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
@@ -157,15 +156,24 @@ int main()
 				{
 					deltaT = 0.1f;
 				}
-				if (stateHandle.getGState() == StateHandler::GameState::PauseMenu) {
-					deltaT = 0.0f;
-					overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
-				}
+
 				// First few renders should be simulated with manual step to avoid objects clipping through ground
 				if (i < 15)
 				{
 					deltaT = (1.f / 60.f);
 					i++;
+				}
+
+				if (stateHandle.getGState() == StateHandler::GameState::PauseMenu) {
+					deltaT = 0.0f;
+					overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+				}
+				else if (stateHandle.getGState() == StateHandler::GameState::GameWon) {
+					deltaT = 0.0f;
+					overlay.RenderWin(windowHeight / 2, windowWidth / 2);
+				} else if (stateHandle.getGState() == StateHandler::GameState::GameLost) {
+					deltaT = 0.0f;
+					overlay.RenderLoss(windowHeight / 2, windowWidth / 2);
 				}
 
 				// Game Section
@@ -181,16 +189,40 @@ int main()
 							vehicle->stepPhysics(deltaT, -accel, 0);
 						}
 					}
+
+					// Updating camera focus based on z position of vehicles
+					Entity* newFocus = nullptr;
+					for (Vehicle* vehicle : vehicles)
+						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z) newFocus = vehicle;
+					camera.setFocusEntity(newFocus);
+
+					glm::mat4 perspective = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.01f, 1000.f);
+					glm::mat4 view = camera.getView();
+					for (int i = 0; i < vehicles.size(); i++) {
+						glm::vec3 drawPos = perspective * view * glm::vec4{ vehicles[i]->transform->position, 1.0f };
+
+						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
+						if (drawPos.y / drawPos.z < -1.1f) {
+							// Vehicle has lost the game
+							if (vehicles[i] == playerVehicle) {
+								stateHandle.setGState(StateHandler::GameState::GameLost);
+							}
+							else {
+								// erasing AI vehicle if it lost
+								ecs.erase(vehicles[i]->name);
+								vehicles.erase(vehicles.begin() + i);
+
+								if (vehicles.size() == 1) {
+									if (vehicles[0] == playerVehicle) stateHandle.setGState(StateHandler::GameState::GameWon);
+									else stateHandle.setGState(StateHandler::GameState::GameLost);
+								}
+							}
+						}
+					}
 				}
 				physics->updatePhysics(deltaT);
-
+					
 				window.swapBuffers();
-
-				// Updating camera focus based on z position of vehicles
-				Entity* newFocus = nullptr;
-				for (Entity* vehicle : vehicles)
-					if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z) newFocus = vehicle;
-				camera.setFocusEntity(newFocus);
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());

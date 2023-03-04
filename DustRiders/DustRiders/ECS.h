@@ -24,6 +24,7 @@ public:
 
 	std::vector<Entity*> getAll();
 	std::vector<std::string> getKeys();
+	void erase(std::string s) { map.erase(s); }
 
 	static EntityComponentSystem* getInstance();
 
