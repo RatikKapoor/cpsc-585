@@ -105,6 +105,15 @@ public:
     {
       js.releaseEnter();
     }
+
+    else if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS)
+    {
+      js.pressBackspace();
+    }
+    else if (key == GLFW_KEY_BACKSPACE && action == GLFW_RELEASE)
+    {
+      js.releaseBackspace();
+    }
   }
 
   virtual void mouseButtonCallback(int button, int action, int mods) {}

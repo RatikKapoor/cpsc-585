@@ -112,6 +112,21 @@ int main()
 	while (stateHandle.getGState() != StateHandler::GameState::Exit)
 	{
 		glfwPollEvents();
+
+#ifdef _DEBUG
+		// Reset the cars back to where they were and restart the game
+		if (stateHandle.getRState() == StateHandler::ReloadState::GameReset)
+		{
+			for (Vehicle *vehicle : vehicles)
+			{
+				vehicle->reset();
+			}
+			stateHandle.setRState(StateHandler::ReloadState::None);
+			stateHandle.setGState(StateHandler::GameState::Playing);
+		}
+
+#endif
+
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
 			myMusic.UpdateBufferStream();

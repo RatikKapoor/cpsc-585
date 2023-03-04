@@ -326,6 +326,31 @@ public:
 		}
 	}
 
+	void pressBackspace()
+	{
+		if (pseudo)
+		{
+			if (!buttons[Xbox::Button::XBOX_Y])
+			{
+				wasPressed[Xbox::Button::XBOX_Y] = 1;
+			}
+			else
+			{
+				wasPressed[Xbox::Button::XBOX_Y] = 0;
+			}
+			buttons[Xbox::Button::XBOX_Y] = 1;
+		}
+	}
+
+	void releaseBackspace()
+	{
+		if (pseudo)
+		{
+			buttons[Xbox::Button::XBOX_Y] = 0;
+			wasPressed[Xbox::Button::XBOX_Y] = 0;
+		}
+	}
+
 	bool isPseudo() { return pseudo; }
 
 	void makePseudo()
