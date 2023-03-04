@@ -23,13 +23,16 @@ void StateHandler::processJS(Joystick &js)
     return;
   }
 
-  if (gState == GameState::Playing || gState == GameState::NotStarted)
+  if (gState == GameState::Playing) // Game is currently being played
   {
     if (pressed[Xbox::Button::XBOX_MENU])
     {
       setGState(GameState::PauseMenu);
       if (js.isPseudo())
+      {
         js.releaseEsc();
+      }
+      return;
     }
     if (pressed[Xbox::Button::XBOX_UP])
     {
@@ -38,21 +41,50 @@ void StateHandler::processJS(Joystick &js)
       {
         js.releaseR();
       }
+      return;
     }
+  }
+  else if (gState > GameState::Playing) // Game has been won or lost
+  {
+    if (pressed[Xbox::Button::XBOX_A])
+    {
+      setRState(ReloadState::GameReset);
+      setGState(GameState::PauseMenu);
+      if (js.isPseudo())
+      {
+        js.releaseEnter();
+      }
+    }
+    return;
   }
   else if (gState == GameState::PauseMenu)
   {
-    if (pressed[Xbox::Button::XBOX_MENU])
-    {
-      setGState(prevGState);
-      if (js.isPseudo())
-        js.releaseEsc();
-      return;
-    }
     if (pressed[Xbox::Button::XBOX_X])
     {
       setGState(GameState::Exit);
       return;
+    }
+    if (prevGState == GameState::GameLost || prevGState == GameState::GameWon || prevGState == GameState::PauseMenu)
+    {
+      if (pressed[Xbox::Button::XBOX_A])
+      {
+        setGState(GameState::Playing);
+        if (js.isPseudo())
+        {
+          js.releaseEnter();
+        }
+      }
+      return;
+    }
+    else
+    {
+      if (pressed[Xbox::Button::XBOX_MENU])
+      {
+        setGState(prevGState);
+        if (js.isPseudo())
+          js.releaseEsc();
+        return;
+      }
     }
   }
   // To be used when the game first starts, with the overlay menu
@@ -110,8 +142,15 @@ StateHandler::GameState::operator std::string()
   case PauseMenu:
     stateString = "Pause Menu";
     break;
+  case GameWon:
+    stateString = "Game Won";
+    break;
+  case GameLost:
+    stateString = "Game Lost";
+    break;
   default:
     stateString = "Unknown";
+    break;
   }
   return stateString;
 }

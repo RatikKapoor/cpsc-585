@@ -160,37 +160,44 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 
-	for (Entity* entity : entityList)
+	int numRendered = 0;
+
+	for (Entity *entity : entityList)
 	{
-		ShaderProgram &shader = *entity->shaderProgram;
-		shader.use();
+		if (entity->shouldRender)
+		{
 
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, entity->transform->position);
-		model = model * glm::toMat4(entity->transform->rotation);
-		model = glm::scale(model, entity->scale);
-		glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
-		glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
+			ShaderProgram &shader = *entity->shaderProgram;
+			shader.use();
 
-		GLuint location = glGetUniformLocation(shader, "M");
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
+			glm::mat4 model(1.0f);
+			model = glm::translate(model, entity->transform->position);
+			model = model * glm::toMat4(entity->transform->rotation);
+			model = glm::scale(model, entity->scale);
+			glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
+			glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
 
-		location = glGetUniformLocation(shader, "V");
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(view));
+			GLuint location = glGetUniformLocation(shader, "M");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
 
-		location = glGetUniformLocation(shader, "P");
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(perspective));
+			location = glGetUniformLocation(shader, "V");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(view));
 
-		location = glGetUniformLocation(shader, "lightPos");
-		glUniform3fv(location, 1, glm::value_ptr(lightPos));
+			location = glGetUniformLocation(shader, "P");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(perspective));
 
-		location = glGetUniformLocation(shader, "lightCol");
-		glUniform3fv(location, 1, glm::value_ptr(lightCol));
+			location = glGetUniformLocation(shader, "lightPos");
+			glUniform3fv(location, 1, glm::value_ptr(lightPos));
 
-		location = glGetUniformLocation(shader, "cameraPos");
-		glUniform3fv(location, 1, glm::value_ptr(camPos));
+			location = glGetUniformLocation(shader, "lightCol");
+			glUniform3fv(location, 1, glm::value_ptr(lightCol));
 
-		entity->model->draw(shader, entity->useMatInt);
+			location = glGetUniformLocation(shader, "cameraPos");
+			glUniform3fv(location, 1, glm::value_ptr(camPos));
+
+			entity->model->draw(shader, entity->useMatInt);
+			numRendered++;
+		}
 	}
 
 	glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui

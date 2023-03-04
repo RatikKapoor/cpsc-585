@@ -9,25 +9,28 @@ using namespace std;
 class LogWriter
 {
 public:
-  LogWriter(string logFileName = "latest_output.log") : logFileName(logFileName), firstWriting(true) {}
+  LogWriter(string logFileName = "latest_output.log") {}
 
-  void log(string logMessage)
+  static void log(string logMessage)
   {
     if (firstWriting)
     {
-      logFile.open(logFileName);
+      LogWriter::logFile.open(LogWriter::logFileName);
+      LogWriter::firstWriting = false;
     }
     else
     {
-      logFile.open(logFileName, std::ios_base::app);
+      LogWriter::logFile.open(LogWriter::logFileName, std::ios_base::app);
     }
-    logFile << logMessage << endl;
+    LogWriter::logFile << logMessage << endl;
 
-    logFile.close();
+    LogWriter::logFile.close();
   }
 
+  static string logFileName;
+  static bool firstWriting;
+
+  static ofstream logFile;
+
 private:
-  string logFileName;
-  ofstream logFile;
-  bool firstWriting;
 };
