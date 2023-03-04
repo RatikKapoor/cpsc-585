@@ -243,7 +243,7 @@ int main()
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
-				overlay.RenderOverlay(stateHandle.getGState(), entities);
+				overlay.RenderOverlay(stateHandle.getGState(), entities, &ecs);
 
 				lastTime = t;
 			}

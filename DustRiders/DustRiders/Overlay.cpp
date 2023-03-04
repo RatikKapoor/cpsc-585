@@ -9,11 +9,9 @@
 Overlay::Overlay()
 {
 	lastTime = glfwGetTime();
-
-	this->ecs = EntityComponentSystem::getInstance();
 }
 
-void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entity*> entities)
+void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entity*> entities, EntityComponentSystem* ecs)
 {
 	// Framerate calculations
 	double currentTime = glfwGetTime();
@@ -77,7 +75,9 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entit
 		}
 
 		if (selectedEntity != "") {
-			ImGui::Text("Data: %s", ecs->get(selectedEntity));
+			ImGui::Text("X: %f", ecs->get(selectedEntity)->transform->position.x);
+			ImGui::Text("Y: %f", ecs->get(selectedEntity)->transform->position.y);
+			ImGui::Text("Z: %f", ecs->get(selectedEntity)->transform->position.z);
 		}
 	}
 

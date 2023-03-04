@@ -15,12 +15,11 @@ private:
 	int nbFrames = 0;
 	int currentFps = 0;
 
-	EntityComponentSystem* ecs;
 	std::string selectedEntity;
 
 public:
 	Overlay();
-	void RenderOverlay(StateHandler::GameState, std::vector<Entity*>);
+	void RenderOverlay(StateHandler::GameState, std::vector<Entity*>, EntityComponentSystem*);
 	void RenderMenu(int windowHeight, int windowWidth);
 	void RenderPause(int windowHeight, int windowWidth);
 	void RenderWin(int windowHeight, int windowWidth);
