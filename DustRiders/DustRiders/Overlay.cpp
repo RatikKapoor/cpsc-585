@@ -255,6 +255,66 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void Overlay::RenderWin(int windowHeight, int windowWidth)
+{
+	bool isKeyboard = !JoystickHandler::getFirstJS().isPseudo();
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	// Putting the text-containing window in the top-left of the screen.
+
+	// Setting flags
+	ImGuiWindowFlags textWindowFlags =
+		ImGuiWindowFlags_NoMove |						// text "window" should not move
+		ImGuiWindowFlags_NoResize |					// should not resize
+		ImGuiWindowFlags_NoCollapse |				// should not collapse
+		ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+		ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+		ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
+		ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
+		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
+
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
+	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
+	ImGui::SetWindowFontScale(5.0f);
+	ImGui::Text("You Win!");
+	ImGui::End();
+
+	ImGui::Render(); // Render the ImGui window
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Overlay::RenderLoss(int windowHeight, int windowWidth)
+{
+	bool isKeyboard = !JoystickHandler::getFirstJS().isPseudo();
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	// Putting the text-containing window in the top-left of the screen.
+
+	// Setting flags
+	ImGuiWindowFlags textWindowFlags =
+		ImGuiWindowFlags_NoMove |						// text "window" should not move
+		ImGuiWindowFlags_NoResize |					// should not resize
+		ImGuiWindowFlags_NoCollapse |				// should not collapse
+		ImGuiWindowFlags_NoSavedSettings |	// don't want saved settings mucking things up
+		ImGuiWindowFlags_AlwaysAutoResize | // window should auto-resize to fit the text
+		ImGuiWindowFlags_NoBackground |			// window should be transparent; only the text should be visible
+		ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
+		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
+
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
+	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
+	ImGui::SetWindowFontScale(5.0f);
+	ImGui::Text("You Lose!");
+	ImGui::End();
+
+	ImGui::Render(); // Render the ImGui window
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 void Overlay::Cleanup()
 {
 	ImGui_ImplOpenGL3_Shutdown();

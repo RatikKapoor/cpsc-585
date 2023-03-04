@@ -15,11 +15,13 @@ public:
   public:
     enum State
     {
-      Exit = -1,
-      NotStarted = 0,
-      Playing = 1,
-      StartMenu = 2,
-      PauseMenu = 3
+        Exit = -1,
+        NotStarted = 0,
+        Playing = 1,
+        StartMenu = 2,
+        PauseMenu = 3,
+        GameWon = 4,
+        GameLost = 5
     };
 
     operator int() { return static_cast<int>(this->state); }
