@@ -12,6 +12,17 @@ void StateHandler::processJS(Joystick &js)
     return;
   }
 
+  if (pressed[Xbox::Button::XBOX_Y])
+  {
+    setRState(ReloadState::GameReset);
+    setGState(GameState::Playing);
+    if (js.isPseudo())
+    {
+      js.releaseBackspace();
+    }
+    return;
+  }
+
   if (gState == GameState::Playing || gState == GameState::NotStarted)
   {
     if (pressed[Xbox::Button::XBOX_MENU])

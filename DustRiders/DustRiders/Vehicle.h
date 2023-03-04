@@ -47,6 +47,8 @@ public:
 
 	void reloadTuning();
 
+	void reset();
+
 private:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
@@ -75,4 +77,6 @@ private:
 	PxVehiclePhysXMaterialFriction gPhysXMaterialFrictions[16];
 	PxU32 gNbPhysXMaterialFrictions = 1;
 	PxReal gPhysXDefaultMaterialFriction = 1.0f;
+
+	PxVec3 initPos;
 };

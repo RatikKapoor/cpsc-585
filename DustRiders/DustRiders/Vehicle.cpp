@@ -45,6 +45,7 @@ void Vehicle::initMaterialFrictionTable()
 bool Vehicle::initVehicle(PxVec3 p)
 {
 	initMaterialFrictionTable();
+	initPos = p;
 
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
@@ -198,4 +199,36 @@ void Vehicle::reloadTuning()
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
 																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 	return;
+}
+
+void Vehicle::reset()
+{
+	initMaterialFrictionTable();
+
+	// Load the params from json or set directly.
+	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
+	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
+	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+
+	// Apply a start pose to the physx actor and add it to the physx scene.
+	PxTransform pose(initPos, PxQuat(PxIdentity));
+	gVehicle.setUpActor(*gScene, pose, gVehicleName);
+
+	// Get existing flags for the rigid body
+	auto initFlags = gVehicle.mPhysXState.physxActor.rigidBody->getRigidBodyFlags();
+
+	// Set the body to be kinematic (has to be manually moved)
+	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+
+	// Set all velocities (including previous velocities) to 0
+	gVehicle.mBaseState.rigidBodyState.linearVelocity = PxVec3(0.f, 0.f, 0.f);
+	gVehicle.mBaseState.rigidBodyState.previousLinearVelocity = PxVec3(0.f, 0.f, 0.f);
+	gVehicle.mBaseState.rigidBodyState.angularVelocity = PxVec3(0.f, 0.f, 0.f);
+	gVehicle.mBaseState.rigidBodyState.previousAngularVelocity = PxVec3(0.f, 0.f, 0.f);
+
+	// Restore previous rigid body flags
+	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlags(initFlags);
 }
