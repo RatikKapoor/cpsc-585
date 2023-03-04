@@ -94,6 +94,16 @@ bool Pathfinder::search(Node* src, Node* dest) {
 	return false;
 }
 
+glm::vec3 Pathfinder::getNextWaypoint()
+{
+	if (!path->empty()) {
+		auto t = path->top();
+		path->pop();
+		return t;
+	}
+	return glm::vec3(0.f);
+}
+
 bool Pathfinder::isDestination(Node* src, Node* dest)
 {
 	if (src->id == dest->id)

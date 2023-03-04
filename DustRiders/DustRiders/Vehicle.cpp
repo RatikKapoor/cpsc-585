@@ -189,6 +189,12 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 }
 
+void Vehicle::stepPhysics(double timeStep)
+{
+	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+	stepPhysics(timeStep, -accel, 0);
+}
+
 void Vehicle::reloadTuning()
 {
 

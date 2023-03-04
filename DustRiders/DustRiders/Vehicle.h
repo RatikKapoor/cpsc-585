@@ -42,16 +42,17 @@ public:
 					unsigned int);
 	virtual ~Vehicle() {}
 
-	void stepPhysics(double, float, float);
 	void stepPhysics(double timeStep, Joystick &js);
+	void stepPhysics(double);
 
 	void reloadTuning();
 
 	void reset();
 
-private:
+protected:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
+	void stepPhysics(double, float, float);
 
 	PhysicsProvider *physicsProvider;
 

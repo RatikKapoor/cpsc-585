@@ -148,6 +148,9 @@
     <ClCompile Include="Pathfinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AIVehicle.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h">
@@ -290,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="Pathfinder.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AIVehicle.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
