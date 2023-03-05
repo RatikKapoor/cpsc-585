@@ -89,6 +89,7 @@ int main()
 	// Shaders
 	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
 	auto mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
+	auto debugShader = renderer.compileShader("debug", "./debug.vert", "./debug.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
 	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model-with-gun.obj");
@@ -108,6 +109,9 @@ int main()
 			glm::vec3(-10, 0, 350)};
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
+
+	// Adds ground plane
+	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Create main car
 	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);

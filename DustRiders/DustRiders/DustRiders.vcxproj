@@ -283,6 +283,8 @@
     <None Include="basic.frag" />
     <None Include="car.frag" />
     <None Include="car.vert" />
+    <None Include="debug.frag" />
+    <None Include="debug.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\models\better-car-v2.obj">
