@@ -30,6 +30,7 @@
 #include "Vehicle.h"
 #include "AIVehicle.h"
 #include "Ground.h"
+#include "Obstacle.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
@@ -108,17 +109,19 @@ int main()
 			glm::vec3(-10, 0, 350)};
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
+	
+	// Adds ground plane
+	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Create main car
 	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);
 
-	// Adds ground plane
-	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
-
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
-
 	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
+
+	// Add obstacles
+	ecs["rock1"] = new Obstacle("rock1", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(2, 0.5, 0.f), 3);
 
 	// Vehicle references
 	auto playerVehicle = (Vehicle *)ecs["car"];

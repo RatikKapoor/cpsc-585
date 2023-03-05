@@ -180,6 +180,7 @@
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="snippetrender\SnippetCamera.cpp" />
@@ -226,9 +227,11 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="Pathfinder.h" />
+    <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="PhysicsProvider.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderingSystem.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="snippetrender\SnippetCamera.h" />
