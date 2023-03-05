@@ -10,7 +10,6 @@ using namespace physx;
 class Obstacle : public PhysicsEntity {
 public:
 	Obstacle(std::string,
-		Transform*,
 		Model*,
 		ShaderProgram*,
 		glm::vec3,

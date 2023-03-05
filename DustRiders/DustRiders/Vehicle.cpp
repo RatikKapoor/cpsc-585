@@ -14,13 +14,12 @@
 // PxU32 gCommandProgress = 0; // The id of the current command.
 
 Vehicle::Vehicle(std::string n,
-	Transform* t,
 	Model* m,
 	ShaderProgram* sp,
 	glm::vec3 s,
 	PhysicsProvider* pp,
 	PxVec3 startingPos = { 0.f, 0.f, 0.f },
-	unsigned int mat = 0) : PhysicsEntity(n, t, m, sp, s, pp, startingPos, mat)
+	unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat)
 {
 	initVehicle(startingPos);
 }

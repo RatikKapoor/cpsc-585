@@ -1,14 +1,13 @@
 #include "AIVehicle.h"
 
 AIVehicle::AIVehicle(std::string name,
-										 Transform *t,
-										 Model *m,
-										 ShaderProgram *sp,
-										 glm::vec3 s,
-										 PhysicsProvider *pp,
-										 PxVec3 pos,
-										 unsigned int matIdx,
-										 NavMesh *navMesh) : Vehicle(name, t, m, sp, s, pp, pos, matIdx)
+	Model* m,
+	ShaderProgram* sp,
+	glm::vec3 s,
+	PhysicsProvider* pp,
+	PxVec3 pos,
+	unsigned int matIdx,
+	NavMesh* navMesh) : Vehicle(name, m, sp, s, pp, pos, matIdx)
 {
 	// this->aiJS = new Joystick(-1000, true);
 	this->pathfinder = new Pathfinder(navMesh);
@@ -25,8 +24,8 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 	auto threshold = 10;
 
 	if (abs(b.x - a.x) < threshold &&
-			abs(b.y - a.y) < threshold &&
-			abs(b.z - a.z) < threshold)
+		abs(b.y - a.y) < threshold &&
+		abs(b.z - a.z) < threshold)
 		return true;
 	return false;
 }
