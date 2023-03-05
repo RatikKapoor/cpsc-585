@@ -195,7 +195,7 @@ int main()
 					{
 					case StateHandler::GameState::PauseMenu:
 						deltaT = 0.0f;
-						overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+						overlay.RenderPause(stateHandle.getPrevGState(), windowHeight / 2, windowWidth / 2);
 						break;
 					case StateHandler::GameState::GameWon:
 						deltaT = 0.0f;

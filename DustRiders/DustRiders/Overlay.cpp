@@ -107,7 +107,7 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 	// End ImGui
 }
 
-void Overlay::RenderPause(int windowHeight, int windowWidth)
+void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth)
 {
 	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
 
@@ -137,16 +137,16 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
-	if (isKeyboard)
+	if (prevState != StateHandler::GameState::Playing)
 	{
-		ImGui::Text("Press Enter to Resume Game");
-		ImGui::Text("Press Escape to Exit Game");
+		ImGui::Text("Press ENTER or A Button to start.");
+		ImGui::Text("Press X or X Button to quit DustRiders.");
 		ImGui::End();
 	}
 	else
 	{
-		ImGui::Text("Press START to Resume Game");
-		ImGui::Text("Press X to Exit");
+		ImGui::Text("Press ESC or START Button to resume playing.");
+		ImGui::Text("Press X or X Button to quit DustRiders.");
 		ImGui::End();
 	}
 
@@ -273,6 +273,15 @@ void Overlay::RenderWin(int windowHeight, int windowWidth)
 	ImGui::Begin("DustRiderWin", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("You Win!");
+
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
+	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
+	ImGui::SetWindowFontScale(3.0f);
+
+	ImGui::Text("Press ENTER or A Button to Play Again");
+	ImGui::Text("Press X or X Button to quit DustRiders");
+	ImGui::End();
+
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
@@ -303,6 +312,14 @@ void Overlay::RenderLoss(int windowHeight, int windowWidth)
 	ImGui::Begin("DustRiderLose", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("You Lose!");
+	ImGui::End();
+
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
+	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
+	ImGui::SetWindowFontScale(3.0f);
+
+	ImGui::Text("Press ENTER or A Button to Play Again");
+	ImGui::Text("Press X or X Button to quit DustRiders");
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window

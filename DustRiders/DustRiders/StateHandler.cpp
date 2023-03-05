@@ -46,6 +46,11 @@ void StateHandler::processJS(Joystick &js)
   }
   else if (gState > GameState::Playing) // Game has been won or lost
   {
+    if (pressed[Xbox::Button::XBOX_X])
+    {
+      setGState(GameState::Exit);
+      return;
+    }
     if (pressed[Xbox::Button::XBOX_A])
     {
       setRState(ReloadState::GameReset);
