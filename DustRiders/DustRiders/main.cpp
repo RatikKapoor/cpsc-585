@@ -9,7 +9,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
 #include <memory>
 
 #include "imgui.h"
@@ -107,7 +106,7 @@ int main()
 			glm::vec3(20, 0, 200),
 			glm::vec3(-10, 0, 250),
 			glm::vec3(-10, 0, 300),
-			glm::vec3(-10, 0, 350)};
+			glm::vec3(-10, 0, 350) };
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
@@ -117,29 +116,43 @@ int main()
 	// Create main car
 	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);
 
-	// Create main car
-	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);
-
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
 	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
 
 	// Add obstacles
-	ecs["rock1"] = new Obstacle("rock1", testRock, carShader, glm::vec3(1.f), physics, PxVec3(2, 0.5, 0.f), 1);
+	int rockCount = 0;
+	for (float dist = 0; dist <= 1000.5f; dist += 20.0f)
+	{
+		std::string name = "rock" + std::to_string(rockCount);
+		float random = ((float)rand()) / (float)RAND_MAX;
+		float diff = 20.f;
+		float r = random * diff;
+		float x = -10.f + r;
+		ecs[name] = new Obstacle(name,
+			testRock,
+			carShader,
+			glm::vec3(1.f),
+			physics,
+			PxVec3(x, 0.f, dist),
+			1);
+
+		rockCount++;
+	}
 
 	// Vehicle references
-	auto playerVehicle = (Vehicle *)ecs["car"];
-	auto botVehicle1 = (AIVehicle *)ecs["car2"];
+	auto playerVehicle = (Vehicle*)ecs["car"];
+	auto botVehicle1 = (AIVehicle*)ecs["car2"];
 	botVehicle1->path = aiPath;
 	// auto botVehicle2 = (Vehicle *)ecs["car3"];
 
-	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1};
-	std::vector<Vehicle *> inactiveVehicles;
+	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1 };
+	std::vector<Vehicle*> inactiveVehicles;
 
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
 
-	SoundDevice *mysounddevice = SoundDevice::get();
+	SoundDevice* mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
 
 	SoundSource mySpeaker;
@@ -213,7 +226,7 @@ int main()
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
 
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						vehicle->restore();
 						vehicle->reset();
@@ -247,7 +260,7 @@ int main()
 				else // The game is active
 				{
 					// Vehicle physics
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
 						{
@@ -260,7 +273,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle *)vehicle)->stepPhysics(deltaT);
+							((AIVehicle*)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -269,8 +282,8 @@ int main()
 					}
 
 					// Updating camera focus based on z position of vehicles
-					Entity *newFocus = nullptr;
-					for (Vehicle *vehicle : vehicles)
+					Entity* newFocus = nullptr;
+					for (Vehicle* vehicle : vehicles)
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
@@ -279,7 +292,7 @@ int main()
 					glm::mat4 view = camera.getView();
 					for (int i = 0; i < vehicles.size(); i++)
 					{
-						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
+						glm::vec3 drawPos = perspective * view * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
