@@ -93,7 +93,7 @@ int main()
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
 	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model-with-gun.obj");
-	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
+	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock1.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
 	// NavMesh
@@ -109,7 +109,7 @@ int main()
 			glm::vec3(-10, 0, 350)};
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
-	
+
 	// Adds ground plane
 	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
@@ -121,7 +121,7 @@ int main()
 	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
 
 	// Add obstacles
-	ecs["rock1"] = new Obstacle("rock1", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(2, 0.5, 0.f), 3);
+	ecs["rock1"] = new Obstacle("rock1", new Transform(), testRock, carShader, glm::vec3(1.f), physics, PxVec3(2, 0.5, 0.f), 1);
 
 	// Vehicle references
 	auto playerVehicle = (Vehicle *)ecs["car"];
