@@ -1,7 +1,7 @@
 # Blender 3.4.1 MTL File: 'FinalCarModel-Blue.blend'
 # www.blender.org
 
-newmtl CarBody
+newmtl blue-body
 Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -11,6 +11,76 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-map_Kd Car-Body.png
-map_Ks Car-Body-Specular.png
-map_Ke Car-Body-Emission.png
+map_Kd car-texture-blue.png
+map_Ks car-specular-map.png
+map_Ke car-emission-map.png
+
+newmtl red-body
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+map_Kd car-texture-red.png
+map_Ks car-specular-map.png
+map_Ke car-emission-map.png
+
+newmtl green-body
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+map_Kd car-texture-green.png
+map_Ks car-specular-map.png
+map_Ke car-emission-map.png
+
+newmtl creme-body
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+map_Kd car-texture-creme.png
+map_Ks car-specular-map.png
+map_Ke car-emission-map.png
+
+newmtl pink-body
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+map_Kd car-texture-pink.png
+map_Ks car-specular-map.png
+map_Ke car-emission-map.png
+
+# newmtl neon-body
+# Ns 360.000000
+# Ka 1.000000 1.000000 1.000000
+# Kd 0.800000 0.800000 0.800000
+# Ks 0.500000 0.500000 0.500000
+# Ke 0.000000 0.000000 0.000000
+# Ni 1.000000
+# d 1.000000
+# illum 2
+#
+# map_Kd car-texture-neon.png
+# map_Ks car-specular-map.png
+# map_Ke car-emission-map.png
