@@ -16,7 +16,7 @@ void Obstacle::initObstacle(PxVec3 pos)
 	auto shape = this->gPhysics->createShape(PxBoxGeometry(0.5, 0.5, 0.5), *gMaterial);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
-	PxTransform localTm(PxVec3(PxReal(pos.x) - PxReal(pos.y), PxReal(pos.z), 10.f) * 2);
+	PxTransform localTm(pos);
 	PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
 	body->setGlobalPose(localTm);
 	body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
