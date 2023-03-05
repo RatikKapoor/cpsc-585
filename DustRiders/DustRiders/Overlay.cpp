@@ -134,13 +134,13 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
 	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(5.0f);
+	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("DustRiders");
 	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.05));
 	ImGui::Begin("ScoreText", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(3.0f);
+	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
 	if (isKeyboard)
 	{
@@ -155,9 +155,9 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 		ImGui::End();
 	}
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.2, windowHeight * 1.6));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(3.0f);
+	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 	if (isKeyboard)
 	{
 		ImGui::Text("W to Forward");
@@ -185,7 +185,7 @@ void Overlay::RenderPause(int windowHeight, int windowWidth)
 
 void Overlay::RenderMenu(int windowHeight, int windowWidth)
 {
-	bool isKeyboard = !JoystickHandler::getFirstJS().isPseudo();
+	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -205,13 +205,13 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
 	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(5.0f);
+	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("DustRiders");
 	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.05));
 	ImGui::Begin("ScoreText", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(3.0f);
+	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
 	if (isKeyboard)
 	{
@@ -226,9 +226,9 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 		ImGui::End();
 	}
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.2, windowHeight * 1.6));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(3.0f);
+	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 	if (isKeyboard)
 	{
 		ImGui::Text("W to Forward");
@@ -256,7 +256,7 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 
 void Overlay::RenderWin(int windowHeight, int windowWidth)
 {
-	bool isKeyboard = !JoystickHandler::getFirstJS().isPseudo();
+	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -275,8 +275,8 @@ void Overlay::RenderWin(int windowHeight, int windowWidth)
 		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
-	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(5.0f);
+	ImGui::Begin("DustRiderWin", (bool*)0, textWindowFlags);
+	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("You Win!");
 	ImGui::End();
 
@@ -305,8 +305,8 @@ void Overlay::RenderLoss(int windowHeight, int windowWidth)
 		ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
-	ImGui::Begin("DustRiderTitle", (bool*)0, textWindowFlags);
-	ImGui::SetWindowFontScale(5.0f);
+	ImGui::Begin("DustRiderLose", (bool*)0, textWindowFlags);
+	ImGui::SetWindowFontScale(windowHeight / 100.0f);
 	ImGui::Text("You Lose!");
 	ImGui::End();
 

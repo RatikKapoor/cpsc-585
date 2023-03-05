@@ -175,7 +175,7 @@ int main()
 				if (stateHandle.getGState() == StateHandler::GameState::PauseMenu)
 				{
 					deltaT = 0.0f;
-					overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+					overlay.RenderPause(windowHeight / 2, windowWidth / 2);
 				}
 				else if (stateHandle.getGState() == StateHandler::GameState::GameWon)
 				{
