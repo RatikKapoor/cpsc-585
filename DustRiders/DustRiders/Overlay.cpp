@@ -73,6 +73,9 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, std::vector<Entit
 			ImGui::EndCombo();
 		}
 
+		if (!ecs->doesKeyExist(selectedEntity))
+			selectedEntity = "";
+
 		if (selectedEntity != "") {
 			ImGui::Text("X: %f", ecs->get(selectedEntity)->transform->position.x);
 			ImGui::Text("Y: %f", ecs->get(selectedEntity)->transform->position.y);
