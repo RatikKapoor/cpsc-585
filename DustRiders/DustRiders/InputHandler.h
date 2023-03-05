@@ -188,7 +188,7 @@ public:
 	void pressW()
 	{
 		if (pseudo)
-			analogs[Xbox::Analog::XBOX_R_TRIGGER] = 1.f;
+			analogs[Xbox::Analog::XBOX_R_TRIGGER] = 0.5f;
 	}
 	void releaseW()
 	{

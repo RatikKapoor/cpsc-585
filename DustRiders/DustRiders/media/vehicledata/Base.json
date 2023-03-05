@@ -22,7 +22,7 @@
         "Scale": 1.0
     },
     "RigidBodyParams": {
-        "Mass": 2014.4000244140625,
+        "Mass": 1200.4000244140625,
         "MOI": [
             3200.0,
             3414.0,
@@ -34,21 +34,21 @@
         "WheelResponseMultipliers": [
             1.0,
             1.0,
-			1.0,
-			1.0
+            1.0,
+            1.0
         ]
     },
     "HandbrakeCommandResponseParams": {
         "MaxResponse": 0.0,
         "WheelResponseMultipliers": [
             0.0,
-			0.0,
+            0.0,
             1.0,
-			1.0
+            1.0
         ]
     },
     "SteerCommandResponseParams": {
-        "MaxResponse": 0.5235990285873413,
+        "MaxResponse": 0.75,
         "WheelResponseMultipliers": [
             1.0,
             1.0,
@@ -57,13 +57,13 @@
         ]
     },
     "AckermannParams": {
-		"WheelIds": [
-			0,
-			1
-		],
-		"WheelBase": 2.863219976425171,
-		"TrackWidth": 1.5510799884796143,
-		"Strength": 1.0
+        "WheelIds": [
+            0,
+            1
+        ],
+        "WheelBase": 2.863219976425171,
+        "TrackWidth": 1.5510799884796143,
+        "Strength": 1.0
     },
     "SuspensionParams": [
         {
@@ -207,7 +207,7 @@
             }
         }
     ],
-    "SuspensionStateCalculationParams":  {
+    "SuspensionStateCalculationParams": {
         "JounceCalculationType": 1,
         "LimitSuspensionExpansionVelocity": false
     },
@@ -229,17 +229,21 @@
             "SuspForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ],
             "TireForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ]
-		},
-		{
+        },
+        {
             "WheelId": 1,
             "WheelToeAngle": [
                 [
@@ -256,17 +260,21 @@
             "SuspForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ],
             "TireForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
-            ]			
+            ]
         },
-		{
+        {
             "WheelId": 2,
             "WheelToeAngle": [
                 [
@@ -283,17 +291,21 @@
             "SuspForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ],
             "TireForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ]
-		},
-		{
+        },
+        {
             "WheelId": 3,
             "WheelToeAngle": [
                 [
@@ -310,17 +322,21 @@
             "SuspForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
             ],
             "TireForceAppPoint": [
                 [
                     0.0,
-                    0.0, 0.0, -0.11204999685287476
+                    0.0,
+                    0.0,
+                    -0.11204999685287476
                 ]
-            ]			
-        }		
-	],
+            ]
+        }
+    ],
     "SuspensionForceParams": [
         {
             "WheelId": 0,
