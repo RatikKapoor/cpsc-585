@@ -46,6 +46,32 @@ int main()
 	glfwInit();
 	StateHandler stateHandle;
 
+	Window window("DustRiders", glfwGetPrimaryMonitor());
+	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
+#ifdef _DEBUG
+	int windowHeight = 800;
+	int windowWidth = 1422;
+#else
+	int windowHeight = window.getHeight();
+	int windowWidth = window.getWidth();
+#endif // _DEBUG
+
+	Overlay overlay;
+
+	// Let users know that content is loading in
+
+	for (int i = 0; i < 15; i++)
+	{
+		glEnable(GL_FRAMEBUFFER_SRGB);
+		glEnable(GL_DEPTH_TEST);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_FRAMEBUFFER_SRGB);
+
+		overlay.LoadingContent(windowWidth, windowHeight);
+		window.swapBuffers();
+	}
+
 	Joystick keyboardJS;
 
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
@@ -57,19 +83,8 @@ int main()
 		JoystickHandler::addJS(keyboardJS);
 	}
 
-	Window window("DustRiders", glfwGetPrimaryMonitor());
-	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
-#ifdef _DEBUG
-	int windowHeight = 800;
-	int windowWidth = 1422;
-#else
-	int windowHeight = window.getHeight();
-	int windowWidth = window.getWidth();
-#endif // _DEBUG
-
 	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;
-	Overlay overlay;
 
 	// Shaders
 	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
@@ -95,13 +110,14 @@ int main()
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Create main car
-	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 0);
+	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);
 
 	// Adds ground plane
 	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
 
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
+
 	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
 
 	// Vehicle references
@@ -131,9 +147,23 @@ int main()
 
 	double lastTime = 0.0f;
 	int i = 0;
+
+	for (int i = 0; i < 15; i++)
+	{
+		glEnable(GL_FRAMEBUFFER_SRGB);
+		glEnable(GL_DEPTH_TEST);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_FRAMEBUFFER_SRGB);
+		window.swapBuffers();
+
+	}
+
 	while (stateHandle.getGState() != StateHandler::GameState::Exit)
 	{
 		glfwPollEvents();
+		JoystickHandler::updateAll();
+		stateHandle.processJS(JoystickHandler::getFirstJS());
 
 		// The sound buffer should always update, not dependant on game state
 		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
@@ -146,8 +176,9 @@ int main()
 		// Game hasn't started, still on the initial start menu
 		if (stateHandle.getGState() == StateHandler::GameState::StartMenu)
 		{
-			overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
 			window.swapBuffers();
+			overlay.RenderMenu(windowHeight / 2, windowWidth / 2);
+			LogWriter::log("StartMenu");
 		}
 		else
 		{
@@ -287,9 +318,6 @@ int main()
 				lastTime = t;
 			}
 		}
-		glfwPollEvents();
-		JoystickHandler::updateAll();
-		stateHandle.processJS(JoystickHandler::getFirstJS());
 	}
 	window.close();
 
