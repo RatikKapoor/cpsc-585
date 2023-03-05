@@ -10,7 +10,7 @@
 
 #include "InputHandler.h"
 #include "PhysicsProvider.h"
-#include "Entity.h"
+#include "PhysicsEntity.h"
 
 using namespace snippetvehicle2;
 
@@ -29,7 +29,7 @@ struct Command
 	PxF32 duration;
 };
 
-class Vehicle : public Entity
+class Vehicle : public PhysicsEntity
 {
 public:
 	Vehicle(std::string,
@@ -42,8 +42,8 @@ public:
 					unsigned int);
 	virtual ~Vehicle() {}
 
-	void stepPhysics(double timeStep, Joystick &js);
 	void stepPhysics(double);
+	void stepPhysics(double timeStep, Joystick &js);
 
 	void reloadTuning();
 
@@ -56,11 +56,6 @@ protected:
 	void initMaterialFrictionTable();
 	void stepPhysics(double, float, float);
 
-	PhysicsProvider *physicsProvider;
-
-	PxPhysics *gPhysics;
-	PxMaterial *gMaterial;
-	PxScene *gScene;
 
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";
