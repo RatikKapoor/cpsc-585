@@ -29,9 +29,9 @@ void Overlay::LoadingContent(int windowWidth, int windowHeight)
 			ImGuiWindowFlags_NoDecoration |			// no decoration; only the text should be visible
 			ImGuiWindowFlags_NoTitleBar;				// no title; only the text should be visible
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth / 2, windowHeight / 2));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.77, windowHeight * 0.9));
 	ImGui::Begin("DustRiderTitle", (bool *)0, textWindowFlags);
-	ImGui::SetWindowFontScale(2.0f);
+	ImGui::SetWindowFontScale(windowHeight / 400.0f);
 	ImGui::Text("Loading content...");
 	ImGui::End();
 
@@ -92,9 +92,6 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 			}
 			ImGui::EndCombo();
 		}
-
-		if (!ecs->doesKeyExist(selectedEntity))
-			selectedEntity = "";
 
 		if (selectedEntity != "")
 		{
@@ -158,13 +155,13 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
 	ImGui::Begin("DustRiderTitle", (bool *)0, textWindowFlags);
-	ImGui::SetWindowFontScale(windowHeight / 100.0f);
+	ImGui::SetWindowFontScale(5.0f);
 	ImGui::Text("DustRiders");
 	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.05));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.9, windowHeight * 1.6));
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
-	ImGui::SetWindowFontScale(windowHeight / 180.0f);
+	ImGui::SetWindowFontScale(3.0f);
 
 	if (prevState != StateHandler::GameState::Playing)
 	{
@@ -182,26 +179,13 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-	if (isKeyboard)
-	{
-		ImGui::Text("W to Forward");
-		ImGui::Text("S to Backward");
-		ImGui::Text("A to Left");
-		ImGui::Text("D to Right");
-		ImGui::Text("Left Shift to Reverse");
-		ImGui::Text("Enter to Fire Weapon");
-		ImGui::Text("ESC to open menu");
-		ImGui::End();
-	}
-	else
-	{
-		ImGui::Text("RT to Accelerate");
-		ImGui::Text("LT to Brake");
-		ImGui::Text("LB to Reverse");
-		ImGui::Text("LJS to Steer");
-		ImGui::Text("START to toggle menu and pause");
-		ImGui::End();
-	}
+
+	ImGui::Text("RT to accerlate, LT to brake (Controller)");
+	ImGui::Text("Left JS to steer (Controller)");
+	ImGui::Text("WASD to Steer (Keyboard)");
+	ImGui::Text("Hold Left Shift or LB to Reverse");
+	ImGui::Text("ESC or START to toggle pause");
+	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -209,7 +193,6 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 
 void Overlay::RenderMenu(int windowHeight, int windowWidth)
 {
-	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -236,43 +219,19 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.05));
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-
-	if (isKeyboard)
-	{
-		ImGui::Text("Press Enter to Start Game");
-		ImGui::Text("Press Escape to Exit");
-		ImGui::End();
-	}
-	else
-	{
-		ImGui::Text("Press A to Start Game");
-		ImGui::Text("Press X to Exit");
-		ImGui::End();
-	}
+	ImGui::Text("Press ENTER or A Button to Start Game");
+	ImGui::Text("Press X or X Button to Exit");
+	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-	if (isKeyboard)
-	{
-		ImGui::Text("W to Forward");
-		ImGui::Text("S to Backward");
-		ImGui::Text("A to Left");
-		ImGui::Text("D to Right");
-		ImGui::Text("Left Shift to Reverse");
-		ImGui::Text("Enter to Fire Weapon");
-		ImGui::Text("ESC to open menu");
-		ImGui::End();
-	}
-	else
-	{
-		ImGui::Text("RT to Accelerate");
-		ImGui::Text("LT to Brake");
-		ImGui::Text("LB to Reverse");
-		ImGui::Text("LJS to Steer");
-		ImGui::Text("START to toggle menu and pause");
-		ImGui::End();
-	}
+	ImGui::Text("RT to accerlate, LT to brake (Controller)");
+	ImGui::Text("Left JS to steer (Controller)");
+	ImGui::Text("WASD to Steer (Keyboard)");
+	ImGui::Text("Hold Left Shift or LB to Reverse");
+	ImGui::Text("ESC or START to toggle pause");
+	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -280,7 +239,6 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 
 void Overlay::RenderWin(int windowHeight, int windowWidth)
 {
-	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
