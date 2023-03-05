@@ -19,6 +19,7 @@ private:
 
 public:
 	Overlay();
+	void LoadingContent(int windowWidth, int windowHeight);
 	void RenderOverlay(StateHandler::GameState, StateHandler::GameState, std::vector<Entity *>, EntityComponentSystem *);
 	void RenderMenu(int windowHeight, int windowWidth);
 	void RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth);
