@@ -116,9 +116,6 @@ int main()
 	// Create main car
 	ecs["car"] = new Vehicle("car", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2);
 
-	// Adds ground plane
-	ecs["ground"] = new Ground("ground", new Transform(), groundPlane, carShader, glm::vec3(1.f));
-
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh);
 
