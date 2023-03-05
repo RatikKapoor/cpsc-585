@@ -166,7 +166,6 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 	{
 		if (entity->shouldRender)
 		{
-
 			ShaderProgram &shader = *entity->shaderProgram;
 			shader.use();
 

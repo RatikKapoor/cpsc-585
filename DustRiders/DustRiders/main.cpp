@@ -91,7 +91,7 @@ int main()
 	auto mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
-	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
+	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model-with-gun.obj");
 	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-obstacle-rock.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
@@ -156,7 +156,6 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDisable(GL_FRAMEBUFFER_SRGB);
 		window.swapBuffers();
-
 	}
 
 	while (stateHandle.getGState() != StateHandler::GameState::Exit)
