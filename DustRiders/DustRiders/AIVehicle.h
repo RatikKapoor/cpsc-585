@@ -7,7 +7,6 @@ class AIVehicle : public Vehicle
 {
 public:
 	AIVehicle(std::string,
-		Transform*,
 		Model*,
 		ShaderProgram*,
 		glm::vec3,

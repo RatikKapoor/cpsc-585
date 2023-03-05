@@ -1,13 +1,12 @@
 #include "Obstacle.h"
 
 Obstacle::Obstacle(std::string n,
-									 Transform *t,
 									 Model *m,
 									 ShaderProgram *sp,
 									 glm::vec3 s,
 									 PhysicsProvider *pp,
 									 PxVec3 pos = {0.f, 0.f, 0.f},
-									 unsigned int mat = 0) : PhysicsEntity(n, t, m, sp, s, pp, pos, mat)
+									 unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat)
 {
 	initObstacle(pos);
 }

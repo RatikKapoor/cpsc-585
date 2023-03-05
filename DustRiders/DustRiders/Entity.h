@@ -9,9 +9,10 @@
 class Entity
 {
 public:
-	Entity(std::string n, Transform *t, Model *m, ShaderProgram *sp, glm::vec3 s, unsigned int matInt = 0)
-			: name(n), transform(t), model(m), shaderProgram(sp), scale(s), useMatInt(matInt), shouldRender(true)
+	Entity(std::string n, Model *m, ShaderProgram *sp, glm::vec3 s, unsigned int matInt = 0)
+			: name(n), model(m), shaderProgram(sp), scale(s), useMatInt(matInt), shouldRender(true)
 	{
+		transform = new Transform();
 	}
 
 	virtual ~Entity(){};

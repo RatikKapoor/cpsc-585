@@ -33,7 +33,6 @@ class Vehicle : public PhysicsEntity
 {
 public:
 	Vehicle(std::string,
-					Transform *,
 					Model *,
 					ShaderProgram *,
 					glm::vec3,
