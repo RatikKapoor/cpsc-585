@@ -3,6 +3,8 @@
 #include "SoundSource.h"
 #include "SoundBuffer.h"
 
+#include "LogWriter.h"
+
 // Command gCommands[] =
 //		{
 //				{0.5f, 0.0f, 0.0f, 2.0f}, // brake on and come to rest for 2 seconds
@@ -147,30 +149,32 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 	bool gunFired = false;
 	float axisThreshold = 0.15f;
 	const float *analogs = js.getAnalogs();
+	const unsigned char *b = js.getButtons();
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
 	if (js.getButtonRaw(Xbox::Button::XBOX_A))
 	{
-		if (js.getButton(Xbox::Button::XBOX_A))
+		if (!rayGunBeam->isActive)
 		{
 			gunFired = true;
-			if (js.isPseudo())
+			if (rayGunBeam != NULL)
 			{
-				js.releaseEnter();
+				rayGunBeam->shouldRender = true;
 			}
+			rayGunBeam->isActive = true;
 		}
-		if (rayGunBeam != NULL)
+		else
 		{
-			rayGunBeam->shouldRender = true;
+			if (rayGunBeam != NULL)
+			{
+				rayGunBeam->shouldRender = false;
+			}
 		}
 	}
 	else
 	{
-		if (rayGunBeam != NULL)
-		{
-			rayGunBeam->shouldRender = false;
-		}
+		rayGunBeam->isActive = false;
 	}
 
 	if (js.getButton(Xbox::Button::XBOX_UP))
@@ -207,6 +211,7 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
 	gVehicle.step(timeStep, gVehicleSimulationContext);
+
 	return gunFired;
 }
 

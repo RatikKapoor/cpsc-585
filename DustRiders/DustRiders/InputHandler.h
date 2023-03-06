@@ -252,11 +252,9 @@ public:
 	}
 	void releaseEnter()
 	{
-		if (pseudo)
-		{
-			buttons[Xbox::Button::XBOX_A] = 0;
-			wasPressed[Xbox::Button::XBOX_A] = 0;
-		}
+
+		buttons[Xbox::Button::XBOX_A] = 0;
+		wasPressed[Xbox::Button::XBOX_A] = 0;
 	}
 
 	void pressEsc()

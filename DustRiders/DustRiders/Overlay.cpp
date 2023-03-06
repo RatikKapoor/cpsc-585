@@ -115,7 +115,6 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 		auto jsItr = tMap.begin();
 		while (jsItr != tMap.end())
 		{
-			jsItr->second.updateAllInputs();
 			ImGui::Text("All Buttons: %s", jsItr->second.buttonListRaw().c_str());
 			ImGui::Text("New Buttons: %s", jsItr->second.buttonList().c_str());
 			ImGui::Text("%s", jsItr->second.triggerList().c_str());
