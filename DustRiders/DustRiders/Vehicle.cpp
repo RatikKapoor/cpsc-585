@@ -46,6 +46,8 @@ bool Vehicle::initVehicle(PxVec3 p)
 	initMaterialFrictionTable();
 	initPos = p;
 
+	this->flags["beamHit"] = false;
+
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
@@ -66,6 +68,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	PxTransform pose(p, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
 	physicsProvider->AddEntity((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
+	gVehicle.mPhysXState.physxActor.rigidBody->setName(this->name.c_str());
 
 	// Set up the simulation context.
 	// The snippet is set up with

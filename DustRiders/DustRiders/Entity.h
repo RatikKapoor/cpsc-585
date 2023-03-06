@@ -5,6 +5,7 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "Transform.h"
+#include <map>
 
 class Entity
 {
@@ -24,6 +25,8 @@ public:
 	Model *model;
 	ShaderProgram *shaderProgram;
 	glm::vec3 scale;
+
+	std::map<std::string, bool> flags;
 
 	Texture *texture;
 	unsigned int useMatInt;
