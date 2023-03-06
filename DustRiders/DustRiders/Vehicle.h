@@ -11,6 +11,7 @@
 #include "InputHandler.h"
 #include "PhysicsProvider.h"
 #include "PhysicsEntity.h"
+#include "RayBeam.h"
 
 using namespace snippetvehicle2;
 
@@ -38,7 +39,8 @@ public:
 					glm::vec3,
 					PhysicsProvider *,
 					PxVec3,
-					unsigned int);
+					unsigned int, RayBeam *);
+
 	virtual ~Vehicle() {}
 
 	void stepPhysics(double);
@@ -49,12 +51,14 @@ public:
 	void reset();
 	void suspend();
 	void restore();
+	void updateRayBeamPos();
 
 protected:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 	void stepPhysics(double, float, float);
 
+	RayBeam *rayGunBeam;
 
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";
