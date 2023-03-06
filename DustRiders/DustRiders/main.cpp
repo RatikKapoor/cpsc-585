@@ -175,7 +175,7 @@ int main()
 
 	MusicBuffer myMusic("sound/TownTheme.wav");
 	std::cout << "playing town theme music...\n";
-	// myMusic.Play();
+	myMusic.Play();
 
 	ALint state = AL_PLAYING;
 	std::cout << "playing sound\n";
