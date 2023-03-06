@@ -17,14 +17,13 @@ public:
 	virtual ~AIVehicle();
 
 	void stepPhysics(double);
-	std::vector<glm::vec3> path;
 
 private:
 	void handlePathfind();
 
 	bool isClose(glm::vec3, glm::vec3);
 
-	//Joystick* aiJS;
 	Pathfinder* pathfinder;
 	glm::vec3 dest;
+	bool shouldFindNewDest;
 };
