@@ -17,13 +17,20 @@ RayBeam::RayBeam(std::string n,
 void RayBeam::initBeam(PxVec3 pos)
 {
 
+  beamCallback = new RayBeamCallback;
+
+  gScene->setSimulationEventCallback(beamCallback);
+
   auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 10.0, 30.0), *gMaterial);
-  shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+
+  shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+  shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+  shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 
   PxTransform localTm(pos + posOffset);
   body = gPhysics->createRigidDynamic(localTm);
   body->setGlobalPose(localTm);
-  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
   body->attachShape(*shape);
   PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
   gScene->addActor(*body);
