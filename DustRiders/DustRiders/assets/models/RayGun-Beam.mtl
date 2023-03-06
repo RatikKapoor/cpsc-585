@@ -1,2 +1,16 @@
 # Blender 3.4.1 MTL File: 'FinalCarModel-Blue.blend'
 # www.blender.org
+
+newmtl ray-beam
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+map_Kd raygun-beam.png
+map_Ks raygun-beam.png
+map_Ke raygun-beam.png
