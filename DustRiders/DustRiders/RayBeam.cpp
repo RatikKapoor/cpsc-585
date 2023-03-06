@@ -15,11 +15,11 @@ RayBeam::RayBeam(std::string n,
 
 void RayBeam::initBeam(PxVec3 pos)
 {
-  auto shape = this->gPhysics->createShape(PxBoxGeometry(1.5, 5.0, 1.5), *gMaterial);
+  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 10), *gMaterial);
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
   PxTransform localTm(pos);
-  PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+  body = gPhysics->createRigidDynamic(localTm);
   body->setGlobalPose(localTm);
   body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
   body->attachShape(*shape);
