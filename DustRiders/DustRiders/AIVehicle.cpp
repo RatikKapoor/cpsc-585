@@ -9,8 +9,8 @@ AIVehicle::AIVehicle(std::string name,
 	unsigned int matIdx,
 	NavMesh* navMesh) : Vehicle(name, m, sp, s, pp, pos, matIdx)
 {
-	// this->aiJS = new Joystick(-1000, true);
 	this->pathfinder = new Pathfinder(navMesh);
+	this->shouldFindNewDest = true;
 }
 
 AIVehicle::~AIVehicle()
@@ -32,7 +32,14 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 
 void AIVehicle::handlePathfind()
 {
-	dest = this->path.front();
+	if (shouldFindNewDest) {
+		float random = ((float)rand()) / (float)RAND_MAX;
+		float r = random * 30.f;
+		float x = -15.f + r;
+
+		this->dest = glm::vec3(x, 0.f, dest.z + 50);
+		shouldFindNewDest = false;
+	}
 
 	glm::quat rotation = transform->rotation;
 	glm::mat4 rotationM = glm::toMat4(rotation);
@@ -74,13 +81,9 @@ void AIVehicle::handlePathfind()
 	auto accel = (double)std::rand() / RAND_MAX * 0.5;
 	gVehicle.mCommandState.throttle = accel;
 
-	if (isClose(transform->position, dest) && this->path.size() > 1)
+	if (isClose(transform->position, dest))
 	{
-		this->path.erase(this->path.begin());
-	}
-	if (this->path.size() < 2)
-	{
-		gVehicle.mCommandState.steer = 0.f;
+		this->shouldFindNewDest = true;
 	}
 }
 

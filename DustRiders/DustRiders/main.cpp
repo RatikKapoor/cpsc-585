@@ -98,15 +98,6 @@ int main()
 
 	// NavMesh
 	auto navMesh = new NavMesh();
-	std::vector<glm::vec3> aiPath{
-			glm::vec3(0, 0, 20),
-			glm::vec3(15, 0, 50),
-			glm::vec3(-15, 0, 100),
-			glm::vec3(5, 0, 150),
-			glm::vec3(20, 0, 200),
-			glm::vec3(-10, 0, 250),
-			glm::vec3(-10, 0, 300),
-			glm::vec3(-10, 0, 350) };
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
@@ -126,8 +117,7 @@ int main()
 	{
 		std::string name = "rock" + std::to_string(rockCount);
 		float random = ((float)rand()) / (float)RAND_MAX;
-		float diff = 20.f;
-		float r = random * diff;
+		float r = random * 20.f;
 		float x = -10.f + r;
 		ecs[name] = new Obstacle(name,
 			testRock,
@@ -143,7 +133,6 @@ int main()
 	// Vehicle references
 	auto playerVehicle = (Vehicle*)ecs["car"];
 	auto botVehicle1 = (AIVehicle*)ecs["car2"];
-	botVehicle1->path = aiPath;
 	// auto botVehicle2 = (Vehicle *)ecs["car3"];
 
 	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1 };
