@@ -1,17 +1,25 @@
 #pragma once
-#include "Entity.h"
+#include "PxPhysicsAPI.h"
 
-class RayBeam : public Entity
+#include "PhysicsEntity.h"
+#include "PhysicsProvider.h"
+
+using namespace physx;
+
+class RayBeam : public PhysicsEntity
 {
 public:
-  RayBeam(std::string n, Model *m, ShaderProgram *sp, glm::vec3 s)
-      : Entity(n, m, sp, s)
-  {
-    isActive = false;
-    shouldRender = false;
-  }
+  RayBeam(std::string n,
+          Model *m,
+          ShaderProgram *sp,
+          glm::vec3 s,
+          PhysicsProvider *pp,
+          PxVec3 pos,
+          unsigned int);
 
   virtual ~RayBeam(){};
-
   bool isActive;
+
+protected:
+  void initBeam(PxVec3 pos);
 };

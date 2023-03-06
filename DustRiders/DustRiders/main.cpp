@@ -30,12 +30,14 @@
 #include "AIVehicle.h"
 #include "Ground.h"
 #include "Obstacle.h"
+#include "RayBeam.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "MusicBuffer.h"
 #include "WindowCallbacks.h"
 #include "LogWriter.h"
+
 
 bool LogWriter::firstWriting = true;
 std::string LogWriter::logFileName = "latest_output.log";
@@ -107,7 +109,7 @@ int main()
 	// Adds ground plane
 	ecs["ground"] = new Ground("ground", groundPlane, carShader, glm::vec3(1.f));
 
-	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f));
+	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 1);
 	// Create main car
 	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
