@@ -99,7 +99,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	if (rayGunBeam != NULL)
 	{
-		rayGunBeam->transform->position = glm::vec3(initPos.x, initPos.y, initPos.z);
+		rayGunBeam->updatePos(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose(), this->transform);
 	}
 
 	return true;
@@ -267,7 +267,7 @@ void Vehicle::reset()
 
 	if (rayGunBeam != NULL)
 	{
-		rayGunBeam->transform = this->transform;
+		rayGunBeam->updatePos(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose(), this->transform);
 	}
 }
 
@@ -293,8 +293,6 @@ void Vehicle::updateRayBeamPos()
 
 	if (rayGunBeam != NULL)
 	{
-
-		rayGunBeam->body->setGlobalPose(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose());
-		rayGunBeam->transform = this->transform;
+		rayGunBeam->updatePos(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose(), this->transform);
 	}
 }
