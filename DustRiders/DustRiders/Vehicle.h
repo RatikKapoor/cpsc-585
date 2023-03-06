@@ -44,7 +44,7 @@ public:
 	virtual ~Vehicle() {}
 
 	void stepPhysics(double);
-	void stepPhysics(double timeStep, Joystick &js);
+	bool stepPhysics(double timeStep, Joystick &js);
 
 	void reloadTuning();
 
