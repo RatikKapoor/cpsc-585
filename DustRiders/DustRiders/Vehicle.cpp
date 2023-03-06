@@ -148,12 +148,23 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
-	if (js.getButton(Xbox::Button::XBOX_A))
+	if (js.getButtonRaw(Xbox::Button::XBOX_A))
 	{
-
-		std::cout << "Weapon Fired" << std::endl;
+		if (rayGunBeam != NULL)
+		{
+			rayGunBeam->shouldRender = true;
+		}
 		if (js.isPseudo())
+		{
 			js.releaseEnter();
+		}
+	}
+	else
+	{
+		if (rayGunBeam != NULL)
+		{
+			rayGunBeam->shouldRender = false;
+		}
 	}
 
 	if (js.getButton(Xbox::Button::XBOX_UP))
@@ -251,17 +262,17 @@ void Vehicle::suspend()
 	shouldRender = false; // Don't allow rendering to screen
 	if (rayGunBeam != NULL)
 	{
-		rayGunBeam->isActive = false;
+		rayGunBeam->shouldRender = false;
 	}
 }
 
 void Vehicle::restore()
 {
 	shouldRender = true; // Allow rendering to screen
-	if (rayGunBeam != NULL)
-	{
-		rayGunBeam->isActive = true;
-	}
+											 // if (rayGunBeam != NULL)
+											 // {
+											 // 	rayGunBeam->isActive = false;
+											 // }
 }
 void Vehicle::updateRayBeamPos()
 {
