@@ -54,6 +54,7 @@ public:
 	void updateRayBeamPos();
 
 protected:
+	bool wasReset;
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 	void stepPhysics(double, float, float);

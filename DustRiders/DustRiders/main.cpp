@@ -107,7 +107,7 @@ int main()
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f));
 	// Create main car
-	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
+	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
 
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh, NULL);
@@ -121,13 +121,16 @@ int main()
 		float random = ((float)rand()) / (float)RAND_MAX;
 		float r = random * 20.f;
 		float x = -10.f + r;
+		float random2 = ((float)rand()) / (float)RAND_MAX;
+		float r2 = random2 * 2.f;
+		float z = -1.f + r;
 		ecs[name] = new Obstacle(name,
-														 testRock,
-														 carShader,
-														 glm::vec3(1.f),
-														 physics,
-														 PxVec3(x, 0.f, dist),
-														 1);
+			testRock,
+			carShader,
+			glm::vec3(1.f),
+			physics,
+			PxVec3(x, 0.f, (rockCount % 3 == 0) ? dist + z : dist - z),
+			1);
 
 		rockCount++;
 	}
@@ -137,13 +140,13 @@ int main()
 	auto botVehicle1 = (AIVehicle*)ecs["car2"];
 	// auto botVehicle2 = (Vehicle *)ecs["car3"];
 
-	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1};
-	std::vector<Vehicle *> inactiveVehicles;
+	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1 };
+	std::vector<Vehicle*> inactiveVehicles;
 
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
 
-	SoundDevice *mysounddevice = SoundDevice::get();
+	SoundDevice* mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
 	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("../sound/laser-shoot.wav");
 
@@ -217,7 +220,7 @@ int main()
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
 
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						vehicle->restore();
 						vehicle->reset();
@@ -251,7 +254,7 @@ int main()
 				else // The game is active
 				{
 					// Vehicle physics
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
 						{
@@ -267,7 +270,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle *)vehicle)->stepPhysics(deltaT);
+							((AIVehicle*)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -276,8 +279,8 @@ int main()
 					}
 
 					// Updating camera focus based on z position of vehicles
-					Entity *newFocus = nullptr;
-					for (Vehicle *vehicle : vehicles)
+					Entity* newFocus = nullptr;
+					for (Vehicle* vehicle : vehicles)
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
@@ -286,7 +289,7 @@ int main()
 					glm::mat4 view = camera.getView();
 					for (int i = 0; i < vehicles.size(); i++)
 					{
-						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
+						glm::vec3 drawPos = perspective * view * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
@@ -321,7 +324,7 @@ int main()
 					}
 				}
 				physics->updatePhysics(deltaT);
-				for (Vehicle *v : vehicles)
+				for (Vehicle* v : vehicles)
 				{
 					v->updateRayBeamPos();
 				}

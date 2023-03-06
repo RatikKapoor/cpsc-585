@@ -22,22 +22,26 @@ AIVehicle::~AIVehicle()
 bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 {
 	auto threshold = 10;
+	auto dx = abs(b.x - a.x);
+	auto dy = abs(b.y - a.y);
+	auto dz = abs(b.z - a.z);
 
-	if (abs(b.x - a.x) < threshold &&
-			abs(b.y - a.y) < threshold &&
-			abs(b.z - a.z) < threshold)
+	auto dist = sqrt(dx * dx + dy * dy + dz * dz);
+
+	if (dist < threshold)
 		return true;
 	return false;
 }
 
 void AIVehicle::handlePathfind()
 {
-	if (shouldFindNewDest) {
+	if (shouldFindNewDest || wasReset) {
 		float random = ((float)rand()) / (float)RAND_MAX;
 		float r = random * 30.f;
 		float x = -15.f + r;
 
-		this->dest = glm::vec3(x, 0.f, dest.z + 50);
+		this->dest = glm::vec3(x, 0.f, wasReset ? 50 : dest.z + 50);
+		wasReset = false;
 		shouldFindNewDest = false;
 	}
 

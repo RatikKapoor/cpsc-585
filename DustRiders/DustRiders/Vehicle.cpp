@@ -230,6 +230,7 @@ void Vehicle::reloadTuning()
 
 void Vehicle::reset()
 {
+	wasReset = true;
 	shouldRender = true; // Allow rendering to screen
 
 	initMaterialFrictionTable();
