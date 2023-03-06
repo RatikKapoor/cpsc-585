@@ -290,8 +290,11 @@ void Vehicle::restore()
 }
 void Vehicle::updateRayBeamPos()
 {
+
 	if (rayGunBeam != NULL)
 	{
+
+		rayGunBeam->body->setGlobalPose(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose());
 		rayGunBeam->transform = this->transform;
 	}
 }
