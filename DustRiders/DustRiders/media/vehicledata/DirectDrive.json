@@ -1,6 +1,6 @@
 {
 	"ThrottleCommandResponseParams": {
-		"MaxResponse": 4000.0,
+		"MaxResponse": 2000.0,
 		"WheelResponseMultipliers": [
 			1.0,
 			1.0,
