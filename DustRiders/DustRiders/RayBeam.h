@@ -20,8 +20,11 @@ public:
   virtual ~RayBeam(){};
   bool isActive;
 
+  void updatePos(PxTransform, Transform *);
+
   PxRigidDynamic *body;
 
 protected:
   void initBeam(PxVec3 pos);
+  PxVec3 posOffset;
 };

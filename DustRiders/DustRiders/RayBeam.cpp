@@ -10,15 +10,17 @@ RayBeam::RayBeam(std::string n,
 {
   isActive = false;
   shouldRender = false;
+  posOffset = PxVec3(0.f, 5.1f, 33.9f);
   initBeam(pos);
 }
 
 void RayBeam::initBeam(PxVec3 pos)
 {
-  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 10), *gMaterial);
+
+  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 10.0, 30.0), *gMaterial);
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
-  PxTransform localTm(pos);
+  PxTransform localTm(pos + posOffset);
   body = gPhysics->createRigidDynamic(localTm);
   body->setGlobalPose(localTm);
   body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
@@ -28,4 +30,15 @@ void RayBeam::initBeam(PxVec3 pos)
   physicsProvider->AddEntity(body, this->transform);
 
   shape->release();
+}
+
+void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
+{
+
+  PxTransform beamRotation(PxTransform(posOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(posOffset));
+
+  PxTransform localPos(posOffset + vehiclePos.p);
+
+  this->body->setGlobalPose(localPos * beamRotation);
+  this->transform = tf;
 }
