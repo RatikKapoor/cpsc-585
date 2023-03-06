@@ -25,4 +25,5 @@ private:
 	Pathfinder* pathfinder;
 	glm::vec3 dest;
 	bool shouldFindNewDest;
+	int brakeCounter = 0;
 };

@@ -1,13 +1,14 @@
 #include "AIVehicle.h"
 #include "RayBeam.h"
+#include "LogWriter.h"
 
 AIVehicle::AIVehicle(std::string name,
-										 Model *m,
-										 ShaderProgram *sp,
-										 glm::vec3 s,
-										 PhysicsProvider *pp,
-										 PxVec3 pos,
-										 unsigned int matIdx, NavMesh *navMesh, RayBeam *rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
+	Model* m,
+	ShaderProgram* sp,
+	glm::vec3 s,
+	PhysicsProvider* pp,
+	PxVec3 pos,
+	unsigned int matIdx, NavMesh* navMesh, RayBeam* rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
 {
 	this->pathfinder = new Pathfinder(navMesh);
 	this->shouldFindNewDest = true;
@@ -90,13 +91,19 @@ void AIVehicle::handlePathfind()
 	}
 
 	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.4;
+	gVehicle.mCommandState.throttle = accel;
+
 	if (flags["beamHit"])
 	{
-		gVehicle.mCommandState.brakes[0] = 1;
 		flags["beamHit"] = false;
+		brakeCounter = 30;
+	}
+	if (brakeCounter > 0) {
+		gVehicle.mCommandState.brakes[0] = 1;
+		gVehicle.mCommandState.throttle = 0;
+		brakeCounter--;
 	}
 
-	gVehicle.mCommandState.throttle = accel;
 
 	if (isClose(transform->position, dest))
 	{
