@@ -1,5 +1,7 @@
 #include "Vehicle.h"
 #include "RayBeam.h"
+#include "SoundSource.h"
+#include "SoundBuffer.h"
 
 // Command gCommands[] =
 //		{
@@ -140,9 +142,9 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	gVehicle.step(timestep, gVehicleSimulationContext);
 }
 
-void Vehicle::stepPhysics(double timeStep, Joystick &js)
+bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 {
-
+	bool gunFired = false;
 	float axisThreshold = 0.15f;
 	const float *analogs = js.getAnalogs();
 
@@ -150,13 +152,17 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	if (js.getButtonRaw(Xbox::Button::XBOX_A))
 	{
+		if (js.getButton(Xbox::Button::XBOX_A))
+		{
+			gunFired = true;
+			if (js.isPseudo())
+			{
+				js.releaseEnter();
+			}
+		}
 		if (rayGunBeam != NULL)
 		{
 			rayGunBeam->shouldRender = true;
-		}
-		if (js.isPseudo())
-		{
-			js.releaseEnter();
 		}
 	}
 	else
@@ -201,6 +207,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
 	gVehicle.step(timeStep, gVehicleSimulationContext);
+	return gunFired;
 }
 
 void Vehicle::stepPhysics(double timeStep)

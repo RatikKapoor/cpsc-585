@@ -145,9 +145,9 @@ int main()
 
 	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
+	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("../sound/laser-shoot.wav");
 
 	SoundSource mySpeaker;
-	alSourcePlay(mySpeaker.Play(sound1));
 
 	MusicBuffer myMusic("../sound/TownTheme.wav");
 	std::cout << "playing town theme music...\n";
@@ -260,7 +260,10 @@ int main()
 
 						if (vehicle == playerVehicle)
 						{
-							vehicle->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS()));
+							if (vehicle->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS())))
+							{
+								alSourcePlay(mySpeaker.Play(raybeamFire));
+							}
 						}
 						else
 						{
