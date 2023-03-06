@@ -1,23 +1,43 @@
 #include "RayBeam.h"
+#include "LogWriter.h"
+
+void RayBeamCallback::onTrigger(PxTriggerPair *pairs, PxU32 count)
+{
+  for (PxU32 i = 0; i < count; i++)
+  {
+    // ignore pairs when shapes have been deleted
+    if (pairs[i].flags & (PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+      continue;
+
+    const char *shapeName = nullptr;
+
+    shapeName = pairs[i].otherActor->getName();
+
+    if (rb.shouldRender && shapeName != nullptr && std::string::npos != std::string(shapeName).find("car"))
+    {
+      ecs[shapeName]->flags["beamHit"] = true;
+      LogWriter::log(std::string(shapeName) + " triggered");
+    }
+  }
+}
 
 RayBeam::RayBeam(std::string n,
                  Model *m,
                  ShaderProgram *sp,
                  glm::vec3 s,
-                 PhysicsProvider *pp,
-                 PxVec3 pos = {0.f, 0.f, 0.f},
+                 PhysicsProvider *pp, EntityComponentSystem &ecs, PxVec3 pos = {0.f, 0.f, 0.f},
                  unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat)
 {
   isActive = false;
   shouldRender = false;
   posOffset = PxVec3(0.f, 5.1f, 33.9f);
-  initBeam(pos);
+  initBeam(pos, ecs);
 }
 
-void RayBeam::initBeam(PxVec3 pos)
+void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 {
 
-  beamCallback = new RayBeamCallback;
+  beamCallback = new RayBeamCallback(ecs, std::ref(*this));
 
   gScene->setSimulationEventCallback(beamCallback);
 

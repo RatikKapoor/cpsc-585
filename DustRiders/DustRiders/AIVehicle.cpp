@@ -2,12 +2,12 @@
 #include "RayBeam.h"
 
 AIVehicle::AIVehicle(std::string name,
-	Model* m,
-	ShaderProgram* sp,
-	glm::vec3 s,
-	PhysicsProvider* pp,
-	PxVec3 pos,
-	unsigned int matIdx, NavMesh* navMesh, RayBeam* rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
+										 Model *m,
+										 ShaderProgram *sp,
+										 glm::vec3 s,
+										 PhysicsProvider *pp,
+										 PxVec3 pos,
+										 unsigned int matIdx, NavMesh *navMesh, RayBeam *rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
 {
 	this->pathfinder = new Pathfinder(navMesh);
 	this->shouldFindNewDest = true;
@@ -35,12 +35,14 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 
 void AIVehicle::handlePathfind()
 {
-	if (transform->position.z > dest.z - 20) {
+	if (transform->position.z > dest.z - 20)
+	{
 		dest.z = transform->position.z;
 		shouldFindNewDest = true;
 	}
 
-	if (shouldFindNewDest || wasReset) {
+	if (shouldFindNewDest || wasReset)
+	{
 		float random = ((float)rand()) / (float)RAND_MAX;
 		float r = random * 20.f;
 		float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
@@ -88,6 +90,12 @@ void AIVehicle::handlePathfind()
 	}
 
 	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.4;
+	if (flags["beamHit"])
+	{
+		gVehicle.mCommandState.brakes[0] = 1;
+		flags["beamHit"] = false;
+	}
+
 	gVehicle.mCommandState.throttle = accel;
 
 	if (isClose(transform->position, dest))

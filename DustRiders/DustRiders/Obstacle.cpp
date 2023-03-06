@@ -21,6 +21,7 @@ void Obstacle::initObstacle(PxVec3 pos)
 	body->setGlobalPose(localTm);
 	body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 	body->attachShape(*shape);
+	body->setName((this->name).c_str());
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
 	gScene->addActor(*body);
 	physicsProvider->AddEntity(body, this->transform);
