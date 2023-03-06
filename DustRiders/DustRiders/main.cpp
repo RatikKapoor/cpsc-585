@@ -93,7 +93,9 @@ int main()
 
 	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
 	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
-	auto testRock = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock1.obj");
+	auto testRock1 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock1.obj");
+	auto testRock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
+	auto testRock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
 	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
@@ -110,38 +112,56 @@ int main()
 	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
 	// Add AI cars
-	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-4.f, 0.5f, 0.f), 4, navMesh, NULL);
-	// ecs["car3"] = new AIVehicle("car3", new Transform(), carModel, carShader, glm::vec3(1.f), physics, PxVec3(4.f, 0.5f, 0.f), 3, navMesh);
+	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, navMesh, NULL);
+	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, navMesh, NULL);
+	//ecs["car4"] = new AIVehicle("car4", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 1, navMesh, NULL);
+	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
+	
+	// Vehicle references
+	auto playerVehicle = (Vehicle*)ecs["car"];
+	auto botVehicle1 = (AIVehicle*)ecs["car2"];
+	auto botVehicle2 = (AIVehicle*)ecs["car3"];
+	//auto botVehicle3 = (AIVehicle*)ecs["car4"];
+	//auto botVehicle4 = (AIVehicle*)ecs["car5"];
+
+	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1, botVehicle2};
+	std::vector<Vehicle *> inactiveVehicles;
 
 	// Add obstacles
 	int rockCount = 0;
-	for (float dist = 0; dist <= 1000.5f; dist += 20.0f)
+	for (float dist = 30; dist <= 1000.5f; dist += 20.0f)
 	{
 		std::string name = "rock" + std::to_string(rockCount);
 		float random = ((float)rand()) / (float)RAND_MAX;
-		float r = random * 20.f;
-		float x = -10.f + r;
+		float r = random * 40.f;
+		float x = -20.f + r;
 		float random2 = ((float)rand()) / (float)RAND_MAX;
 		float r2 = random2 * 2.f;
 		float z = -1.f + r;
+		Model* rock;
+		switch (rockCount % 3)
+		{
+		case 0:
+			rock = testRock1;
+			break;
+		case 1:
+			rock = testRock2;
+			break;
+		case 2:
+		default:
+			rock = testRock3;
+			break;
+		}
 		ecs[name] = new Obstacle(name,
-														 testRock,
-														 carShader,
-														 glm::vec3(1.f),
-														 physics,
-														 PxVec3(x, 0.f, (rockCount % 3 == 0) ? dist + z : dist - z),
-														 1);
+			rock,
+			carShader,
+			glm::vec3(1.f),
+			physics,
+			PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
+			1);
 
 		rockCount++;
 	}
-
-	// Vehicle references
-	auto playerVehicle = (Vehicle *)ecs["car"];
-	auto botVehicle1 = (AIVehicle *)ecs["car2"];
-	// auto botVehicle2 = (Vehicle *)ecs["car3"];
-
-	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1};
-	std::vector<Vehicle *> inactiveVehicles;
 
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
