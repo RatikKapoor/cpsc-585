@@ -179,6 +179,7 @@
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="RayBeam.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="PhysicsProvider.h" />
     <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="RayBeam.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Shader.h" />
