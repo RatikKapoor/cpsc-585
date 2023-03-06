@@ -81,6 +81,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.gravity = gGravity;
 	gVehicleSimulationContext.physxScene = gScene;
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(28);
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)

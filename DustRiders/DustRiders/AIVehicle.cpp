@@ -2,12 +2,12 @@
 #include "RayBeam.h"
 
 AIVehicle::AIVehicle(std::string name,
-										 Model *m,
-										 ShaderProgram *sp,
-										 glm::vec3 s,
-										 PhysicsProvider *pp,
-										 PxVec3 pos,
-										 unsigned int matIdx, NavMesh *navMesh, RayBeam *rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
+	Model* m,
+	ShaderProgram* sp,
+	glm::vec3 s,
+	PhysicsProvider* pp,
+	PxVec3 pos,
+	unsigned int matIdx, NavMesh* navMesh, RayBeam* rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
 {
 	this->pathfinder = new Pathfinder(navMesh);
 	this->shouldFindNewDest = true;
@@ -35,12 +35,17 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 
 void AIVehicle::handlePathfind()
 {
+	if (transform->position.z > dest.z - 20) {
+		dest.z = transform->position.z;
+		shouldFindNewDest = true;
+	}
+
 	if (shouldFindNewDest || wasReset) {
 		float random = ((float)rand()) / (float)RAND_MAX;
-		float r = random * 30.f;
-		float x = -15.f + r;
+		float r = random * 20.f;
+		float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
 
-		this->dest = glm::vec3(x, 0.f, wasReset ? 50 : dest.z + 50);
+		this->dest = glm::vec3(x, 0.f, wasReset ? 100 : dest.z + 100);
 		wasReset = false;
 		shouldFindNewDest = false;
 	}
@@ -74,15 +79,15 @@ void AIVehicle::handlePathfind()
 		cross.normalize();
 		if (cross.y < 0)
 		{
-			gVehicle.mCommandState.steer = 1.f;
+			gVehicle.mCommandState.steer = 0.2f;
 		}
 		else
 		{
-			gVehicle.mCommandState.steer = -1.f;
+			gVehicle.mCommandState.steer = -0.2f;
 		}
 	}
 
-	auto accel = (double)std::rand() / RAND_MAX * 0.5;
+	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.4;
 	gVehicle.mCommandState.throttle = accel;
 
 	if (isClose(transform->position, dest))
@@ -94,52 +99,5 @@ void AIVehicle::handlePathfind()
 void AIVehicle::stepPhysics(double timeStep)
 {
 	handlePathfind();
-
-	// float axisThreshold = 0.15f;
-	// const float *analogs = this->aiJS->getAnalogs();
-
-	// gVehicle.mCommandState.nbBrakes = 1;
-
-	// if (aiJS->getButton(Xbox::Button::XBOX_A))
-	//{
-
-	//	std::cout << "Weapon Fired" << std::endl;
-	//	if (aiJS->isPseudo())
-	//		aiJS->releaseEnter();
-	//}
-
-	// if (aiJS->getButton(Xbox::Button::XBOX_UP))
-	//{
-	//	if (aiJS->isPseudo())
-	//	{
-	//		aiJS->releaseR();
-	//	}
-	// }
-
-	// float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
-	// physx::vehicle2::PxVehicleDirectDriveTransmissionCommandState::Enum gearState = gVehicle.mTransmissionCommandState.gear;
-	// gVehicle.mTransmissionCommandState.gear = gearState;
-
-	//// By default, no throttle and turn on the brakes to slow down (and stop) the vehicle
-	// float throttle = 0.f;
-	// int brake = 1;
-
-	// if (aiJS->getButtonRaw(Xbox::Button::XBOX_LB))
-	//{
-	//	gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
-	// }
-	// else
-	//{
-	//	gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
-	// }
-
-	// throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
-	// throttle /= 2.f;
-	// brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
-
-	// gVehicle.mCommandState.throttle = throttle;
-	// gVehicle.mCommandState.brakes[0] = brake;
-
-	// gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 }
