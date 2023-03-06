@@ -146,13 +146,13 @@ int main()
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
 
-	SoundDevice* mysounddevice = SoundDevice::get();
-	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("../sound/blessing.ogg");
-	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("../sound/laser-shoot.wav");
+	SoundDevice *mysounddevice = SoundDevice::get();
+	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("sound/blessing.ogg");
+	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
 	SoundSource mySpeaker;
 
-	MusicBuffer myMusic("../sound/TownTheme.wav");
+	MusicBuffer myMusic("sound/TownTheme.wav");
 	std::cout << "playing town theme music...\n";
 	myMusic.Play();
 

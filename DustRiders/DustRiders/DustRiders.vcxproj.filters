@@ -26,6 +26,9 @@
     <Filter Include="Source Files\Entities">
       <UniqueIdentifier>{cc46bb93-1f34-4c43-b20f-59552752976c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sound Files">
+      <UniqueIdentifier>{d5f36f17-9a8b-4609-b6df-738f4f5f0e3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Overlay.cpp">
@@ -320,21 +323,23 @@
     <None Include="basic.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="car.frag" />
-    <None Include="car.vert" />
-    <None Include="debug.frag" />
-    <None Include="debug.vert" />
+    <None Include="car.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="car.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="debug.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="debug.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\models\test-rock-base.png">
       <Filter>Models</Filter>
     </Image>
-    <Image Include="assets\models\better-car-v2.mtl" />
-    <Image Include="assets\models\ground-plane.mtl" />
-    <Image Include="assets\models\test-obstacle-rock.mtl" />
-    <Image Include="assets\models\better-car-v2.obj" />
-    <Image Include="assets\models\ground-plane.obj" />
-    <Image Include="assets\models\test-obstacle-rock.obj" />
     <Image Include="assets\models\concrete.jpg">
       <Filter>Resource Files</Filter>
     </Image>
@@ -350,5 +355,37 @@
     <Image Include="assets\models\GoodCarSpecular.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\models\better-car-v2.mtl">
+      <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\better-car-v2.obj">
+      <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\ground-plane.mtl">
+      <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\ground-plane.obj">
+      <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\test-obstacle-rock.mtl">
+      <Filter>Models</Filter>
+    </Image>
+    <Image Include="assets\models\test-obstacle-rock.obj">
+      <Filter>Models</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sound\laser-shoot.wav">
+      <Filter>Sound Files</Filter>
+    </Media>
+    <Media Include="sound\TownTheme.wav">
+      <Filter>Sound Files</Filter>
+    </Media>
+    <Media Include="sound\blessing.ogg">
+      <Filter>Sound Files</Filter>
+    </Media>
+    <Media Include="sound\spell.ogg">
+      <Filter>Sound Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
