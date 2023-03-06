@@ -138,7 +138,7 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		std::string strDir = "../DustRiders/assets/models/";
+		std::string strDir = "assets/models/";
 		strDir.append(std::string(str.C_Str()));
 		Texture texture(strDir.c_str(), GL_LINEAR);
 		texture.setType(typeName);

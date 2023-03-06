@@ -315,6 +315,12 @@
     <ClInclude Include="RayBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LogWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowCallbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".\\Main.frag">
