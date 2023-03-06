@@ -1,13 +1,13 @@
 #include "AIVehicle.h"
+#include "RayBeam.h"
 
 AIVehicle::AIVehicle(std::string name,
-	Model* m,
-	ShaderProgram* sp,
-	glm::vec3 s,
-	PhysicsProvider* pp,
-	PxVec3 pos,
-	unsigned int matIdx,
-	NavMesh* navMesh) : Vehicle(name, m, sp, s, pp, pos, matIdx)
+										 Model *m,
+										 ShaderProgram *sp,
+										 glm::vec3 s,
+										 PhysicsProvider *pp,
+										 PxVec3 pos,
+										 unsigned int matIdx, NavMesh *navMesh, RayBeam *rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
 {
 	this->pathfinder = new Pathfinder(navMesh);
 	this->shouldFindNewDest = true;
@@ -24,8 +24,8 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 	auto threshold = 10;
 
 	if (abs(b.x - a.x) < threshold &&
-		abs(b.y - a.y) < threshold &&
-		abs(b.z - a.z) < threshold)
+			abs(b.y - a.y) < threshold &&
+			abs(b.z - a.z) < threshold)
 		return true;
 	return false;
 }
