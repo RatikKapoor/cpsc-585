@@ -4,6 +4,8 @@
 #include <list>
 #include <iostream>
 
+#include "LogWriter.h"
+
 std::map<int, Joystick> JoystickHandler::jsMap;
 
 std::string Joystick::buttonToStr(int button)
@@ -164,11 +166,11 @@ bool Joystick::updateAllInputs()
 
     if ((!buttons[i]) && (latestButtons[i]))
     {
-      wasPressed[i] = true;
+      wasPressed[i] = 1;
     }
     else
     {
-      wasPressed[i] = false;
+      wasPressed[i] = 0;
     }
     buttons[i] = latestButtons[i];
   }
