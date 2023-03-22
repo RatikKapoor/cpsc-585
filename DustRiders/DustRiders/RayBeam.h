@@ -27,6 +27,8 @@ public:
 
   RayBeamCallback *beamCallback;
 
+  std::string castRayBeam();
+
 protected:
   void initBeam(PxVec3 pos, EntityComponentSystem &ecs);
   PxVec3 posOffset;
