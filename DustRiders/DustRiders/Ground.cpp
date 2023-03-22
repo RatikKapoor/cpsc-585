@@ -53,9 +53,10 @@ PxShape *Ground::setupTriangleMesh()
     }
   }
 
+  // Need the values to be in a contiguous array, which vectors were not providing.
+  // The unique ptr here makes sure that as soon as the method is out of scope (and the mesh is cooked) that it is deleted.
   std::unique_ptr<PxVec3> vertArr = std::unique_ptr<PxVec3>(new PxVec3[meshVerts.size()]);
   std::copy(meshVerts.begin(), meshVerts.end(), vertArr.get());
-
   std::unique_ptr<PxU32> indArr = std::unique_ptr<PxU32>(new PxU32[meshInds.size()]);
   std::copy(meshInds.begin(), meshInds.end(), indArr.get());
 
