@@ -1,5 +1,6 @@
 #include "RayBeam.h"
 #include "LogWriter.h"
+#include "AIVehicle.h"
 
 void RayBeamCallback::onTrigger(PxTriggerPair *pairs, PxU32 count)
 {
@@ -16,6 +17,7 @@ void RayBeamCallback::onTrigger(PxTriggerPair *pairs, PxU32 count)
     if (rb.shouldRender && shapeName != nullptr && std::string::npos != std::string(shapeName).find("car"))
     {
       ecs[shapeName]->flags["beamHit"] = true;
+
       LogWriter::log(std::string(shapeName) + " triggered");
     }
   }
@@ -37,15 +39,15 @@ RayBeam::RayBeam(std::string n,
 void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 {
 
-  beamCallback = new RayBeamCallback(ecs, std::ref(*this));
+  // beamCallback = new RayBeamCallback(ecs, std::ref(*this));
 
-  gScene->setSimulationEventCallback(beamCallback);
+  // gScene->setSimulationEventCallback(beamCallback);
 
   auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 10.0, 30.0), *gMaterial);
 
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-  shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-  shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+  shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+  shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
   PxTransform localTm(pos + posOffset);
   body = gPhysics->createRigidDynamic(localTm);
@@ -69,4 +71,27 @@ void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 
   this->body->setGlobalPose(localPos * beamRotation);
   this->transform = tf;
+
+  PxVec3 beamOrigin = posOffset + vehiclePos.p;
+  PxVec3 beamDirection = (PxTransform(beamOrigin) * beamRotation).p;
+  beamDirection.normalize();
+}
+
+std::string RayBeam::castRayBeam()
+{
+  LogWriter::log("Raycast fired");
+
+  std::string closestHit = "";
+  PxRaycastBuffer hit;
+
+  PxVec3 beamDir = this->body->getGlobalPose().p;
+  beamDir.normalize();
+  bool hitStatus = gScene->raycast(this->body->getGlobalPose().p, beamDir, 1000.f, hit);
+  LogWriter::log("Hit status: " + std::to_string(hitStatus));
+  if (hitStatus)
+  {
+    closestHit = hit.block.actor->getName();
+    LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+  }
+  return closestHit;
 }

@@ -183,6 +183,7 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 			if (rayGunBeam != NULL)
 			{
 				rayGunBeam->shouldRender = true;
+				rayGunBeam->castRayBeam();
 			}
 			rayGunBeam->isActive = true;
 		}
