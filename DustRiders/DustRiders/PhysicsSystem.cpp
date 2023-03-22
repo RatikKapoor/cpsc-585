@@ -25,6 +25,12 @@ PhysicsSystem::PhysicsSystem()
 		std::cout << "PxCreatePhysics failed!" << std::endl;
 	}
 
+	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale());
+	if (!gCooking)
+	{
+		std::cout << "PxCreateCooking failed!" << std::endl;
+	}
+
 	// Scene
 	physx::PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 	sceneDesc.gravity = physx::PxVec3(0.0f, -25.f, 0.0f);

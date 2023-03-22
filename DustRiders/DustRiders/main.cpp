@@ -112,12 +112,12 @@ int main()
 	auto testRock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
 	auto testRock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
 	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
-	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
+	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/test-ground.obj");
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", groundPlane, debugShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 1);
+	ecs["ground"] = new Ground("ground", groundPlane, debugShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
@@ -251,7 +251,6 @@ int main()
 				{
 
 					int restoreCount = 0;
-					LogWriter::log("Before reset: " + std::to_string(vehicles.size()) + " vehicles");
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
 
@@ -330,7 +329,6 @@ int main()
 
 						if (drawPos.y / drawPos.z < -1.1f)
 						{
-							LogWriter::log(vehicles[i]->name + "(y, z) = (" + std::to_string(drawPos.y) + ", " + std::to_string(drawPos.z) + "), y/z = " + std::to_string(drawPos.y / drawPos.z));
 							// Vehicle has lost the game
 							if (vehicles[i] == playerVehicle)
 							{
@@ -344,8 +342,6 @@ int main()
 								vehicles[i]->suspend();
 								inactiveVehicles.push_back(vehicles[i]);
 								vehicles.erase(vehicles.begin() + i);
-
-								LogWriter::log("Suspended " + inactiveVehicles.back()->name);
 
 								if (vehicles.size() == 1)
 								{
