@@ -117,7 +117,7 @@ int main()
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", groundPlane, carShader, glm::vec3(1.f));
+	ecs["ground"] = new Ground("ground", groundPlane, debugShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 1);
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
@@ -130,11 +130,11 @@ int main()
 	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
 
 	// Vehicle references
-	auto playerVehicle = (Vehicle*)ecs["car"];
-	auto botVehicle1 = (AIVehicle*)ecs["car2"];
-	auto botVehicle2 = (AIVehicle*)ecs["car3"];
-	//auto botVehicle3 = (AIVehicle*)ecs["car4"];
-	//auto botVehicle4 = (AIVehicle*)ecs["car5"];
+	auto playerVehicle = (Vehicle *)ecs["car"];
+	auto botVehicle1 = (AIVehicle *)ecs["car2"];
+	auto botVehicle2 = (AIVehicle *)ecs["car3"];
+	// auto botVehicle3 = (AIVehicle*)ecs["car4"];
+	// auto botVehicle4 = (AIVehicle*)ecs["car5"];
 
 	std::vector<Vehicle*> vehicles{
 		playerVehicle,
@@ -154,7 +154,7 @@ int main()
 		float random2 = ((float)rand()) / (float)RAND_MAX;
 		float r2 = random2 * 2.f;
 		float z = -1.f + r;
-		Model* rock;
+		Model *rock;
 		switch (rockCount % 3)
 		{
 		case 0:
@@ -169,12 +169,12 @@ int main()
 			break;
 		}
 		ecs[name] = new Obstacle(name,
-			rock,
-			carShader,
-			glm::vec3(1.f),
-			physics,
-			PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
-			1);
+														 rock,
+														 carShader,
+														 glm::vec3(1.f),
+														 physics,
+														 PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
+														 1);
 
 		rockCount++;
 	}
