@@ -46,6 +46,14 @@
 #include "ChunkHandler.h"
 
 #pragma endregion
+// Disables death, for testing
+#ifdef _DEBUG
+#define NO_DEATH
+#endif
+
+bool LogWriter::firstWriting = true;
+std::string LogWriter::logFileName = "latest_output.log";
+std::ofstream LogWriter::logFile;
 
 int main()
 {
@@ -126,8 +134,13 @@ int main()
 	// Add obstacles
 	ObstacleHandler::renderObstacles(ecs, physics);
 
+#ifndef NO_DEATH
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0);
+	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 125.0);
+#else
+	// Start by focusing on the Player Vehicle
+	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(30.0f), 125.0);
+#endif
 
 	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
@@ -298,13 +311,18 @@ int main()
 						stateHandle.setRState(StateHandler::ReloadState::None);
 					}
 
-					// Updating camera focus based on z position of vehicles
+// Updating camera focus based on z position of vehicles
+#ifndef NO_DEATH
 					Entity *newFocus = nullptr;
 					for (Vehicle *vehicle : vehicles)
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
 					ChunkHandler::updateChunks(newFocus);
+#else
+					camera.setFocusEntity(playerVehicle);
+					ChunkHandler::updateChunks(playerVehicle);
+#endif
 
 					glm::mat4 perspective = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.01f, 1000.f);
 					glm::mat4 view = camera.getView();
@@ -314,6 +332,7 @@ int main()
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
+#ifndef NO_DEATH
 						if (drawPos.y / drawPos.z < -1.1f)
 						{
 							// Vehicle has lost the game
@@ -339,6 +358,7 @@ int main()
 								}
 							}
 						}
+#endif
 					}
 				}
 				physics->updatePhysics(deltaT);
