@@ -117,7 +117,7 @@ int main()
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", groundPlane, debugShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
+	ecs["ground"] = new Ground("ground", groundPlane, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
