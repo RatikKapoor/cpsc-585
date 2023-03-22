@@ -1,12 +1,24 @@
 #pragma once
 
-#include "Entity.h"
+#include "PxPhysicsAPI.h"
 
-class Ground : public Entity {
+#include "PhysicsEntity.h"
+#include "PhysicsProvider.h"
+
+using namespace physx;
+
+class Ground : public PhysicsEntity
+{
 public:
-	Ground(std::string n, Model *m, ShaderProgram *sp, glm::vec3 s)
-		: Entity(n, m, sp, s)
-	{}
-
+	Ground(std::string,
+				 Model *,
+				 ShaderProgram *,
+				 glm::vec3,
+				 PhysicsProvider *,
+				 PxVec3,
+				 unsigned int);
 	virtual ~Ground() {}
+
+protected:
+	void initGround(PxVec3);
 };
