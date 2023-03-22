@@ -15,7 +15,7 @@ PhysicsSystem::PhysicsSystem()
 
 	// PVD
 	gPvd = PxCreatePvd(*gFoundation);
-	physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+	physx::PxPvdTransport *transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 	gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
 
 	// Physics
@@ -34,7 +34,7 @@ PhysicsSystem::PhysicsSystem()
 	gScene = gPhysics->createScene(sceneDesc);
 
 	// Prep PVD
-	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+	physx::PxPvdSceneClient *pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
 	{
 		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
@@ -47,7 +47,7 @@ PhysicsSystem::PhysicsSystem()
 	groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
 	for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
 	{
-		PxShape* shape = NULL;
+		PxShape *shape = NULL;
 		groundPlane->getShapes(&shape, 1, i);
 		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
@@ -58,17 +58,17 @@ PhysicsSystem::PhysicsSystem()
 	PxInitVehicleExtension(*gFoundation);
 
 	//// Define a box
-	//float halfLen = 0.5f;
-	//physx::PxShape* shape = gPhysics->createShape(physx::PxBoxGeometry(halfLen, halfLen, halfLen), *gMaterial);
-	//physx::PxU32 size = 30;
-	//physx::PxTransform tran(physx::PxVec3(0));
+	// float halfLen = 0.5f;
+	// physx::PxShape* shape = gPhysics->createShape(physx::PxBoxGeometry(halfLen, halfLen, halfLen), *gMaterial);
+	// physx::PxU32 size = 30;
+	// physx::PxTransform tran(physx::PxVec3(0));
 
 	//// Save some space for all the boxes in the scene
-	//rigidDynamicList.reserve(465);
-	//transformList.reserve(465);
+	// rigidDynamicList.reserve(465);
+	// transformList.reserve(465);
 
 	//// Create a pyramid of physics-enabled boxes
-	//for (physx::PxU32 i = 0; i < size; i++)
+	// for (physx::PxU32 i = 0; i < size; i++)
 	//{
 	//	for (physx::PxU32 j = 0; j < size - i; j++)
 	//	{
@@ -86,28 +86,26 @@ PhysicsSystem::PhysicsSystem()
 	//}
 
 	//// Clean up
-	//shape->release();
+	// shape->release();
 
 	// Initialize transforms;
 	updateTransforms();
 }
 
-//physx::PxVec3 PhysicsSystem::getPosition()
+// physx::PxVec3 PhysicsSystem::getPosition()
 //{
 //	// Get the global position data from a physics collider as a vec3
 //	physx::PxVec3 position = rigidDynamicList[50]->getGlobalPose().p;
 //
 //	return position;
-//}
-
-
+// }
 
 void PhysicsSystem::updatePhysics(double dt)
 {
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
 
-	this->updateTransforms();	
+	this->updateTransforms();
 }
 
 void PhysicsSystem::updateTransforms()
@@ -127,22 +125,32 @@ void PhysicsSystem::updateTransforms()
 	}
 }
 
-physx::PxPhysics* PhysicsSystem::GetPxPhysics()
+physx::PxPhysics *PhysicsSystem::GetPxPhysics()
 {
 	return this->gPhysics;
 }
 
-physx::PxMaterial* PhysicsSystem::GetPxMaterial()
+physx::PxMaterial *PhysicsSystem::GetPxMaterial()
 {
 	return this->gMaterial;
 }
 
-physx::PxScene* PhysicsSystem::GetPxScene() 
+physx::PxScene *PhysicsSystem::GetPxScene()
 {
 	return this->gScene;
 }
 
-void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, Transform* t)
+physx::PxFoundation *PhysicsSystem::GetPxFoundation()
+{
+	return this->gFoundation;
+}
+
+physx::PxCooking *PhysicsSystem::GetPxCooking()
+{
+	return this->gCooking;
+}
+
+void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, Transform *t)
 {
 	this->rigidDynamicList.push_back(r);
 	this->transformList.emplace_back(t);
