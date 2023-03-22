@@ -1,4 +1,4 @@
-# Blender 3.4.1 MTL File: 'ground-plane.blend'
+# Blender 3.4.1 MTL File: 'None'
 # www.blender.org
 
 newmtl Material.001
@@ -11,6 +11,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-map_Kd concrete.jpg
+map_Kd test-sand.png
 map_Ks no-emission.jpg
 map_Ke no-emission.jpg
