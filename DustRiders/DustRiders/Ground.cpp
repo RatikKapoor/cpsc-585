@@ -15,18 +15,8 @@ Ground::Ground(std::string n,
 void Ground::initGround(PxVec3 pos)
 {
 
-  auto triShape = setupTriangleMesh();
+  auto shape = setupTriangleMesh();
 
-  if (!triShape)
-  {
-    LogWriter::log("Ground triangle shape not created.");
-  }
-  else
-  {
-    LogWriter::log("Ground triangle mesh successfully created");
-  }
-
-  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.5, 0.5, 0.5), *gMaterial);
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
   PxTransform localTm(pos);
@@ -35,10 +25,8 @@ void Ground::initGround(PxVec3 pos)
   body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
   body->attachShape(*shape);
   body->setName((this->name).c_str());
-  PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
   gScene->addActor(*body);
   physicsProvider->AddEntity(body, this->transform);
-
   shape->release();
 }
 
@@ -90,7 +78,7 @@ PxShape *Ground::setupTriangleMesh()
   PxDefaultMemoryInputData readBuf(writeBuf.getData(), writeBuf.getSize());
   PxTriangleMesh *groundMesh = gPhysics->createTriangleMesh(readBuf);
 
-  PxTriangleMeshGeometry groundGeom = PxTriangleMeshGeometry(groundMesh, PxMeshScale(10));
+  PxTriangleMeshGeometry groundGeom = PxTriangleMeshGeometry(groundMesh, PxMeshScale(1.0));
 
   return gPhysics->createShape(groundGeom, *gMaterial, true);
 }
