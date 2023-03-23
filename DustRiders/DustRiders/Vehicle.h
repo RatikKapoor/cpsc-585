@@ -52,6 +52,7 @@ public:
 	void suspend();
 	void restore();
 	void updateRayBeamPos();
+	void saveLocation();
 
 protected:
 	bool wasReset;
@@ -84,4 +85,7 @@ protected:
 	PxActorFlags initialActorFlags;
 
 	PxVec3 initPos;
+
+private:
+	unsigned long iteration = 0;
 };

@@ -450,3 +450,5 @@ FodyWeavers.xsd
 
 
 !DustRiders/DustRiders/assets/models/*.obj
+
+location_writer_output.json

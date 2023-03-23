@@ -1,3 +1,5 @@
+#pragma region Includes
+
 #include <iostream>
 
 #include <PxPhysicsAPI.h>
@@ -37,10 +39,22 @@
 #include "MusicBuffer.h"
 #include "WindowCallbacks.h"
 #include "LogWriter.h"
+#include "LocationWriter.h"
+
+#pragma endregion
+
+#pragma region Static Initializations
 
 bool LogWriter::firstWriting = true;
 std::string LogWriter::logFileName = "latest_output.log";
 std::ofstream LogWriter::logFile;
+
+bool LocationWriter::firstWriting = true;
+std::string LocationWriter::logFileName = "location_writer_output.json";
+std::ofstream LocationWriter::logFile;
+std::vector<physx::vehicle2::PxVehicleCommandState> LocationWriter::states;
+
+#pragma endregion
 
 int main()
 {
@@ -110,14 +124,14 @@ int main()
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
-	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
+	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
 
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, navMesh, NULL);
 	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, navMesh, NULL);
 	//ecs["car4"] = new AIVehicle("car4", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 1, navMesh, NULL);
 	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
-	
+
 	// Vehicle references
 	auto playerVehicle = (Vehicle*)ecs["car"];
 	auto botVehicle1 = (AIVehicle*)ecs["car2"];
@@ -125,8 +139,8 @@ int main()
 	//auto botVehicle3 = (AIVehicle*)ecs["car4"];
 	//auto botVehicle4 = (AIVehicle*)ecs["car5"];
 
-	std::vector<Vehicle *> vehicles{playerVehicle, botVehicle1, botVehicle2};
-	std::vector<Vehicle *> inactiveVehicles;
+	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1, botVehicle2 };
+	std::vector<Vehicle*> inactiveVehicles;
 
 	// Add obstacles
 	int rockCount = 0;
@@ -165,9 +179,9 @@ int main()
 	}
 
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
 
-	SoundDevice *mysounddevice = SoundDevice::get();
+	SoundDevice* mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("sound/blessing.ogg");
 	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
@@ -240,7 +254,7 @@ int main()
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
 
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						vehicle->restore();
 						vehicle->reset();
@@ -274,7 +288,7 @@ int main()
 				else // The game is active
 				{
 					// Vehicle physics
-					for (Vehicle *vehicle : vehicles)
+					for (Vehicle* vehicle : vehicles)
 					{
 						if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
 						{
@@ -290,7 +304,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle *)vehicle)->stepPhysics(deltaT);
+							((AIVehicle*)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -299,8 +313,8 @@ int main()
 					}
 
 					// Updating camera focus based on z position of vehicles
-					Entity *newFocus = nullptr;
-					for (Vehicle *vehicle : vehicles)
+					Entity* newFocus = nullptr;
+					for (Vehicle* vehicle : vehicles)
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
@@ -309,7 +323,7 @@ int main()
 					glm::mat4 view = camera.getView();
 					for (int i = 0; i < vehicles.size(); i++)
 					{
-						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
+						glm::vec3 drawPos = perspective * view * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
@@ -344,10 +358,13 @@ int main()
 					}
 				}
 				physics->updatePhysics(deltaT);
-				for (Vehicle *v : vehicles)
+				for (Vehicle* v : vehicles)
 				{
 					v->updateRayBeamPos();
 				}
+#ifdef _DEBUG
+				playerVehicle->saveLocation(); // Save player location history to json
+#endif // _DEBUG
 
 				window.swapBuffers();
 
@@ -360,6 +377,8 @@ int main()
 		}
 	}
 	window.close();
+
+	LocationWriter::write();
 
 	overlay.Cleanup();
 
