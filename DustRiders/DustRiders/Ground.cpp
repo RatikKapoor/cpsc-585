@@ -20,13 +20,11 @@ void Ground::initGround(PxVec3 pos)
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
   PxTransform localTm(pos);
-  PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+  PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
   body->setGlobalPose(localTm);
-  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
   body->attachShape(*shape);
   body->setName((this->name).c_str());
   gScene->addActor(*body);
-  physicsProvider->AddEntity(body, this->transform);
   shape->release();
 }
 
