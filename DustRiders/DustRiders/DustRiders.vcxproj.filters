@@ -38,127 +38,37 @@
     <Filter Include="Header Files\Sound">
       <UniqueIdentifier>{95c53532-efa6-416b-b7f3-f4c10a3e9e6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sound">
+      <UniqueIdentifier>{9c1b4d85-9857-4827-ab33-85b0db5d2263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Window &amp; Render">
+      <UniqueIdentifier>{8c8d5be1-82a3-4534-bb4a-cfa091048b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Vehicle Physx">
+      <UniqueIdentifier>{c2d22973-641c-4e90-a60e-a54f6db45799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Log">
+      <UniqueIdentifier>{6bdef215-aaa3-46f0-b5e8-ce8f6a18d0a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{52264467-6cc5-4bfa-a554-665ba292ac39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{73752a11-5ef2-4e82-866a-0e32dce1751d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Handlers">
+      <UniqueIdentifier>{8e9c2565-63a8-4859-802f-706fb0bf54e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Handlers">
+      <UniqueIdentifier>{334b5ea3-3f84-4cd8-b773-7e6c97d26a68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Overlay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLDebug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLHandles.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderingSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetrender\SnippetCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetrender\SnippetFontRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetrender\SnippetRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\base\Base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\directdrivetrain\DirectDrivetrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\enginedrivetrain\EngineDrivetrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\physxintegration\PhysXIntegration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\serialization\BaseSerialization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\serialization\DirectDrivetrainSerialization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\serialization\EngineDrivetrainSerialization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\serialization\SerializationCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2common\SnippetVehicleHelpers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleDirectDrive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ElementBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vehicle.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="ECS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StateHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NavMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Pathfinder.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AIVehicle.cpp">
       <Filter>Source Files\Entities</Filter>
@@ -166,39 +76,126 @@
     <ClCompile Include="Obstacle.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="SoundBuffer.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundDevice.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSource.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicBuffer.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\serialization\BaseSerialization.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\directdrivetrain\DirectDrivetrain.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\serialization\DirectDrivetrainSerialization.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\enginedrivetrain\EngineDrivetrain.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\serialization\EngineDrivetrainSerialization.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\base\Base.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementBuffer.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="GLDebug.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="GLHandles.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\serialization\SerializationCommon.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
     <ClCompile Include="RayBeam.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingSystem.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\physxintegration\PhysXIntegration.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetrender\SnippetCamera.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetrender\SnippetFontRenderer.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetrender\SnippetRender.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleDirectDrive.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2common\SnippetVehicleHelpers.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="snippetvehicle2directdrive\SnippetVehicleRender.cpp">
+      <Filter>Source Files\Vehicle Physx</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexArray.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Window &amp; Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMesh.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinder.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="StateHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderingSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsProvider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vehicle.h">
@@ -206,15 +203,6 @@
     </ClInclude>
     <ClInclude Include="Ground.h">
       <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="NavMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Pathfinder.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AIVehicle.h">
       <Filter>Header Files\Entities</Filter>
@@ -224,12 +212,6 @@
     </ClInclude>
     <ClInclude Include="PhysicsEntity.h">
       <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="RayBeam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LogWriter.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="snippetvehicle2common\base\Base.h">
       <Filter>Header Files\Vehicle Physx</Filter>
@@ -306,9 +288,6 @@
     <ClInclude Include="ShaderProgram.h">
       <Filter>Header Files\Window &amp; Render</Filter>
     </ClInclude>
-    <ClInclude Include="StateHandler.h">
-      <Filter>Header Files\Window &amp; Render</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files\Window &amp; Render</Filter>
     </ClInclude>
@@ -329,6 +308,51 @@
     </ClInclude>
     <ClInclude Include="Overlay.h">
       <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RayBeam.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingSystem.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogWriter.h">
+      <Filter>Header Files\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMesh.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinder.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsProvider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="StateHandler.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
