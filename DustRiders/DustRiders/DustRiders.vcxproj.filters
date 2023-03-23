@@ -354,6 +354,9 @@
     <ClInclude Include="InputHandler.h">
       <Filter>Header Files\Window &amp; Render</Filter>
     </ClInclude>
+    <ClInclude Include="LocationWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".\\Main.frag">
