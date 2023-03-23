@@ -36,7 +36,7 @@ void Vehicle::initMaterialFrictionTable()
 	// If a material is encountered that is not mapped to a friction value, the friction value used is the specified default value.
 	// In this snippet there is only a single material so there can only be a single mapping between material and friction.
 	// In this snippet the same mapping is used by all tires.
-	gPhysXMaterialFrictions[0].friction = 2.0f;
+	gPhysXMaterialFrictions[0].friction = 5.0f;
 	gPhysXMaterialFrictions[0].material = this->gMaterial;
 	gPhysXDefaultMaterialFriction = 1.0f;
 	gNbPhysXMaterialFrictions = 1;
@@ -67,7 +67,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
-	gVehicle.setUpActor(*gScene, pose, gVehicleName);
+	gVehicle.setUpActor(*gScene, pose, name.c_str());
 	physicsProvider->AddEntity((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
 	gVehicle.mPhysXState.physxActor.rigidBody->setName(this->name.c_str());
 

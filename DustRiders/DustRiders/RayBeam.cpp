@@ -32,7 +32,7 @@ RayBeam::RayBeam(std::string n,
 {
   isActive = false;
   shouldRender = false;
-  posOffset = PxVec3(0.f, 5.1f, 33.9f);
+  posOffset = PxVec3(0.f, 1.0f, 33.9f);
   initBeam(pos, ecs);
 }
 
@@ -43,7 +43,7 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 
   // gScene->setSimulationEventCallback(beamCallback);
 
-  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 10.0, 30.0), *gMaterial);
+  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 30.0), *gMaterial);
 
   shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
   shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
@@ -52,7 +52,7 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
   PxTransform localTm(pos + posOffset);
   body = gPhysics->createRigidDynamic(localTm);
   body->setGlobalPose(localTm);
-  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
   body->attachShape(*shape);
   PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
   gBody = body;
@@ -65,33 +65,36 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 {
 
-  PxTransform beamRotation(PxTransform(posOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(posOffset));
+  beamRotation = PxTransform(PxTransform(posOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(posOffset));
 
   PxTransform localPos(posOffset + vehiclePos.p);
 
   this->body->setGlobalPose(localPos * beamRotation);
   this->transform = tf;
 
-  PxVec3 beamOrigin = posOffset + vehiclePos.p;
-  PxVec3 beamDirection = (PxTransform(beamOrigin) * beamRotation).p;
-  beamDirection.normalize();
+  beamOrigin = vehiclePos.p;
 }
 
 std::string RayBeam::castRayBeam()
 {
-  LogWriter::log("Raycast fired");
+  LogWriter::log("Raycast fired.");
 
   std::string closestHit = "";
   PxRaycastBuffer hit;
 
-  PxVec3 beamDir = this->body->getGlobalPose().p;
-  beamDir.normalize();
-  bool hitStatus = gScene->raycast(this->body->getGlobalPose().p, beamDir, 1000.f, hit);
-  LogWriter::log("Hit status: " + std::to_string(hitStatus));
+  beamDirection = this->body->getGlobalPose().p;
+  beamDirection.normalize();
+
+  bool hitStatus = gScene->raycast(beamOrigin, beamDirection, 1000.f, hit);
   if (hitStatus)
   {
     closestHit = hit.block.actor->getName();
-    LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+    if (std::strcmp(closestHit.c_str(), "ground"))
+    {
+      LogWriter::log("    Direction: (" + std::to_string(beamDirection.x) + ", " + std::to_string(beamDirection.y) + ", " + std::to_string(beamDirection.z) + ")");
+      LogWriter::log("Hit status: " + std::to_string(hitStatus));
+      LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+    }
   }
   return closestHit;
 }
