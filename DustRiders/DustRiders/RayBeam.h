@@ -27,6 +27,10 @@ public:
 
   RayBeamCallback *beamCallback;
 
+  PxVec3 beamOrigin;
+  PxTransform beamRotation;
+  PxVec3 beamDirection;
+
   std::string castRayBeam();
 
 protected:
