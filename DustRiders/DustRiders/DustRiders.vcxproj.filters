@@ -29,6 +29,15 @@
     <Filter Include="Sound Files">
       <UniqueIdentifier>{d5f36f17-9a8b-4609-b6df-738f4f5f0e3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Vehicle Physx">
+      <UniqueIdentifier>{d009192c-44b7-4a48-bfe8-61c6af871a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Window &amp; Render">
+      <UniqueIdentifier>{560fd68c-0a9d-4b27-bbce-42317f64f36b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sound">
+      <UniqueIdentifier>{95c53532-efa6-416b-b7f3-f4c10a3e9e6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Overlay.cpp">
@@ -162,22 +171,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Callbacks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Overlay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLHandles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Log.h">
@@ -189,91 +183,13 @@
     <ClInclude Include="PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RenderingSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetrender\SnippetCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetrender\SnippetFontData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetrender\SnippetFontRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetrender\SnippetRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\base\Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\directdrivetrain\DirectDrivetrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\enginedrivetrain\EngineDrivetrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\physxintegration\PhysXIntegration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\serialization\BaseSerialization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\serialization\DirectDrivetrainSerialization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\serialization\EngineDrivetrainSerialization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\serialization\SerializationCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="snippetvehicle2common\SnippetVehicleHelpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ElementBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundDevice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundSource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MusicBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler.h">
@@ -290,9 +206,6 @@
     </ClInclude>
     <ClInclude Include="Ground.h">
       <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="StateHandler.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NavMesh.h">
       <Filter>Header Files</Filter>
@@ -318,8 +231,104 @@
     <ClInclude Include="LogWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="snippetvehicle2common\base\Base.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\serialization\BaseSerialization.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="Callbacks.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\directdrivetrain\DirectDrivetrain.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\serialization\DirectDrivetrainSerialization.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementBuffer.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\enginedrivetrain\EngineDrivetrain.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\serialization\EngineDrivetrainSerialization.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GLDebug.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GLHandles.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\physxintegration\PhysXIntegration.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\serialization\SerializationCommon.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetrender\SnippetCamera.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetrender\SnippetFontData.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetrender\SnippetFontRenderer.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetrender\SnippetRender.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="snippetvehicle2common\SnippetVehicleHelpers.h">
+      <Filter>Header Files\Vehicle Physx</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundBuffer.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundDevice.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSource.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
     <ClInclude Include="WindowCallbacks.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="StateHandler.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexArray.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicBuffer.h">
+      <Filter>Header Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay.h">
+      <Filter>Header Files\Window &amp; Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
