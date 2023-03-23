@@ -50,16 +50,16 @@ PhysicsSystem::PhysicsSystem()
 
 	// Simulate
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-	groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
-	for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
-	{
-		PxShape *shape = NULL;
-		groundPlane->getShapes(&shape, 1, i);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-	}
-	gScene->addActor(*groundPlane);
+	// groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
+	// for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
+	// {
+	// 	PxShape *shape = NULL;
+	// 	groundPlane->getShapes(&shape, 1, i);
+	// 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+	// 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	// 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+	// }
+	// gScene->addActor(*groundPlane);
 
 	PxInitVehicleExtension(*gFoundation);
 
