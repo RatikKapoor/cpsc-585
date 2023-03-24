@@ -39,7 +39,7 @@
 #include "MusicBuffer.h"
 #include "WindowCallbacks.h"
 #include "LogWriter.h"
-#include "LocationWriter.h"
+#include "AIPathHandler.h"
 
 #pragma endregion
 
@@ -49,10 +49,10 @@ bool LogWriter::firstWriting = true;
 std::string LogWriter::logFileName = "latest_output.log";
 std::ofstream LogWriter::logFile;
 
-bool LocationWriter::firstWriting = true;
-std::string LocationWriter::logFileName = "location_writer_output.json";
-std::ofstream LocationWriter::logFile;
-std::vector<physx::vehicle2::PxVehicleCommandState> LocationWriter::states;
+bool AIPathHandler::firstWriting = true;
+std::string AIPathHandler::logFileName = "location_writer_output.json";
+std::ofstream AIPathHandler::logFile;
+std::vector<vec3> AIPathHandler::locations;
 
 #pragma endregion
 
@@ -114,9 +114,6 @@ int main()
 	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
 	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/ground-plane.obj");
 
-	// NavMesh
-	auto navMesh = new NavMesh();
-
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
@@ -127,8 +124,8 @@ int main()
 	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
 
 	// Add AI cars
-	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, navMesh, NULL);
-	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, navMesh, NULL);
+	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL, "./assets/drivingPaths/path1.json");
+	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL, "./assets/drivingPaths/path2.json");
 	//ecs["car4"] = new AIVehicle("car4", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 1, navMesh, NULL);
 	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
 
@@ -139,7 +136,11 @@ int main()
 	//auto botVehicle3 = (AIVehicle*)ecs["car4"];
 	//auto botVehicle4 = (AIVehicle*)ecs["car5"];
 
-	std::vector<Vehicle*> vehicles{ playerVehicle, botVehicle1, botVehicle2 };
+	std::vector<Vehicle*> vehicles{
+		playerVehicle,
+		botVehicle1,
+		botVehicle2 
+	};
 	std::vector<Vehicle*> inactiveVehicles;
 
 	// Add obstacles
@@ -378,7 +379,7 @@ int main()
 	}
 	window.close();
 
-	LocationWriter::write();
+	AIPathHandler::write();
 
 	overlay.Cleanup();
 

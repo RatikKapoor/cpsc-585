@@ -220,7 +220,7 @@
     <ClInclude Include="GLHandles.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="LocationWriter.h" />
+    <ClInclude Include="AIPathHandler.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="LogWriter.h" />
     <ClInclude Include="Mesh.h" />
