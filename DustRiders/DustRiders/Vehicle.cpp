@@ -4,7 +4,7 @@
 #include "SoundBuffer.h"
 
 #include "LogWriter.h"
-#include "LocationWriter.h"
+#include "AIPathHandler.h"
 
 // Command gCommands[] =
 //		{
@@ -227,10 +227,10 @@ void Vehicle::stepPhysics(double timeStep)
 }
 
 void Vehicle::saveLocation() {
-	iteration++;
-
-	if (iteration % 10 == 0)	// Every 10 frames log command state
-		LocationWriter::log(gVehicle.mCommandState);
+	if (transform->position.z - lastZ > 5.f) {	// Every 5 units log position
+		AIPathHandler::log(transform->position);
+		lastZ = transform->position.z;
+	}
 }
 
 void Vehicle::reloadTuning()

@@ -87,5 +87,5 @@ protected:
 	PxVec3 initPos;
 
 private:
-	unsigned long iteration = 0;
+	float lastZ = 0.f;
 };

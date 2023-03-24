@@ -8,17 +8,20 @@ AIVehicle::AIVehicle(std::string name,
 	glm::vec3 s,
 	PhysicsProvider* pp,
 	PxVec3 pos,
-	unsigned int matIdx, NavMesh* navMesh, RayBeam* rb) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
+	unsigned int matIdx,
+	RayBeam* rb,
+	std::string pathFile) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
 {
-	this->pathfinder = new Pathfinder(navMesh);
 	this->shouldFindNewDest = true;
+	dest = glm::vec3(0);
+
+	if (pathFile.size() > 0) {
+		locations = AIPathHandler::deserialize(pathFile);
+		this->shouldFindNewDest = false;
+	}
 }
 
-AIVehicle::~AIVehicle()
-{
-	// delete this->aiJS;
-	delete this->pathfinder;
-}
+AIVehicle::~AIVehicle() {}
 
 bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 {
@@ -36,6 +39,7 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 
 void AIVehicle::handlePathfind()
 {
+#pragma region Automatic Next Destination Handling
 	if (transform->position.z > dest.z - 20)
 	{
 		dest.z = transform->position.z;
@@ -44,15 +48,30 @@ void AIVehicle::handlePathfind()
 
 	if (shouldFindNewDest || wasReset)
 	{
-		float random = ((float)rand()) / (float)RAND_MAX;
-		float r = random * 20.f;
-		float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
+		if (wasReset) {
+			LogWriter::log("was reset");
+			dest.z = 0;
+			nextLocPtr = 0;
+		}
 
-		this->dest = glm::vec3(x, 0.f, wasReset ? 100 : dest.z + 100);
+		if (locations.size() > nextLocPtr) {
+			this->dest = locations[nextLocPtr++];
+		}
+		else 
+		{
+			// Handle in case we're out of points
+			float random = ((float)rand()) / (float)RAND_MAX;
+			float r = random * 20.f;
+			float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
+
+			this->dest = glm::vec3(x, 0.f, dest.z + 100);
+		}
 		wasReset = false;
 		shouldFindNewDest = false;
 	}
+#pragma endregion
 
+#pragma region Direction Calculations
 	glm::quat rotation = transform->rotation;
 	glm::mat4 rotationM = glm::toMat4(rotation);
 	auto vanHeadingTemp = glm::vec3(rotationM * glm::vec4(0.f, 0.f, -1.f, 1.f));
@@ -89,9 +108,17 @@ void AIVehicle::handlePathfind()
 			gVehicle.mCommandState.steer = -0.2f;
 		}
 	}
+#pragma endregion
 
 	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.4;
 	gVehicle.mCommandState.throttle = accel;
+
+	if (isClose(transform->position, dest))
+	{
+		this->shouldFindNewDest = true;
+	}
+
+#pragma region Ray Gun
 
 	if (flags["beamHit"])
 	{
@@ -104,11 +131,7 @@ void AIVehicle::handlePathfind()
 		brakeCounter--;
 	}
 
-
-	if (isClose(transform->position, dest))
-	{
-		this->shouldFindNewDest = true;
-	}
+#pragma endregion
 }
 
 void AIVehicle::stepPhysics(double timeStep)
