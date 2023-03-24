@@ -114,6 +114,7 @@ int main()
 	// Create main car
 	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
+
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL, "./assets/drivingPaths/path1.json");
 	ecs["car3"] = new AIVehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL

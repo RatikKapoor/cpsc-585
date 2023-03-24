@@ -27,9 +27,12 @@ public:
 
   RayBeamCallback *beamCallback;
 
-  PxVec3 beamOrigin;
+
+
+  PxTransform rayCastOrigin;
   PxTransform beamRotation;
-  PxVec3 beamDirection;
+  PxVec3 rayCastDirection;
+  PxTransform vehiclePos;
 
   std::string castRayBeam();
 
