@@ -2,6 +2,7 @@
 #include "LogWriter.h"
 #include "AIVehicle.h"
 
+
 void RayBeamCallback::onTrigger(PxTriggerPair *pairs, PxU32 count)
 {
   for (PxU32 i = 0; i < count; i++)
@@ -49,6 +50,7 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
   shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
   shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
+
   PxTransform localTm(pos + posOffset);
   body = gPhysics->createRigidDynamic(localTm);
   body->setGlobalPose(localTm);
@@ -64,37 +66,47 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 
 void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 {
-
+  this->vehiclePos = vehiclePos;
+  // Used to get the graphics location for where the beam appears
   beamRotation = PxTransform(PxTransform(posOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(posOffset));
-
   PxTransform localPos(posOffset + vehiclePos.p);
-
   this->body->setGlobalPose(localPos * beamRotation);
   this->transform = tf;
 
-  beamOrigin = vehiclePos.p;
+
+
+  // Set the origin to be right in front of the car
+  rayCastOrigin = PxTransform(posOffset + vehiclePos.p - PxVec3(0.f, 0.47f, posOffset.z -1.93f));
+  rayCastDirection = this->body->getGlobalPose().p - vehiclePos.p;
+  rayCastDirection.normalize();
+
+
 }
 
 std::string RayBeam::castRayBeam()
 {
-  LogWriter::log("Raycast fired.");
 
   std::string closestHit = "";
+
   PxRaycastBuffer hit;
 
-  beamDirection = this->body->getGlobalPose().p;
-  beamDirection.normalize();
 
-  bool hitStatus = gScene->raycast(beamOrigin, beamDirection, 1000.f, hit);
+  bool hitStatus = gScene->raycast(rayCastOrigin.p, rayCastDirection, 200.f, hit);
   if (hitStatus)
   {
     closestHit = hit.block.actor->getName();
-    if (std::strcmp(closestHit.c_str(), "ground"))
+    if (std::strcmp(closestHit.c_str(), "ground") && strcmp(hit.block.actor->getName(), "car") )
     {
-      LogWriter::log("    Direction: (" + std::to_string(beamDirection.x) + ", " + std::to_string(beamDirection.y) + ", " + std::to_string(beamDirection.z) + ")");
-      LogWriter::log("Hit status: " + std::to_string(hitStatus));
       LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
+
+    }else{
+      LogWriter::log("Non-target hit: " +  std::string(hit.block.actor->getName()));
+      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
     }
+  }else{
+      LogWriter::log("No hit: " +  std::string(hit.block.actor->getName()));
+      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
   }
   return closestHit;
 }
