@@ -112,7 +112,7 @@ int main()
 	auto testRock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
 	auto testRock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
 	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
-	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/car-prison.obj");
+	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
