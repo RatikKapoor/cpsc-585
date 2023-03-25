@@ -213,6 +213,7 @@
     <ClInclude Include="AIVehicle.h" />
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConstantsHelper.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />

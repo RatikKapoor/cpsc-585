@@ -360,6 +360,9 @@
     <ClInclude Include="AIPathHandler.h">
       <Filter>Header Files\Handlers</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantsHelper.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".\\Main.frag">
