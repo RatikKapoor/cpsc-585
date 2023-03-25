@@ -196,6 +196,9 @@
     <ClCompile Include="Ground.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="ChunkHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vehicle.h">
@@ -361,6 +364,9 @@
       <Filter>Header Files\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="ConstantsHelper.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkHandler.h">
       <Filter>Header Files\Handlers</Filter>
     </ClInclude>
   </ItemGroup>

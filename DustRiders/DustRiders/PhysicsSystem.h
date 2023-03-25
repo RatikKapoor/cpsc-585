@@ -13,7 +13,7 @@
 class PhysicsSystem : public PhysicsProvider
 {
 private:
-	std::vector<physx::PxRigidDynamic *> rigidDynamicList;
+	std::vector<physx::PxRigidActor *> rigidActorList;
 	std::vector<Transform *> transformList;
 
 	// PhysX management class instances.
@@ -39,5 +39,5 @@ public:
 	physx::PxScene *GetPxScene();
 	physx::PxFoundation *GetPxFoundation();
 	physx::PxCooking *GetPxCooking();
-	void AddEntity(physx::PxRigidDynamic *, Transform *);
+	void AddEntity(physx::PxRigidActor *, Transform *);
 };
