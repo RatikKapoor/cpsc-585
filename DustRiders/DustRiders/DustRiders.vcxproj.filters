@@ -62,6 +62,12 @@
     <Filter Include="Source Files\Handlers">
       <UniqueIdentifier>{334b5ea3-3f84-4cd8-b773-7e6c97d26a68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Providers">
+      <UniqueIdentifier>{8c0d59b5-2c8e-4f34-8d4e-71b67e9a77d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Providers">
+      <UniqueIdentifier>{348f28b6-3815-40d2-ada0-da13f07e8f05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -198,6 +204,12 @@
     </ClCompile>
     <ClCompile Include="ChunkHandler.cpp">
       <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProvider.cpp">
+      <Filter>Source Files\Providers</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelProvider.cpp">
+      <Filter>Source Files\Providers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -368,6 +380,15 @@
     </ClInclude>
     <ClInclude Include="ChunkHandler.h">
       <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProvider.h">
+      <Filter>Header Files\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="Provider.h">
+      <Filter>Header Files\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelProvider.h">
+      <Filter>Header Files\Providers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

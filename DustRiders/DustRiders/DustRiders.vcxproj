@@ -176,6 +176,7 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelProvider.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="NavMesh.cpp" />
     <ClCompile Include="Overlay.cpp" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="ShaderProvider.cpp" />
     <ClCompile Include="snippetrender\SnippetCamera.cpp" />
     <ClCompile Include="snippetrender\SnippetFontRenderer.cpp" />
     <ClCompile Include="snippetrender\SnippetRender.cpp" />
@@ -229,6 +231,7 @@
     <ClInclude Include="LogWriter.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelProvider.h" />
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="Node.h" />
@@ -237,11 +240,13 @@
     <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="PhysicsProvider.h" />
     <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="Provider.h" />
     <ClInclude Include="RayBeam.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="ShaderProvider.h" />
     <ClInclude Include="snippetrender\SnippetCamera.h" />
     <ClInclude Include="snippetrender\SnippetFontData.h" />
     <ClInclude Include="snippetrender\SnippetFontRenderer.h" />

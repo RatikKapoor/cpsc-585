@@ -23,7 +23,8 @@
 #include "Mesh.h"
 #include "PhysicsSystem.h"
 #include "Overlay.h"
-#include "ShaderProgram.h"
+#include "ShaderProvider.h"
+#include "ModelProvider.h"
 #include "Geometry.h"
 #include "RenderingSystem.h"
 #include "InputHandler.h"
@@ -41,23 +42,6 @@
 #include "LogWriter.h"
 #include "AIPathHandler.h"
 #include "ConstantsHelper.h"
-
-#pragma endregion
-
-#pragma region Static Initializations
-
-bool LogWriter::firstWriting = true;
-std::string LogWriter::logFileName = "latest_output.log";
-std::ofstream LogWriter::logFile;
-
-bool AIPathHandler::firstWriting = true;
-std::string AIPathHandler::logFileName = "location_writer_output.json";
-std::ofstream AIPathHandler::logFile;
-std::vector<vec3> AIPathHandler::locations;
-
-std::string ConstantsHelper::filePath = "./assets/constants.json";
-bool ConstantsHelper::loaded = false;
-Constants* ConstantsHelper::c;
 
 #pragma endregion
 
@@ -107,47 +91,33 @@ int main()
 	auto physics = new PhysicsSystem();
 	RenderingSystem renderer;
 
-	// Shaders
-	auto carShader = renderer.compileShader("car", "./car.vert", "./car.frag");
-	auto mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
-	auto debugShader = renderer.compileShader("debug", "./debug.vert", "./debug.frag");
-
-	// To load in a model, just use "loadModelFromFile". Textures are handled automatically.
-	auto carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
-	auto testRock1 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock1.obj");
-	auto testRock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
-	auto testRock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
-	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
-	auto straightPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
-	auto dividedPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathDivide.obj");
+	// Initialize Providers
+	ShaderProvider::initialize(renderer);
+	ModelProvider::initialize(renderer);
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", straightPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
-	ecs["ground2"] = new Ground("ground2", dividedPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 300.f), 0);
-	ecs["ground3"] = new Ground("ground3", straightPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 600.f), 0);
+	ecs["ground"] = new Ground("ground", ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
+	ecs["ground2"] = new Ground("ground2", ModelProvider::dividedPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 300.f), 0);
+	ecs["ground3"] = new Ground("ground3", ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 600.f), 0);
 
-	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
+	ecs["raybeam"] = new RayBeam("raybeam", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
-	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
+	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
 
 	// Add AI cars
-	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL
+	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL
 		//, "./assets/drivingPaths/path1.json"
 	);
-	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
+	ecs["car3"] = new AIVehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
 		//, "./assets/drivingPaths/path2.json"
 	);
-	//ecs["car4"] = new AIVehicle("car4", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 1, navMesh, NULL);
-	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
 
 	// Vehicle references
 	auto playerVehicle = (Vehicle*)ecs["car"];
 	auto botVehicle1 = (AIVehicle*)ecs["car2"];
 	auto botVehicle2 = (AIVehicle*)ecs["car3"];
-	// auto botVehicle3 = (AIVehicle*)ecs["car4"];
-	// auto botVehicle4 = (AIVehicle*)ecs["car5"];
 
 	std::vector<Vehicle*> vehicles{
 		playerVehicle,
@@ -171,19 +141,19 @@ int main()
 		switch (rockCount % 3)
 		{
 		case 0:
-			rock = testRock1;
+			rock = ModelProvider::rock1;
 			break;
 		case 1:
-			rock = testRock2;
+			rock = ModelProvider::rock2;
 			break;
 		case 2:
 		default:
-			rock = testRock3;
+			rock = ModelProvider::rock3;
 			break;
 		}
 		ecs[name] = new Obstacle(name,
 			rock,
-			carShader,
+			ShaderProvider::carShader,
 			glm::vec3(1.f),
 			physics,
 			PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
@@ -372,16 +342,14 @@ int main()
 				{
 					v->updateRayBeamPos();
 				}
-#ifdef _DEBUG
-				playerVehicle->saveLocation(); // Save player location history to json
-#endif // _DEBUG
-
+				
 				window.swapBuffers();
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
 #ifdef _DEBUG
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
+				playerVehicle->saveLocation(); // Save player location history to json
 #endif // _DEBUG
 
 				lastTime = t;
