@@ -68,6 +68,9 @@
     <Filter Include="Source Files\Providers">
       <UniqueIdentifier>{348f28b6-3815-40d2-ada0-da13f07e8f05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Log">
+      <UniqueIdentifier>{beaac20f-4258-4700-84f4-2691bb752d9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -210,6 +213,15 @@
     </ClCompile>
     <ClCompile Include="ModelProvider.cpp">
       <Filter>Source Files\Providers</Filter>
+    </ClCompile>
+    <ClCompile Include="ObstacleHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="LogWriter.cpp">
+      <Filter>Source Files\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="AIPathHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="ModelProvider.h">
       <Filter>Header Files\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="ObstacleHandler.h">
+      <Filter>Header Files\Handlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
