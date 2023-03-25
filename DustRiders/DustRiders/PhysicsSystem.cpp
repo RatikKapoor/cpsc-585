@@ -50,49 +50,18 @@ PhysicsSystem::PhysicsSystem()
 
 	// Simulate
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-	// groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
-	// for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
-	// {
-	// 	PxShape *shape = NULL;
-	// 	groundPlane->getShapes(&shape, 1, i);
-	// 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-	// 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-	// 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-	// }
-	// gScene->addActor(*groundPlane);
+	 groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
+	 for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
+	 {
+	 	PxShape *shape = NULL;
+	 	groundPlane->getShapes(&shape, 1, i);
+	 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+	 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+	 }
+	 gScene->addActor(*groundPlane);
 
 	PxInitVehicleExtension(*gFoundation);
-
-	//// Define a box
-	// float halfLen = 0.5f;
-	// physx::PxShape* shape = gPhysics->createShape(physx::PxBoxGeometry(halfLen, halfLen, halfLen), *gMaterial);
-	// physx::PxU32 size = 30;
-	// physx::PxTransform tran(physx::PxVec3(0));
-
-	//// Save some space for all the boxes in the scene
-	// rigidDynamicList.reserve(465);
-	// transformList.reserve(465);
-
-	//// Create a pyramid of physics-enabled boxes
-	// for (physx::PxU32 i = 0; i < size; i++)
-	//{
-	//	for (physx::PxU32 j = 0; j < size - i; j++)
-	//	{
-	//		physx::PxTransform localTran(physx::PxVec3(physx::PxReal(j * 2) - physx::PxReal(size - i), physx::PxReal(i * 2 - 1), 0) * halfLen);
-	//		physx::PxRigidDynamic* body = gPhysics->createRigidDynamic(tran.transform(localTran));
-
-	//		// Add the PxRigidDynamic to a vector
-	//		rigidDynamicList.push_back(body);
-	//		transformList.emplace_back(new Transform());
-
-	//		body->attachShape(*shape);
-	//		physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-	//		gScene->addActor(*body);
-	//	}
-	//}
-
-	//// Clean up
-	// shape->release();
 
 	// Initialize transforms;
 	updateTransforms();
@@ -119,15 +88,15 @@ void PhysicsSystem::updateTransforms()
 	for (int i = 0; i < transformList.size(); i++)
 	{
 		// Copy position values from physx::PxVec3 to glm::vec3
-		transformList[i]->position.x = rigidDynamicList[i]->getGlobalPose().p.x;
-		transformList[i]->position.y = rigidDynamicList[i]->getGlobalPose().p.y;
-		transformList[i]->position.z = rigidDynamicList[i]->getGlobalPose().p.z;
+		transformList[i]->position.x = rigidActorList[i]->getGlobalPose().p.x;
+		transformList[i]->position.y = rigidActorList[i]->getGlobalPose().p.y;
+		transformList[i]->position.z = rigidActorList[i]->getGlobalPose().p.z;
 
 		// Copy rotation values from physx::PxQuat to glm::quat
-		transformList[i]->rotation.x = rigidDynamicList[i]->getGlobalPose().q.x;
-		transformList[i]->rotation.y = rigidDynamicList[i]->getGlobalPose().q.y;
-		transformList[i]->rotation.z = rigidDynamicList[i]->getGlobalPose().q.z;
-		transformList[i]->rotation.w = rigidDynamicList[i]->getGlobalPose().q.w;
+		transformList[i]->rotation.x = rigidActorList[i]->getGlobalPose().q.x;
+		transformList[i]->rotation.y = rigidActorList[i]->getGlobalPose().q.y;
+		transformList[i]->rotation.z = rigidActorList[i]->getGlobalPose().q.z;
+		transformList[i]->rotation.w = rigidActorList[i]->getGlobalPose().q.w;
 	}
 }
 
@@ -156,8 +125,8 @@ physx::PxCooking *PhysicsSystem::GetPxCooking()
 	return this->gCooking;
 }
 
-void PhysicsSystem::AddEntity(physx::PxRigidDynamic *r, Transform *t)
+void PhysicsSystem::AddEntity(physx::PxRigidActor *r, Transform *t)
 {
-	this->rigidDynamicList.push_back(r);
+	this->rigidActorList.push_back(r);
 	this->transformList.emplace_back(t);
 }

@@ -118,20 +118,27 @@ int main()
 	auto testRock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
 	auto testRock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
 	auto rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
-	auto groundPlane = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
+	auto straightPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
+	auto dividedPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathDivide.obj");
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Adds ground plane
-	ecs["ground"] = new Ground("ground", groundPlane, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
+	ecs["ground"] = new Ground("ground", straightPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
+	ecs["ground2"] = new Ground("ground2", dividedPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 300.f), 0);
+	ecs["ground3"] = new Ground("ground3", straightPath, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 600.f), 0);
 
 	ecs["raybeam"] = new RayBeam("raybeam", rayBeam, debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
 	ecs["car"] = new Vehicle("car", carModel, carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
 
 	// Add AI cars
-	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL, "./assets/drivingPaths/path1.json");
-	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL, "./assets/drivingPaths/path2.json");
+	ecs["car2"] = new AIVehicle("car2", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL
+		//, "./assets/drivingPaths/path1.json"
+	);
+	ecs["car3"] = new AIVehicle("car3", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
+		//, "./assets/drivingPaths/path2.json"
+	);
 	//ecs["car4"] = new AIVehicle("car4", carModel, carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 1, navMesh, NULL);
 	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
 
@@ -373,7 +380,9 @@ int main()
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
+#ifdef _DEBUG
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
+#endif // _DEBUG
 
 				lastTime = t;
 			}

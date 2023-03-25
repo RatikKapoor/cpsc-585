@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="AIVehicle.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ChunkHandler.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="ElementBuffer.cpp" />
     <ClCompile Include="Geometry.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantsHelper.h" />
+    <ClInclude Include="ChunkHandler.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />

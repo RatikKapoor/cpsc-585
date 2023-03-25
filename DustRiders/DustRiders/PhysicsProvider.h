@@ -10,5 +10,5 @@ public:
 	virtual physx::PxScene *GetPxScene() = 0;
 	virtual physx::PxFoundation *GetPxFoundation() = 0;
 	virtual physx::PxCooking *GetPxCooking() = 0;
-	virtual void AddEntity(physx::PxRigidDynamic *, Transform *) = 0;
+	virtual void AddEntity(physx::PxRigidActor *, Transform *) = 0;
 };
