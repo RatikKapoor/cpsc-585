@@ -169,6 +169,7 @@
     <ClCompile Include="AIVehicle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChunkHandler.cpp" />
+    <ClCompile Include="ConstantsHelper.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="ElementBuffer.cpp" />
     <ClCompile Include="Geometry.cpp" />
