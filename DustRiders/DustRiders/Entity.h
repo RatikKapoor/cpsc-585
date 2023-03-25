@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
+#include <map>
 #include "Model.h"
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "Transform.h"
-#include <map>
+#include "ConstantsHelper.h"
 
 class Entity
 {

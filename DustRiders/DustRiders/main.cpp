@@ -40,6 +40,7 @@
 #include "WindowCallbacks.h"
 #include "LogWriter.h"
 #include "AIPathHandler.h"
+#include "ConstantsHelper.h"
 
 #pragma endregion
 
@@ -53,6 +54,10 @@ bool AIPathHandler::firstWriting = true;
 std::string AIPathHandler::logFileName = "location_writer_output.json";
 std::ofstream AIPathHandler::logFile;
 std::vector<vec3> AIPathHandler::locations;
+
+std::string ConstantsHelper::filePath = "./assets/constants.json";
+bool ConstantsHelper::loaded = false;
+Constants ConstantsHelper::c;
 
 #pragma endregion
 
@@ -259,7 +264,6 @@ int main()
 						vehicle->restore();
 						vehicle->reset();
 					}
-
 					deltaT = 0.f;
 					stateHandle.setRState(StateHandler::ReloadState::None);
 					stateHandle.setGState(StateHandler::GameState::PauseMenu);
@@ -292,7 +296,8 @@ int main()
 					{
 						if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
 						{
-							vehicle->reloadTuning();
+							ConstantsHelper::refreshConstants(); // Load up new constants from file
+							vehicle->reloadTuning(); // Apply changes
 						}
 
 						if (vehicle == playerVehicle)

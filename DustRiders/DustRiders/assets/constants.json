@@ -1,0 +1,5 @@
+{
+    "vehicleInitialMaxLinearVelocity": 28.0,
+    "vehicleAngularDampening": 0.05, 
+    "vehicleMassSpaceInertiaTensor": 1.0
+}
