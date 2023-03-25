@@ -1,5 +1,13 @@
 {
     "vehicleInitialMaxLinearVelocity": 28.0,
     "vehicleAngularDampening": 0.05, 
-    "vehicleMassSpaceInertiaTensor": 1.0
+    "vehicleMassSpaceInertiaTensor": 1.0,
+
+    "rocksStartingZ": 30.0,
+    "rocksMaxGenerationDistance": 1000.5,
+    "rocksSpacing": 20,
+
+    "aiCarNextPositionDistanceBuffer": 20.0,
+    "aiCarRandomPositionWidth": 20.0,
+    "aiCarRandomPositionSpacing": 100.0
 }

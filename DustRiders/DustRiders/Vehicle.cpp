@@ -85,7 +85,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.gravity = gGravity;
 	gVehicleSimulationContext.physxScene = gScene;
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
-	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(ConstantsHelper::getConstants().vehicleInitialMaxLinearVelocity);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)
@@ -101,8 +101,8 @@ bool Vehicle::initVehicle(PxVec3 p)
 	initialFlags = gVehicle.mPhysXState.physxActor.rigidBody->getRigidBodyFlags();
 	initialActorFlags = gVehicle.mPhysXState.physxActor.rigidBody->getActorFlags();
 
-	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(ConstantsHelper::getConstants().vehicleAngularDampening);
-	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(ConstantsHelper::getConstants().test));
+	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensor));
 
 	if (rayGunBeam != NULL)
 	{
@@ -245,9 +245,9 @@ void Vehicle::reloadTuning()
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
 		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
-	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(ConstantsHelper::getConstants().vehicleInitialMaxLinearVelocity);
-	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(ConstantsHelper::getConstants().vehicleAngularDampening);
-	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(ConstantsHelper::getConstants().vehicleMassSpaceInertiaTensor));
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
+	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensor));
 
 	return;
 }

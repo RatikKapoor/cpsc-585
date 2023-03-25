@@ -40,7 +40,7 @@ bool AIVehicle::isClose(glm::vec3 a, glm::vec3 b)
 void AIVehicle::handlePathfind()
 {
 #pragma region Automatic Next Destination Handling
-	if (transform->position.z > dest.z - 20)
+	if (transform->position.z > dest.z - Constants->aiCarNextPositionDistanceBuffer)
 	{
 		dest.z = transform->position.z;
 		shouldFindNewDest = true;
@@ -61,10 +61,10 @@ void AIVehicle::handlePathfind()
 		{
 			// Handle in case we're out of points
 			float random = ((float)rand()) / (float)RAND_MAX;
-			float r = random * 20.f;
+			float r = random * Constants->aiCarRandomPositionWidth;
 			float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
 
-			this->dest = glm::vec3(x, 0.f, dest.z + 100);
+			this->dest = glm::vec3(x, 0.f, dest.z + Constants->aiCarRandomPositionSpacing);
 		}
 		wasReset = false;
 		shouldFindNewDest = false;

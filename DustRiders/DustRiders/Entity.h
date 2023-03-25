@@ -15,6 +15,7 @@ public:
 			: name(n), model(m), shaderProgram(sp), scale(s), useMatInt(matInt), shouldRender(true)
 	{
 		transform = new Transform();
+		Constants = ConstantsHelper::getConstants();
 	}
 
 	virtual ~Entity(){};
@@ -38,4 +39,7 @@ public:
 
 		result.append(name + " ");
 	}
+
+protected:
+	Constants* Constants;
 };
