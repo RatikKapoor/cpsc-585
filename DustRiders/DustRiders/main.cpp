@@ -43,6 +43,7 @@
 #include "LogWriter.h"
 #include "AIPathHandler.h"
 #include "ConstantsHelper.h"
+#include "ChunkHandler.h"
 
 #pragma endregion
 
@@ -98,10 +99,8 @@ int main()
 
 	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
-	// Adds ground plane
-	ecs["ground"] = new Ground("ground", ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
-	ecs["ground2"] = new Ground("ground2", ModelProvider::dividedPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 300.f), 0);
-	ecs["ground3"] = new Ground("ground3", ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 600.f), 0);
+	// Start chunking system
+	ChunkHandler::initialize(ecs, physics);
 
 	ecs["raybeam"] = new RayBeam("raybeam", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
