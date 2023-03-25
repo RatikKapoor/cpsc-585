@@ -57,7 +57,7 @@ std::vector<vec3> AIPathHandler::locations;
 
 std::string ConstantsHelper::filePath = "./assets/constants.json";
 bool ConstantsHelper::loaded = false;
-Constants ConstantsHelper::c;
+Constants* ConstantsHelper::c;
 
 #pragma endregion
 
@@ -65,6 +65,7 @@ int main()
 {
 	glfwInit();
 	StateHandler stateHandle;
+	Constants* Constants = ConstantsHelper::getConstants();
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
@@ -135,22 +136,22 @@ int main()
 	//ecs["car5"] = new AIVehicle("car5", carModel, carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 5, navMesh, NULL);
 
 	// Vehicle references
-	auto playerVehicle = (Vehicle *)ecs["car"];
-	auto botVehicle1 = (AIVehicle *)ecs["car2"];
-	auto botVehicle2 = (AIVehicle *)ecs["car3"];
+	auto playerVehicle = (Vehicle*)ecs["car"];
+	auto botVehicle1 = (AIVehicle*)ecs["car2"];
+	auto botVehicle2 = (AIVehicle*)ecs["car3"];
 	// auto botVehicle3 = (AIVehicle*)ecs["car4"];
 	// auto botVehicle4 = (AIVehicle*)ecs["car5"];
 
 	std::vector<Vehicle*> vehicles{
 		playerVehicle,
 		botVehicle1,
-		botVehicle2 
+		botVehicle2
 	};
 	std::vector<Vehicle*> inactiveVehicles;
 
 	// Add obstacles
 	int rockCount = 0;
-	for (float dist = 30; dist <= 1000.5f; dist += 20.0f)
+	for (float dist = Constants->rocksStartingZ; dist <= Constants->rocksMaxGenerationDistance; dist += Constants->rocksSpacing)
 	{
 		std::string name = "rock" + std::to_string(rockCount);
 		float random = ((float)rand()) / (float)RAND_MAX;
@@ -159,7 +160,7 @@ int main()
 		float random2 = ((float)rand()) / (float)RAND_MAX;
 		float r2 = random2 * 2.f;
 		float z = -1.f + r;
-		Model *rock;
+		Model* rock;
 		switch (rockCount % 3)
 		{
 		case 0:
@@ -174,12 +175,12 @@ int main()
 			break;
 		}
 		ecs[name] = new Obstacle(name,
-														 rock,
-														 carShader,
-														 glm::vec3(1.f),
-														 physics,
-														 PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
-														 1);
+			rock,
+			carShader,
+			glm::vec3(1.f),
+			physics,
+			PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
+			1);
 
 		rockCount++;
 	}
