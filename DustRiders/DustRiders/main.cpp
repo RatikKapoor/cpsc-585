@@ -25,6 +25,7 @@
 #include "Overlay.h"
 #include "ShaderProvider.h"
 #include "ModelProvider.h"
+#include "ObstacleHandler.h"
 #include "Geometry.h"
 #include "RenderingSystem.h"
 #include "InputHandler.h"
@@ -127,40 +128,7 @@ int main()
 	std::vector<Vehicle*> inactiveVehicles;
 
 	// Add obstacles
-	int rockCount = 0;
-	for (float dist = Constants->rocksStartingZ; dist <= Constants->rocksMaxGenerationDistance; dist += Constants->rocksSpacing)
-	{
-		std::string name = "rock" + std::to_string(rockCount);
-		float random = ((float)rand()) / (float)RAND_MAX;
-		float r = random * 40.f;
-		float x = -20.f + r;
-		float random2 = ((float)rand()) / (float)RAND_MAX;
-		float r2 = random2 * 2.f;
-		float z = -1.f + r;
-		Model* rock;
-		switch (rockCount % 3)
-		{
-		case 0:
-			rock = ModelProvider::rock1;
-			break;
-		case 1:
-			rock = ModelProvider::rock2;
-			break;
-		case 2:
-		default:
-			rock = ModelProvider::rock3;
-			break;
-		}
-		ecs[name] = new Obstacle(name,
-			rock,
-			ShaderProvider::carShader,
-			glm::vec3(1.f),
-			physics,
-			PxVec3(x, -0.48f, (rockCount % 5 == 0) ? dist + z : dist - z),
-			1);
-
-		rockCount++;
-	}
+	ObstacleHandler::renderObstacles(ecs, physics);
 
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);

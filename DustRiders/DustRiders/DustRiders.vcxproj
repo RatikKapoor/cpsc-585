@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIPathHandler.cpp" />
     <ClCompile Include="AIVehicle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChunkHandler.cpp" />
@@ -175,10 +176,12 @@
     <ClCompile Include="GLHandles.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="LogWriter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelProvider.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="NavMesh.cpp" />
+    <ClCompile Include="ObstacleHandler.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
@@ -235,6 +238,7 @@
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="ObstacleHandler.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="PhysicsEntity.h" />
