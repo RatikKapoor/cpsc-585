@@ -1,7 +1,8 @@
 {
     "vehicleInitialMaxLinearVelocity": 28.0,
-    "vehicleAngularDampening": 0.4, 
+    "vehicleAngularDampening": 0.4,
     "vehicleMassSpaceInertiaTensor": 2.0,
+    "vehicleTireFriction": 4.0,
 
     "rocksStartingZ": 30.0,
     "rocksMaxGenerationDistance": 1000.5,

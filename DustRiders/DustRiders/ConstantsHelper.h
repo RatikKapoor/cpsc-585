@@ -15,6 +15,7 @@ struct Constants
 	float vehicleInitialMaxLinearVelocity = 28;
 	float vehicleAngularDampening = 0.05;
 	float vehicleMassSpaceInertiaTensor = 1.0f;
+	float vehicleTireFriction = 4.0f;
 
 	float rocksStartingZ = 30.0;
 	float rocksMaxGenerationDistance = 1000.5;
@@ -23,6 +24,7 @@ struct Constants
 	float aiCarNextPositionDistanceBuffer = 20.0;
 	float aiCarRandomPositionWidth = 20.0;
 	float aiCarRandomPositionSpacing = 100.0;
+
 };
 
 class ConstantsHelper {
@@ -65,7 +67,8 @@ private:
 		c->vehicleInitialMaxLinearVelocity = doc["vehicleInitialMaxLinearVelocity"].GetDouble();
 		c->vehicleAngularDampening = doc["vehicleAngularDampening"].GetDouble();
 		c->vehicleMassSpaceInertiaTensor = doc["vehicleMassSpaceInertiaTensor"].GetDouble();
-		
+		c->vehicleTireFriction = doc["vehicleTireFriction"].GetDouble();
+
 		c->rocksStartingZ = doc["rocksStartingZ"].GetDouble();
 		c->rocksMaxGenerationDistance = doc["rocksMaxGenerationDistance"].GetDouble();
 		c->rocksSpacing = doc["rocksSpacing"].GetDouble();
