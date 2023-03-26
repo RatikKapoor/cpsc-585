@@ -57,7 +57,7 @@ void AIVehicle::handlePathfind()
 		if (locations.size() > nextLocPtr) {
 			this->dest = locations[nextLocPtr++];
 		}
-		else 
+		else
 		{
 			// Handle in case we're out of points
 			float random = ((float)rand()) / (float)RAND_MAX;
@@ -136,6 +136,6 @@ void AIVehicle::handlePathfind()
 
 void AIVehicle::stepPhysics(double timeStep)
 {
-//	handlePathfind();
+	handlePathfind();
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 }
