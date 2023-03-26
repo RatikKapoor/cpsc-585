@@ -17,6 +17,16 @@ SoundSource::~SoundSource()
 	alDeleteSources(1, &p_Source);
 }
 
+ALint SoundSource::getSource()
+{
+	return p_Source;
+}
+
+void SoundSource::changeMusicVolume(float newVolume)
+{
+	alSourcef(p_Source, AL_GAIN, newVolume);
+}
+
 ALuint SoundSource::Play(const ALuint buffer_to_play)
 {
 	if (buffer_to_play != p_Buffer)

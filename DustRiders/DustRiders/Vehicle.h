@@ -43,8 +43,11 @@ public:
 
 	virtual ~Vehicle() {}
 
+	bool engineGased(Joystick& js);
 	void stepPhysics(double);
 	bool stepPhysics(double timeStep, Joystick &js);
+
+	float currentSpeed();
 
 	void reloadTuning();
 
@@ -59,6 +62,7 @@ protected:
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 	void stepPhysics(double, float, float);
+
 
 	RayBeam *rayGunBeam;
 
