@@ -112,6 +112,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	return true;
 }
 
+
 void Vehicle::stepPhysics(double timestep, float gas, float steer)
 {
 	float analogThreshold = 0.1f;

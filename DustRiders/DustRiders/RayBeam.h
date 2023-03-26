@@ -23,22 +23,26 @@ public:
 
   void updatePos(PxTransform, Transform *);
 
-  PxRigidDynamic *body;
+  PxRigidDynamic *rcOrigin;
+  PxRigidDynamic *rcDirection;
 
   RayBeamCallback *beamCallback;
 
 
 
-  PxTransform rayCastOrigin;
+  PxVec3 rayCastOrigin;
   PxTransform beamRotation;
   PxVec3 rayCastDirection;
   PxTransform vehiclePos;
+  PxTransform RayCastTransform;
 
   std::string castRayBeam();
 
 protected:
   void initBeam(PxVec3 pos, EntityComponentSystem &ecs);
-  PxVec3 posOffset;
+  PxVec3 beamOriginOffset;
+  PxVec3 beamDirRaw;
+
 };
 
 class RayBeamCallback : public PxSimulationEventCallback
