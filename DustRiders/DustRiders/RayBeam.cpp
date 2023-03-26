@@ -2,6 +2,8 @@
 #include "LogWriter.h"
 #include "AIVehicle.h"
 
+#include <regex>
+
 
 void RayBeamCallback::onTrigger(PxTriggerPair *pairs, PxU32 count)
 {
@@ -122,19 +124,12 @@ std::string RayBeam::castRayBeam()
 
   bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, 200.f, hit);
 
-        LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin));
-        LogWriter::log("    CarDir: " + LogWriter::to_string(vehiclePos.q.getImaginaryPart()) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
-
   if (hitStatus)
   {
-
     closestHit = hit.block.actor->getName();
+    if(regex_match (hit.block.actor->getName(), regex("(car)(.*)") )){
       LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
-      // LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
-  }else{
-      LogWriter::log("No hit");
-      // LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
-
+    }
   }
   return closestHit;
 }
