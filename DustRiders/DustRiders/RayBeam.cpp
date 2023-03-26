@@ -2,6 +2,8 @@
 #include "LogWriter.h"
 #include "AIVehicle.h"
 
+
+#include "TimeKeeper.h"
 #include <regex>
 
 
@@ -33,11 +35,13 @@ RayBeam::RayBeam(std::string n,
                  PhysicsProvider *pp, EntityComponentSystem &ecs, PxVec3 pos = {0.f, 0.f, 0.f},
                  unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat)
 {
+  coolDownTime = 2.0;
   isActive = false;
   shouldRender = false;
   beamOriginOffset = PxVec3(0.f, 1.47f/2.f, 3.85f);
   beamDirRaw = PxVec3(0.f, 0.f, 1.f);
   initBeam(pos, ecs);
+  lastFireTime = 0.0;
 }
 
 void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
@@ -124,6 +128,11 @@ std::string RayBeam::castRayBeam()
 
   bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, 200.f, hit);
 
+  if(!canFire()){
+    hitStatus = false;
+  }else{
+    lastFireTime = timeKeep.getCurrentTime();
+  }
   if (hitStatus)
   {
     closestHit = hit.block.actor->getName();
@@ -132,4 +141,14 @@ std::string RayBeam::castRayBeam()
     }
   }
   return closestHit;
+}
+
+bool RayBeam::canFire(){
+  double deltaT = timeKeep.getCurrentTime() - lastFireTime;
+  if(deltaT<coolDownTime){
+    LogWriter::log("Cooldown time not elapsed. Only " + std::to_string(deltaT) + " out of " + std::to_string(coolDownTime) + " elapsed.");
+    return false;
+  }else{
+    return true;
+  }
 }

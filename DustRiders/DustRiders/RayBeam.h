@@ -6,6 +6,8 @@
 
 #include "ECS.h"
 
+#include "TimeKeeper.h"
+
 class RayBeamCallback;
 
 class RayBeam : public PhysicsEntity
@@ -34,14 +36,20 @@ public:
   PxTransform beamRotation;
   PxVec3 rayCastDirection;
   PxTransform vehiclePos;
-  PxTransform RayCastTransform;
+
+
 
   std::string castRayBeam();
+
+  bool canFire();
 
 protected:
   void initBeam(PxVec3 pos, EntityComponentSystem &ecs);
   PxVec3 beamOriginOffset;
   PxVec3 beamDirRaw;
+  double lastFireTime;
+  double coolDownTime;
+  TimeKeeper timeKeep;
 
 };
 

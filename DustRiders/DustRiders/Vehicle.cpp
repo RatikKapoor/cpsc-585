@@ -180,11 +180,12 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 	{
 		if (!rayGunBeam->isActive)
 		{
-			gunFired = true;
-			if (rayGunBeam != NULL)
+			if (rayGunBeam != NULL && rayGunBeam->canFire())
 			{
-				rayGunBeam->shouldRender = true;
-				rayGunBeam->castRayBeam();
+					gunFired = true;
+					rayGunBeam->shouldRender = true;
+					rayGunBeam->castRayBeam();
+
 			}
 			rayGunBeam->isActive = true;
 		}
