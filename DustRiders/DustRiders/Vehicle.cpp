@@ -92,6 +92,19 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicleSimulationContext.physxScene = gScene;
 	gVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxAngularVelocity(Constants->vehicleMaxAngularVelocity);
+	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensorX, Constants->vehicleMassSpaceInertiaTensorY, Constants->vehicleMassSpaceInertiaTensorZ));
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxContactImpulse(Constants->vehicleMaxContactImpulse);
+	
+	//auto tbt = gVehicle.mPhysXState.physxActor.rigidBody;
+	//LogWriter::log("Max Linear Velocity: " + std::to_string(tbt->getMaxLinearVelocity()));
+	//LogWriter::log("Max Angular Velocity: " + std::to_string(tbt->getMaxAngularVelocity()));
+	//LogWriter::log("Angular Dampening: " + std::to_string(tbt->getAngularDamping()));
+	//LogWriter::log("Mass Space Inertia X: " + std::to_string(tbt->getMassSpaceInertiaTensor().x));
+	//LogWriter::log("Mass Space Inertia Y: " + std::to_string(tbt->getMassSpaceInertiaTensor().y));
+	//LogWriter::log("Mass Space Inertia Z: " + std::to_string(tbt->getMassSpaceInertiaTensor().z));
+	//LogWriter::log("Contact Impulse: " + std::to_string(tbt->getMaxContactImpulse()));
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)
@@ -106,9 +119,6 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	initialFlags = gVehicle.mPhysXState.physxActor.rigidBody->getRigidBodyFlags();
 	initialActorFlags = gVehicle.mPhysXState.physxActor.rigidBody->getActorFlags();
-
-	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
-	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensor));
 
 	if (rayGunBeam != NULL)
 	{
@@ -279,9 +289,13 @@ void Vehicle::reloadTuning()
 										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxAngularVelocity(Constants->vehicleMaxAngularVelocity);
 	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
-	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensor));
+	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensorX, Constants->vehicleMassSpaceInertiaTensorY, Constants->vehicleMassSpaceInertiaTensorZ));
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxContactImpulse(Constants->vehicleMaxContactImpulse);
+
 	removeEffects();
+
 	return;
 
 }
