@@ -13,8 +13,12 @@ using namespace rapidjson;
 struct Constants
 {
 	float vehicleInitialMaxLinearVelocity = 28;
+	float vehicleMaxAngularVelocity = 100;
 	float vehicleAngularDampening = 0.05;
-	float vehicleMassSpaceInertiaTensor = 1.0f;
+	float vehicleMaxContactImpulse = PX_MAX_F32;
+	float vehicleMassSpaceInertiaTensorX = 3200.0f;
+	float vehicleMassSpaceInertiaTensorY = 3414.0f;
+	float vehicleMassSpaceInertiaTensorZ = 750.0f;
 	float vehicleTireFriction = 4.0f;
 
 	float rocksStartingZ = 30.0;
@@ -65,8 +69,12 @@ private:
 		}
 
 		c->vehicleInitialMaxLinearVelocity = doc["vehicleInitialMaxLinearVelocity"].GetDouble();
+		c->vehicleMaxAngularVelocity = doc["vehicleMaxAngularVelocity"].GetDouble();
 		c->vehicleAngularDampening = doc["vehicleAngularDampening"].GetDouble();
-		c->vehicleMassSpaceInertiaTensor = doc["vehicleMassSpaceInertiaTensor"].GetDouble();
+		c->vehicleMaxContactImpulse = doc["vehicleMaxContactImpulse"].GetDouble();
+		c->vehicleMassSpaceInertiaTensorX = doc["vehicleMassSpaceInertiaTensorX"].GetDouble();
+		c->vehicleMassSpaceInertiaTensorY = doc["vehicleMassSpaceInertiaTensorY"].GetDouble();
+		c->vehicleMassSpaceInertiaTensorZ = doc["vehicleMassSpaceInertiaTensorZ"].GetDouble();
 		c->vehicleTireFriction = doc["vehicleTireFriction"].GetDouble();
 
 		c->rocksStartingZ = doc["rocksStartingZ"].GetDouble();
