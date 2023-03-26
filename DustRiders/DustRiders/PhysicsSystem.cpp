@@ -15,7 +15,7 @@ PhysicsSystem::PhysicsSystem()
 
 	// PVD
 	gPvd = PxCreatePvd(*gFoundation);
-	physx::PxPvdTransport *transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+	physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 	gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
 
 	// Physics
@@ -40,7 +40,7 @@ PhysicsSystem::PhysicsSystem()
 	gScene = gPhysics->createScene(sceneDesc);
 
 	// Prep PVD
-	physx::PxPvdSceneClient *pvdClient = gScene->getScenePvdClient();
+	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
 	{
 		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
@@ -50,16 +50,16 @@ PhysicsSystem::PhysicsSystem()
 
 	// Simulate
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-	 groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
-	 for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
-	 {
-	 	PxShape *shape = NULL;
-	 	groundPlane->getShapes(&shape, 1, i);
-	 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-	 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-	 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-	 }
-	 gScene->addActor(*groundPlane);
+	//groundPlane = physx::PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0.01), *gMaterial);
+	//for (PxU32 i = 0; i < groundPlane->getNbShapes(); i++)
+	//{
+	//	PxShape* shape = NULL;
+	//	groundPlane->getShapes(&shape, 1, i);
+	//	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+	//	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	//	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+	//}
+	//gScene->addActor(*groundPlane);
 
 	PxInitVehicleExtension(*gFoundation);
 
@@ -100,32 +100,32 @@ void PhysicsSystem::updateTransforms()
 	}
 }
 
-physx::PxPhysics *PhysicsSystem::GetPxPhysics()
+physx::PxPhysics* PhysicsSystem::GetPxPhysics()
 {
 	return this->gPhysics;
 }
 
-physx::PxMaterial *PhysicsSystem::GetPxMaterial()
+physx::PxMaterial* PhysicsSystem::GetPxMaterial()
 {
 	return this->gMaterial;
 }
 
-physx::PxScene *PhysicsSystem::GetPxScene()
+physx::PxScene* PhysicsSystem::GetPxScene()
 {
 	return this->gScene;
 }
 
-physx::PxFoundation *PhysicsSystem::GetPxFoundation()
+physx::PxFoundation* PhysicsSystem::GetPxFoundation()
 {
 	return this->gFoundation;
 }
 
-physx::PxCooking *PhysicsSystem::GetPxCooking()
+physx::PxCooking* PhysicsSystem::GetPxCooking()
 {
 	return this->gCooking;
 }
 
-void PhysicsSystem::AddEntity(physx::PxRigidActor *r, Transform *t)
+void PhysicsSystem::AddEntity(physx::PxRigidActor* r, Transform* t)
 {
 	this->rigidActorList.push_back(r);
 	this->transformList.emplace_back(t);
