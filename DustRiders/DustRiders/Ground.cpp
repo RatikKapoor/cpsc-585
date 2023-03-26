@@ -1,6 +1,8 @@
 #include "Ground.h"
 #include "LogWriter.h"
 
+std::map<Model*, PxTriangleMeshGeometry*> Ground::meshCache;
+
 Ground::Ground(std::string n,
 	Model* m,
 	ShaderProgram* sp,
@@ -32,6 +34,11 @@ void Ground::initGround(PxVec3 pos)
 
 PxShape* Ground::setupTriangleMesh()
 {
+	if (meshCache.count(model)) {
+		// Mesh has been processed already
+		return gPhysics->createShape(*meshCache[model], *gMaterial, true);
+	}
+
 	LogWriter::log("START: creating triangle mesh for ground.");
 
 	physx::PxTriangleMeshDesc groundDesc;
@@ -79,7 +86,8 @@ PxShape* Ground::setupTriangleMesh()
 	PxDefaultMemoryInputData readBuf(writeBuf.getData(), writeBuf.getSize());
 	PxTriangleMesh* groundMesh = gPhysics->createTriangleMesh(readBuf);
 
-	PxTriangleMeshGeometry groundGeom = PxTriangleMeshGeometry(groundMesh, PxMeshScale(1.0));
+	PxTriangleMeshGeometry* groundGeom = new PxTriangleMeshGeometry(groundMesh, PxMeshScale(1.0));
+	meshCache[model] = groundGeom;
 
-	return gPhysics->createShape(groundGeom, *gMaterial, true);
+	return gPhysics->createShape(*meshCache[model], *gMaterial, true);
 }

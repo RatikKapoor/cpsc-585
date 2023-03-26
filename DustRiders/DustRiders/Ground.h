@@ -27,4 +27,7 @@ protected:
 	{
 		return PxVec3(v.position.x, v.position.y, v.position.z);
 	}
+
+private:
+	static std::map<Model*, PxTriangleMeshGeometry*> meshCache;
 };
