@@ -11,27 +11,34 @@ class PhysicsEntity : public Entity
 {
 public:
 	PhysicsEntity(std::string n,
-								Model *m,
-								ShaderProgram *sp,
-								glm::vec3 s,
-								PhysicsProvider *pp,
-								PxVec3 position = {0.f, 0.f, 0.f},
-								unsigned int mat = 0) : Entity(n, m, sp, s, mat)
+		Model* m,
+		ShaderProgram* sp,
+		glm::vec3 s,
+		PhysicsProvider* pp,
+		PxVec3 position = { 0.f, 0.f, 0.f },
+		unsigned int mat = 0) : Entity(n, m, sp, s, mat)
 	{
 		physicsProvider = pp;
 		this->gPhysics = pp->GetPxPhysics();
 		this->gMaterial = pp->GetPxMaterial();
 		this->gScene = pp->GetPxScene();
 		this->gCooking = pp->GetPxCooking();
+		this->gBody = nullptr;
 	}
 
-	virtual ~PhysicsEntity() {}
+	virtual ~PhysicsEntity() {
+		if (gBody != nullptr) {
+			gScene->removeActor(*gBody);
+			physicsProvider->RemoveEntity(gBody);
+		}
+	}
 
 protected:
-	PhysicsProvider *physicsProvider;
+	PhysicsProvider* physicsProvider;
 
-	PxPhysics *gPhysics;
-	PxMaterial *gMaterial;
-	PxScene *gScene;
-	PxCooking *gCooking;
+	PxPhysics* gPhysics;
+	PxMaterial* gMaterial;
+	PxScene* gScene;
+	PxCooking* gCooking;
+	PxRigidActor* gBody;
 };

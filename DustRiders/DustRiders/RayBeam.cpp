@@ -53,7 +53,8 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
   body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
   body->attachShape(*shape);
   PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
-  gScene->addActor(*body);
+  gBody = body;
+  gScene->addActor(*gBody);
   physicsProvider->AddEntity(body, this->transform);
 
   shape->release();

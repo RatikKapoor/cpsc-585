@@ -130,3 +130,16 @@ void PhysicsSystem::AddEntity(physx::PxRigidActor* r, Transform* t)
 	this->rigidActorList.push_back(r);
 	this->transformList.emplace_back(t);
 }
+
+void PhysicsSystem::RemoveEntity(physx::PxRigidActor* r)
+{
+	auto it = std::find(rigidActorList.begin(), rigidActorList.end(), r);
+	// If element was found
+	if (it != rigidActorList.end())
+		return; // Does not exist in list
+
+	int index = it - rigidActorList.begin();
+
+	rigidActorList.erase(rigidActorList.begin() + index);
+	transformList.erase(transformList.begin() + index);
+}

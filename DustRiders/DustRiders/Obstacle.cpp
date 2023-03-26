@@ -23,7 +23,8 @@ void Obstacle::initObstacle(PxVec3 pos)
 	body->attachShape(*shape);
 	body->setName((this->name).c_str());
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
-	gScene->addActor(*body);
+	gBody = body;
+	gScene->addActor(*gBody);
 	physicsProvider->AddEntity(body, this->transform);
 
 	shape->release();
