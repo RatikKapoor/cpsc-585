@@ -6,8 +6,9 @@ class SoundSource
 public:
 	SoundSource();
 	~SoundSource();
-
+	ALint getSource();
 	ALuint Play(const ALuint buffer_to_play);
+	void changeMusicVolume(float newVolume);
 
 private:
 	ALuint p_Source;

@@ -51,7 +51,7 @@ int main()
 {
 	glfwInit();
 	StateHandler stateHandle;
-	Constants* Constants = ConstantsHelper::getConstants();
+	Constants *Constants = ConstantsHelper::getConstants();
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
@@ -104,46 +104,56 @@ int main()
 
 	ecs["raybeam"] = new RayBeam("raybeam", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 	// Create main car
-	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]);
+	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL
-		//, "./assets/drivingPaths/path1.json"
+								//, "./assets/drivingPaths/path1.json"
 	);
 	ecs["car3"] = new AIVehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
-		//, "./assets/drivingPaths/path2.json"
+								//, "./assets/drivingPaths/path2.json"
 	);
 
 	// Vehicle references
-	auto playerVehicle = (Vehicle*)ecs["car"];
-	auto botVehicle1 = (AIVehicle*)ecs["car2"];
-	auto botVehicle2 = (AIVehicle*)ecs["car3"];
+	auto playerVehicle = (Vehicle *)ecs["car"];
+	auto botVehicle1 = (AIVehicle *)ecs["car2"];
+	auto botVehicle2 = (AIVehicle *)ecs["car3"];
 
-	std::vector<Vehicle*> vehicles{
+	std::vector<Vehicle *> vehicles{
 		playerVehicle,
 		botVehicle1,
-		botVehicle2
-	};
-	std::vector<Vehicle*> inactiveVehicles;
+		botVehicle2};
+	std::vector<Vehicle *> inactiveVehicles;
 
 	// Add obstacles
 	ObstacleHandler::renderObstacles(ecs, physics);
 
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 75.0);
+	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
 
-	SoundDevice* mysounddevice = SoundDevice::get();
-	uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("sound/blessing.ogg");
+	SoundDevice *mysounddevice = SoundDevice::get();
+	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
 	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
-	SoundSource mySpeaker;
+	// Collision sound effect
+	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
+	// uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
-	MusicBuffer myMusic("sound/TownTheme.wav");
-	std::cout << "playing town theme music...\n";
-	myMusic.Play();
+	SoundSource raybeamSpeaker;
+	SoundSource engineSpeaker;
+	engineSpeaker.changeMusicVolume(0.5f);
 
-	ALint state = AL_PLAYING;
-	std::cout << "playing sound\n";
+	ALint engineSoundState = AL_STOPPED;
+
+	MusicBuffer storm("sound/storm_long.wav");
+	storm.Play();
+	ALint stormState = AL_PLAYING;
+	storm.changeMusicVolume(1.0f);
+
+	MusicBuffer town("sound/TownTheme.wav");
+	town.Play();
+	ALint townState = AL_PLAYING;
+	town.changeMusicVolume(0.2f);
 
 	double lastTime = 0.0f;
 	int i = 0;
@@ -165,11 +175,23 @@ int main()
 		stateHandle.processJS(JoystickHandler::getFirstJS());
 
 		// The sound buffer should always update, not dependant on game state
-		if (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		if (stormState == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
-			myMusic.UpdateBufferStream();
+			storm.UpdateBufferStream();
+			alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
+		}
+		// else if (stormState != AL_PLAYING ) {
+		//	std::cout << "arrived\n";
+		//	storm.Play();
+		//	stormState = AL_PLAYING;
+		//	//storm.UpdateBufferStream();
+		//	std::cout << stormState + "\n";
+		// }
 
-			alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
+		if (townState == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		{
+			town.UpdateBufferStream();
+			alGetSourcei(town.getSource(), AL_SOURCE_STATE, &townState);
 		}
 
 		// Game hasn't started, still on the initial start menu
@@ -204,7 +226,7 @@ int main()
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
 
-					for (Vehicle* vehicle : vehicles)
+					for (Vehicle *vehicle : vehicles)
 					{
 						vehicle->restore();
 						vehicle->reset();
@@ -237,24 +259,39 @@ int main()
 				else // The game is active
 				{
 					// Vehicle physics
-					for (Vehicle* vehicle : vehicles)
+					for (Vehicle *vehicle : vehicles)
 					{
 						if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
 						{
 							ConstantsHelper::refreshConstants(); // Load up new constants from file
-							vehicle->reloadTuning(); // Apply changes
+							vehicle->reloadTuning();			 // Apply changes
 						}
 
 						if (vehicle == playerVehicle)
 						{
 							if (vehicle->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS())))
 							{
-								alSourcePlay(mySpeaker.Play(raybeamFire));
+								alSourcePlay(raybeamSpeaker.Play(raybeamFire));
+							}
+
+							alGetSourcei(engineSpeaker.getSource(), AL_SOURCE_STATE, &engineSoundState);
+							if (vehicle->currentSpeed() > 0.2 && engineSoundState != AL_PLAYING)
+							{
+								alSourcePlay(engineSpeaker.Play(engine));
+							}
+
+							if (vehicle->engineGased(std::ref(JoystickHandler::getFirstJS())))
+							{
+								engineSpeaker.changeMusicVolume(1.f);
+							}
+							else
+							{
+								engineSpeaker.changeMusicVolume(0.5f);
 							}
 						}
 						else
 						{
-							((AIVehicle*)vehicle)->stepPhysics(deltaT);
+							((AIVehicle *)vehicle)->stepPhysics(deltaT);
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -263,8 +300,8 @@ int main()
 					}
 
 					// Updating camera focus based on z position of vehicles
-					Entity* newFocus = nullptr;
-					for (Vehicle* vehicle : vehicles)
+					Entity *newFocus = nullptr;
+					for (Vehicle *vehicle : vehicles)
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
@@ -273,7 +310,7 @@ int main()
 					glm::mat4 view = camera.getView();
 					for (int i = 0; i < vehicles.size(); i++)
 					{
-						glm::vec3 drawPos = perspective * view * glm::vec4{ vehicles[i]->transform->position, 1.0f };
+						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
 
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
@@ -305,11 +342,11 @@ int main()
 					}
 				}
 				physics->updatePhysics(deltaT);
-				for (Vehicle* v : vehicles)
+				for (Vehicle *v : vehicles)
 				{
 					v->updateRayBeamPos();
 				}
-				
+
 				window.swapBuffers();
 
 				auto entities = ecs.getAll();
@@ -317,7 +354,7 @@ int main()
 #ifdef _DEBUG
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
 				playerVehicle->saveLocation(); // Save player location history to json
-#endif // _DEBUG
+#endif										   // _DEBUG
 
 				lastTime = t;
 			}

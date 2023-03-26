@@ -20,12 +20,12 @@
 // PxU32 gCommandProgress = 0; // The id of the current command.
 
 Vehicle::Vehicle(std::string n,
-	Model* m,
-	ShaderProgram* sp,
-	glm::vec3 s,
-	PhysicsProvider* pp,
-	PxVec3 startingPos = { 0.f, 0.f, 0.f },
-	unsigned int mat = 0, RayBeam* rayGunBeam = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam)
+				 Model *m,
+				 ShaderProgram *sp,
+				 glm::vec3 s,
+				 PhysicsProvider *pp,
+				 PxVec3 startingPos = {0.f, 0.f, 0.f},
+				 unsigned int mat = 0, RayBeam *rayGunBeam = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam)
 {
 	initVehicle(startingPos);
 }
@@ -52,10 +52,10 @@ bool Vehicle::initVehicle(PxVec3 p)
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-		gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-		gVehicle.mPhysXParams);
+							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+							  gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Set the states to default.
 	if (!gVehicle.initialize(*(physicsProvider->GetPxPhysics()), PxCookingParams(PxTolerancesScale()), *(physicsProvider->GetPxMaterial())))
@@ -68,7 +68,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, gVehicleName);
-	physicsProvider->AddEntity((PxRigidDynamic*)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
+	physicsProvider->AddEntity((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
 	gVehicle.mPhysXState.physxActor.rigidBody->setName(this->name.c_str());
 
 	// Set up the simulation context.
@@ -90,7 +90,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)
 	{
-		physx::PxShape* shape = NULL;
+		physx::PxShape *shape = NULL;
 		gVehicle.mPhysXState.physxActor.rigidBody->getShapes(&shape, 1, i);
 
 		shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
@@ -152,12 +152,26 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	gVehicle.step(timestep, gVehicleSimulationContext);
 }
 
-bool Vehicle::stepPhysics(double timeStep, Joystick& js)
+bool Vehicle::engineGased(Joystick &js)
+{
+	const float *analogs = js.getAnalogs();
+
+	if (analogs[Xbox::Analog::XBOX_R_TRIGGER] > 0.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 {
 	bool gunFired = false;
 	float axisThreshold = 0.15f;
-	const float* analogs = js.getAnalogs();
-	const unsigned char* b = js.getButtons();
+	const float *analogs = js.getAnalogs();
+	const unsigned char *b = js.getButtons();
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
@@ -229,8 +243,10 @@ void Vehicle::stepPhysics(double timeStep)
 	stepPhysics(timeStep, -accel, 0);
 }
 
-void Vehicle::saveLocation() {
-	if (transform->position.z - lastZ > 5.f) {	// Every 5 units log position
+void Vehicle::saveLocation()
+{
+	if (transform->position.z - lastZ > 5.f)
+	{ // Every 5 units log position
 		AIPathHandler::log(transform->position);
 		lastZ = transform->position.z;
 	}
@@ -240,10 +256,10 @@ void Vehicle::reloadTuning()
 {
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-		gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-		gVehicle.mPhysXParams);
+							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+							  gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
 	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
@@ -262,10 +278,10 @@ void Vehicle::reset()
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-		gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-		gVehicle.mPhysXParams);
+							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+							  gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-		gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(initPos, PxQuat(PxIdentity));
@@ -301,10 +317,10 @@ void Vehicle::suspend()
 void Vehicle::restore()
 {
 	shouldRender = true; // Allow rendering to screen
-											 // if (rayGunBeam != NULL)
-											 // {
-											 // 	rayGunBeam->isActive = false;
-											 // }
+						 // if (rayGunBeam != NULL)
+						 // {
+						 // 	rayGunBeam->isActive = false;
+						 // }
 }
 void Vehicle::updateRayBeamPos()
 {
@@ -313,4 +329,9 @@ void Vehicle::updateRayBeamPos()
 	{
 		rayGunBeam->updatePos(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose(), this->transform);
 	}
+}
+
+float Vehicle::currentSpeed()
+{
+	return gVehicle.mBaseState.tireSpeedStates->speedStates[0];
 }

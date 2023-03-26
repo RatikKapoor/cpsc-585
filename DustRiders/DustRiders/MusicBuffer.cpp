@@ -39,6 +39,21 @@ void MusicBuffer::Play()
 
 }
 
+void MusicBuffer::Reload()
+{
+	ALsizei i;
+	for (i = 0; i < NUM_BUFFERS; i++)
+	{
+		/* Get some data to give it to the buffer */
+		sf_count_t slen = sf_readf_short(p_SndFile, p_Membuf, BUFFER_SAMPLES);
+		if (slen < 1) break;
+
+		slen *= p_Sfinfo.channels * (sf_count_t)sizeof(short);
+		alBufferData(p_Buffers[i], p_Format, p_Membuf, (ALsizei)slen, p_Sfinfo.samplerate);
+	}
+	alSourceQueueBuffers(p_Source, i, p_Buffers);
+}
+
 //void MusicBuffer::Pause()
 //{
 //}
@@ -55,6 +70,7 @@ void MusicBuffer::UpdateBufferStream()
 	alGetError();
 	/* Get relevant source info */
 	alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
+	//alSourcei(p_Source, AL_LOOPING, 1);
 	alGetSourcei(p_Source, AL_BUFFERS_PROCESSED, &processed);
 	if (alGetError() != AL_NO_ERROR)
 	{
@@ -108,6 +124,22 @@ void MusicBuffer::UpdateBufferStream()
 ALint MusicBuffer::getSource()
 {
 	return p_Source;
+}
+
+void MusicBuffer::enableLooping()
+{
+	alSourcei(p_Source, AL_LOOPING, 1);
+		
+}
+
+void MusicBuffer::disableLooping()
+{
+	alSourcei(p_Source, AL_LOOPING, 0);
+}
+
+void MusicBuffer::changeMusicVolume(float newVolume)
+{
+	alSourcef(p_Source, AL_GAIN, newVolume);
 }
 
 MusicBuffer::MusicBuffer(const char* filename)

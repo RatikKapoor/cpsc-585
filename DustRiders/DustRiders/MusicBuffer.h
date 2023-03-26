@@ -11,6 +11,12 @@ public:
 	void UpdateBufferStream();
 
 	ALint getSource();
+	void Reload();
+
+	void enableLooping();
+	void disableLooping();
+
+	void changeMusicVolume(float newVolume);
 
 	MusicBuffer(const char* filename);
 	~MusicBuffer();
