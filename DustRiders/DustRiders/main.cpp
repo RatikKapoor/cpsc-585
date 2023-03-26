@@ -44,14 +44,9 @@
 #include "AIPathHandler.h"
 #include "ConstantsHelper.h"
 #include "ChunkHandler.h"
+#include "DebugDefines.h"
 
 #pragma endregion
-// Disables death, for testing
-#ifdef _DEBUG
-#define NO_DEATH
-#endif
-
-
 int main()
 {
 	glfwInit();
