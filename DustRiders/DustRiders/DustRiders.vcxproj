@@ -222,6 +222,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantsHelper.h" />
     <ClInclude Include="ChunkHandler.h" />
+    <ClInclude Include="DebugDefines.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />

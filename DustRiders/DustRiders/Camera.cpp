@@ -2,13 +2,10 @@
 
 #include <iostream>
 #include "InputHandler.h"
+#include "DebugDefines.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-#ifdef _DEBUG
-#define NO_DEATH
-#endif
 
 Camera::Camera(Entity *focus, glm::vec3 offset, float t, float r)
 		: focusEntity(focus), focusOffset(offset), theta(t), radius(r)
