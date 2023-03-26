@@ -23,7 +23,8 @@ void Ground::initGround(PxVec3 pos)
 	body->setGlobalPose(localTm);
 	body->attachShape(*shape);
 	body->setName((this->name).c_str());
-	gScene->addActor(*body);
+	gBody = body;
+	gScene->addActor(*gBody);
 	physicsProvider->AddEntity(body, this->transform);
 
 	shape->release();

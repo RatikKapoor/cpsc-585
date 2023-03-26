@@ -229,6 +229,7 @@ int main()
 						vehicle->restore();
 						vehicle->reset();
 					}
+					ChunkHandler::reset();
 					deltaT = 0.f;
 					stateHandle.setRState(StateHandler::ReloadState::None);
 					stateHandle.setGState(StateHandler::GameState::PauseMenu);

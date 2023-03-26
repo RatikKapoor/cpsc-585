@@ -40,4 +40,5 @@ public:
 	physx::PxFoundation *GetPxFoundation();
 	physx::PxCooking *GetPxCooking();
 	void AddEntity(physx::PxRigidActor *, Transform *);
+	void RemoveEntity(physx::PxRigidActor *);
 };
