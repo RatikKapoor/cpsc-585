@@ -33,7 +33,8 @@ RayBeam::RayBeam(std::string n,
 {
   isActive = false;
   shouldRender = false;
-  posOffset = PxVec3(0.f, 1.0f, 33.9f);
+  beamOriginOffset = PxVec3(0.f, 1.47f/2.f, 3.85f);
+  beamDirRaw = PxVec3(0.f, 0.f, 1.f);
   initBeam(pos, ecs);
 }
 
@@ -44,41 +45,66 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 
   // gScene->setSimulationEventCallback(beamCallback);
 
-  auto shape = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 30.0), *gMaterial);
-
-  shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-  shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-  shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+  auto originMarker = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 0.1), *gMaterial);
+  auto directionMarker = this->gPhysics->createShape(PxBoxGeometry(0.2, 0.2, 0.2), *gMaterial);
 
 
-  PxTransform localTm(pos + posOffset);
-  body = gPhysics->createRigidDynamic(localTm);
-  body->setGlobalPose(localTm);
-  body->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-  body->attachShape(*shape);
-  PxRigidBodyExt::updateMassAndInertia(*body, 10.f);
-  gBody = body;
-  gScene->addActor(*gBody);
-  physicsProvider->AddEntity(body, this->transform);
+  originMarker->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+  originMarker->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+  originMarker->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
-  shape->release();
+  directionMarker->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+  directionMarker->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+  directionMarker->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+  // Setting position of the origin marker
+  PxTransform localTm(pos + beamOriginOffset);
+  rcOrigin = gPhysics->createRigidDynamic(localTm);
+  rcOrigin->setGlobalPose(localTm);
+  rcOrigin->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+  rcOrigin->attachShape(*originMarker);
+  PxRigidBodyExt::updateMassAndInertia(*rcOrigin, 10.f);
+  gScene->addActor(*rcOrigin);
+  physicsProvider->AddEntity(rcOrigin, this->transform);
+  originMarker->release();
+
+  // Setting position of the direction marker
+  PxTransform localTmDir(pos + beamOriginOffset + beamDirRaw);
+  rcDirection = gPhysics->createRigidDynamic(localTmDir);
+  rcDirection->setGlobalPose(localTmDir);
+  rcDirection->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+  rcDirection->attachShape(*directionMarker);
+  PxRigidBodyExt::updateMassAndInertia(*rcDirection, 10.f);
+  gScene->addActor(*rcDirection);
+  physicsProvider->AddEntity(rcDirection, this->transform);
+  directionMarker->release();
 }
 
 void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 {
   this->vehiclePos = vehiclePos;
-  // Used to get the graphics location for where the beam appears
-  beamRotation = PxTransform(PxTransform(posOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(posOffset));
-  PxTransform localPos(posOffset + vehiclePos.p);
-  this->body->setGlobalPose(localPos * beamRotation);
+
+  PxQuat vehicleQuat = vehiclePos.q;
+  PxVec3 vQuatImaginary = vehicleQuat.getImaginaryPart();
+  PxMat44 vQuatMat(vehicleQuat);
+  PxVec3  vRotation = vQuatMat.transform(PxVec3(1.f, 1.f, 1.f));
+  vRotation.normalize();
+
+  // Moves the beam origin marker
+  beamRotation = PxTransform(PxTransform(beamOriginOffset).getInverse() * PxTransform(vehiclePos.q) * PxTransform(beamOriginOffset));
+  PxTransform localPos(beamOriginOffset + vehiclePos.p);
+  this->rcOrigin->setGlobalPose(localPos * beamRotation);
   this->transform = tf;
 
+  // Moves the beam direction marker
+  PxTransform beamDirRotation = PxTransform(PxTransform(beamOriginOffset + beamDirRaw).getInverse() * PxTransform(vehiclePos.q) * PxTransform(beamOriginOffset + beamDirRaw));
+  PxTransform localDirPos(beamOriginOffset + vehiclePos.p + beamDirRaw);
+  this->rcDirection->setGlobalPose(localDirPos * beamDirRotation);
 
 
-  // Set the origin to be right in front of the car
-  rayCastOrigin = PxTransform(posOffset + vehiclePos.p - PxVec3(0.f, 0.47f, posOffset.z -1.93f));
-  rayCastDirection = this->body->getGlobalPose().p - vehiclePos.p;
-  rayCastDirection.normalize();
+  rayCastOrigin = rcOrigin->getGlobalPose().p;
+  rayCastDirection = (rcDirection->getGlobalPose().p-rcOrigin->getGlobalPose().p).getNormalized();
+
 
 
 }
@@ -90,23 +116,25 @@ std::string RayBeam::castRayBeam()
 
   PxRaycastBuffer hit;
 
+  float f;
+  PxVec3 carRotation = vehiclePos.q.getImaginaryPart();
+  carRotation.normalize();
 
-  bool hitStatus = gScene->raycast(rayCastOrigin.p, rayCastDirection, 200.f, hit);
+  bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, 200.f, hit);
+
+        LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin));
+        LogWriter::log("    CarDir: " + LogWriter::to_string(vehiclePos.q.getImaginaryPart()) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
+
   if (hitStatus)
   {
-    closestHit = hit.block.actor->getName();
-    if (std::strcmp(closestHit.c_str(), "ground") && strcmp(hit.block.actor->getName(), "car") )
-    {
-      LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
-      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
 
-    }else{
-      LogWriter::log("Non-target hit: " +  std::string(hit.block.actor->getName()));
-      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
-    }
+    closestHit = hit.block.actor->getName();
+      LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+      // LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
   }else{
-      LogWriter::log("No hit: " +  std::string(hit.block.actor->getName()));
-      LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
+      LogWriter::log("No hit");
+      // LogWriter::log("    CarPos: " + LogWriter::to_string(vehiclePos.p) + " | RayCastPos:" + LogWriter::to_string(rayCastOrigin.p) + " | RayCastDir: " + LogWriter::to_string(rayCastDirection));
+
   }
   return closestHit;
 }
