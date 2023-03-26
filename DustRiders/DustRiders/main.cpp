@@ -45,6 +45,7 @@
 #include "ConstantsHelper.h"
 #include "ChunkHandler.h"
 #include "DebugDefines.h"
+#include "TimeKeeper.h"
 
 #pragma endregion
 int main()
@@ -52,6 +53,8 @@ int main()
 	glfwInit();
 	StateHandler stateHandle;
 	Constants *Constants = ConstantsHelper::getConstants();
+	TimeKeeper timer;
+
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
@@ -159,7 +162,7 @@ int main()
 	ALint themeState = AL_PLAYING;
 	theme.changeMusicVolume(0.2f);
 
-	double lastTime = 0.0f;
+
 	int i = 0;
 
 	for (int i = 0; i < 15; i++)
@@ -176,6 +179,7 @@ int main()
 	{
 		glfwPollEvents();
 		JoystickHandler::updateAll();
+		std::cout << timer.getDeltaT() << std::endl;
 		stateHandle.processJS(JoystickHandler::getFirstJS());
 
 		// The sound buffer should always update, not dependant on game state
@@ -184,13 +188,7 @@ int main()
 			storm.UpdateBufferStream();
 			alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
 		}
-		// else if (stormState != AL_PLAYING ) {
-		//	std::cout << "arrived\n";
-		//	storm.Play();
-		//	stormState = AL_PLAYING;
-		//	//storm.UpdateBufferStream();
-		//	std::cout << stormState + "\n";
-		// }
+
 
 		if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
@@ -206,26 +204,18 @@ int main()
 		}
 		else
 		{
-			auto t = glfwGetTime();
-			if (t - lastTime > 0.0167)
+			if (timer.getDeltaTRaw() > 0.0)
 			{
-				auto deltaT = t - lastTime;
-				if (deltaT > 0.1f)
-				{
-					deltaT = 0.1f;
-				}
-
 				// First few renders should be simulated with manual step to avoid objects clipping through ground
 				if (i < 15)
 				{
-					deltaT = (1.f / 60.f);
+					timer.setDeltaT(1.0/60.0);
 					i++;
 				}
 				// Reset the cars back to where they were and restart the game
 				// Not implemented in release version of game
 				if (stateHandle.getRState() == StateHandler::ReloadState::GameReset)
 				{
-
 					int restoreCount = 0;
 					vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 					inactiveVehicles.clear();
@@ -236,7 +226,6 @@ int main()
 						vehicle->reset();
 					}
 					ChunkHandler::reset();
-					deltaT = 0.f;
 					stateHandle.setRState(StateHandler::ReloadState::None);
 					stateHandle.setGState(StateHandler::GameState::PauseMenu);
 				}
@@ -248,21 +237,22 @@ int main()
 					switch (gState)
 					{
 					case StateHandler::GameState::PauseMenu:
-						deltaT = 0.0f;
+						timer.pauseTime();
 						overlay.RenderPause(stateHandle.getPrevGState(), windowHeight / 2, windowWidth / 2);
 						break;
 					case StateHandler::GameState::GameWon:
-						deltaT = 0.0f;
+						timer.pauseTime();
 						overlay.RenderWin(windowHeight / 2, windowWidth / 2);
 						break;
 					case StateHandler::GameState::GameLost:
-						deltaT = 0.0f;
+						timer.pauseTime();
 						overlay.RenderLoss(windowHeight / 2, windowWidth / 2);
 						break;
 					}
 				}
 				else // The game is active
 				{
+					timer.playTime();
 					// Vehicle physics
 					for (Vehicle *vehicle : vehicles)
 					{
@@ -274,7 +264,7 @@ int main()
 
 						if (vehicle == playerVehicle)
 						{
-							if (vehicle->stepPhysics(deltaT, std::ref(JoystickHandler::getFirstJS())))
+							if (vehicle->stepPhysics(timer.getDeltaT(), std::ref(JoystickHandler::getFirstJS())))
 							{
 								alSourcePlay(raybeamSpeaker.Play(raybeamFire));
 							}
@@ -296,7 +286,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle *)vehicle)->stepPhysics(deltaT);
+							((AIVehicle *)vehicle)->stepPhysics(timer.getDeltaT());
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -354,7 +344,7 @@ int main()
 #endif
 					}
 				}
-				physics->updatePhysics(deltaT);
+				physics->updatePhysics(timer.getDeltaT());
 				for (Vehicle *v : vehicles)
 				{
 					v->updateRayBeamPos();
@@ -368,10 +358,10 @@ int main()
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
 				playerVehicle->saveLocation(); // Save player location history to json
 #endif										   // _DEBUG
-
-				lastTime = t;
 			}
 		}
+		timer.updateTime();
+
 	}
 	window.close();
 

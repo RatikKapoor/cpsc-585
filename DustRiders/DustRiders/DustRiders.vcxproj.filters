@@ -229,6 +229,9 @@
     <ClCompile Include="Ground.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TimeKeeper.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vehicle.h">
@@ -413,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="DebugDefines.h">
       <Filter>Header Files\Window &amp; Render</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeKeeper.h">
+      <Filter>Header Files\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

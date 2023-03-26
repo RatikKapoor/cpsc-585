@@ -57,6 +57,9 @@ public:
 	void updateRayBeamPos();
 	void saveLocation();
 
+	void slowdownEffect(float forceApplied, float timeApplied);
+	void speedupEffect(float forceApplied, float timeApplied);
+
 protected:
 	bool wasReset;
 	bool initVehicle(PxVec3);
