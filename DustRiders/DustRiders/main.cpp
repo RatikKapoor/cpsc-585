@@ -107,9 +107,7 @@ int main()
 	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
 	// Add AI cars
-	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL
-								//, "./assets/drivingPaths/path1.json"
-	);
+	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL, "./assets/drivingPaths/path1.json");
 	ecs["car3"] = new AIVehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
 								//, "./assets/drivingPaths/path2.json"
 	);
@@ -129,7 +127,7 @@ int main()
 	ObstacleHandler::renderObstacles(ecs, physics);
 
 	// Start by focusing on the Player Vehicle
-	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 75.0);
+	Camera camera(ecs["car"], glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0);
 
 	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
@@ -305,6 +303,7 @@ int main()
 						if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 							newFocus = vehicle;
 					camera.setFocusEntity(newFocus);
+					ChunkHandler::updateChunks(newFocus);
 
 					glm::mat4 perspective = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.01f, 1000.f);
 					glm::mat4 view = camera.getView();

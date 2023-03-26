@@ -14,7 +14,6 @@ Ground::Ground(std::string n,
 
 void Ground::initGround(PxVec3 pos)
 {
-
 	auto shape = setupTriangleMesh();
 
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
