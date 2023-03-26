@@ -148,12 +148,12 @@ int main()
 	MusicBuffer storm("sound/storm_long.wav");
 	storm.Play();
 	ALint stormState = AL_PLAYING;
-	storm.changeMusicVolume(1.0f);
+	storm.changeMusicVolume(0.3f);
 
-	MusicBuffer town("sound/TownTheme.wav");
-	town.Play();
-	ALint townState = AL_PLAYING;
-	town.changeMusicVolume(0.2f);
+	MusicBuffer theme("sound/jumphigher.ogg");
+	theme.Play();
+	ALint themeState = AL_PLAYING;
+	theme.changeMusicVolume(0.2f);
 
 	double lastTime = 0.0f;
 	int i = 0;
@@ -188,10 +188,10 @@ int main()
 		//	std::cout << stormState + "\n";
 		// }
 
-		if (townState == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
-			town.UpdateBufferStream();
-			alGetSourcei(town.getSource(), AL_SOURCE_STATE, &townState);
+			theme.UpdateBufferStream();
+			alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
 		}
 
 		// Game hasn't started, still on the initial start menu
