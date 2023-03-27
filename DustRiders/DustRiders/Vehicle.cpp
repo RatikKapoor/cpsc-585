@@ -45,6 +45,9 @@ void Vehicle::initMaterialFrictionTable()
 bool Vehicle::initVehicle(PxVec3 p)
 {
 	initMaterialFrictionTable();
+
+	slowdownForce = 10000.f;
+	speedupForce = 5000.f;
 	initPos = p;
 
 	this->flags["beamHit"] = false;
@@ -235,6 +238,8 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 	gVehicle.mCommandState.brakes[0] = brake;
 
 	gVehicle.mCommandState.steer = -1.f * analogs[Xbox::Analog::XBOX_L_XAXIS]; // Need to flip the direction of the input
+
+	updateEffects(timeStep);
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 
 	return gunFired;
@@ -243,6 +248,7 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 void Vehicle::stepPhysics(double timeStep)
 {
 	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+		updateEffects(timeStep);
 	stepPhysics(timeStep, -accel, 0);
 }
 
@@ -267,8 +273,9 @@ void Vehicle::reloadTuning()
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
 	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
 	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensor));
-
+	removeEffects();
 	return;
+
 }
 
 void Vehicle::reset()
@@ -306,6 +313,8 @@ void Vehicle::reset()
 	{
 		rayGunBeam->updatePos(gVehicle.mPhysXState.physxActor.rigidBody->getGlobalPose(), this->transform);
 	}
+
+	removeEffects();
 }
 
 void Vehicle::suspend()
@@ -337,4 +346,35 @@ void Vehicle::updateRayBeamPos()
 float Vehicle::currentSpeed()
 {
 	return gVehicle.mBaseState.tireSpeedStates->speedStates[0];
+}
+
+
+void Vehicle::applySlowdownEffect(double seconds){
+	slowdownTimeRemaining += seconds;
+}
+void Vehicle::applySpeedupEffect(double seconds){
+	speedupTimeRemaining += seconds;
+}
+
+void Vehicle::removeEffects(){
+	slowdownTimeRemaining = 0.0;
+	speedupTimeRemaining = 0.0;
+}
+
+void Vehicle::updateEffects(double deltaT){
+	if(slowdownTimeRemaining>0.0){
+		gVehicle.mPhysXState.physxActor.rigidBody->addForce(PxVec3(0.f, 0.f, -1.f*slowdownForce));
+
+	}
+	if(speedupTimeRemaining>0.0){
+		gVehicle.mPhysXState.physxActor.rigidBody->addForce(PxVec3(0.f, 0.f, speedupForce));
+	}
+	speedupTimeRemaining-=deltaT;
+	slowdownTimeRemaining-=deltaT;
+	if(speedupTimeRemaining<0.0){
+		speedupTimeRemaining = 0.0;
+	}
+	if(slowdownTimeRemaining<0.0){
+		slowdownTimeRemaining = 0.0;
+	}
 }

@@ -57,14 +57,24 @@ public:
 	void updateRayBeamPos();
 	void saveLocation();
 
-	void slowdownEffect(float forceApplied, float timeApplied);
-	void speedupEffect(float forceApplied, float timeApplied);
+	void applySlowdownEffect(double seconds);
+	void applySpeedupEffect(double seconds);
+
+	void removeEffects();
 
 protected:
 	bool wasReset;
+	void updateEffects(double deltaT);
 	bool initVehicle(PxVec3);
 	void initMaterialFrictionTable();
 	void stepPhysics(double, float, float);
+
+	double lastEffectTime;
+
+	double slowdownTimeRemaining;
+	double speedupTimeRemaining;
+	float slowdownForce;
+	float speedupForce;
 
 
 	RayBeam *rayGunBeam;
