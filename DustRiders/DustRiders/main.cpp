@@ -172,6 +172,7 @@ int main()
 		window.swapBuffers();
 	}
 
+	timer.updateTime();
 	while (stateHandle.getGState() != StateHandler::GameState::Exit)
 	{
 		glfwPollEvents();
@@ -199,12 +200,13 @@ int main()
 		}
 		else
 		{
-			if (timer.getDeltaTRaw() > 0.0)
+			if (timer.getCounterRaw() > 0.0167)
 			{
 				// First few renders should be simulated with manual step to avoid objects clipping through ground
 				if (i < 15)
 				{
 					timer.setDeltaT(1.0 / 60.0);
+					timer.setCounter(1.f / 60.f);
 					i++;
 				}
 				// Reset the cars back to where they were and restart the game
@@ -274,7 +276,7 @@ int main()
 
 						if (vehicle == playerVehicle)
 						{
-							vehicle->stepPhysics(timer.getDeltaT(), std::ref(JoystickHandler::getFirstJS()));
+							vehicle->stepPhysics(timer.getCounter(), std::ref(JoystickHandler::getFirstJS()));
 							alGetSourcei(engineSpeaker.getSource(), AL_SOURCE_STATE, &engineSoundState);
 							if (vehicle->currentSpeed() > 0.2 && engineSoundState != AL_PLAYING)
 							{
@@ -292,7 +294,7 @@ int main()
 						}
 						else
 						{
-							((AIVehicle *)vehicle)->stepPhysics(timer.getDeltaT());
+							((AIVehicle *)vehicle)->stepPhysics(timer.getCounter());
 						}
 					}
 					if (stateHandle.getRState() == StateHandler::ReloadState::Tuning)
@@ -350,7 +352,7 @@ int main()
 #endif
 					}
 				}
-				physics->updatePhysics(timer.getDeltaT());
+				physics->updatePhysics(timer.getCounter());
 				for (Vehicle *v : vehicles)
 				{
 					v->updateRayBeamPos();
@@ -364,13 +366,16 @@ int main()
 #ifdef _DEBUG
 				playerVehicle->saveLocation(); // Save player location history to json
 #endif
+				timer.setCounter(0.f);
 			}
 		}
 		timer.updateTime();
 	}
 	window.close();
 
+#ifdef _DEBUG
 	AIPathHandler::write();
+#endif // _DEBUG
 
 	overlay.Cleanup();
 

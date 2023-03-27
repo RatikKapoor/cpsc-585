@@ -7,6 +7,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "ECS.h"
+#include "TimeKeeper.h"
 
 class Overlay
 {
@@ -17,6 +18,7 @@ private:
 	std::map<std::string, ImTextureID> stormImagesMap;
 	unsigned int stormFrameCounter;
 	std::string selectedEntity;
+	TimeKeeper timeKeeper;
 
 	ImTextureID loadFrameTexture(std::string);
 
