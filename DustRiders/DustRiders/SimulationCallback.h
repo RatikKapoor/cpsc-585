@@ -18,7 +18,8 @@ public:
 
 private:
 	EntityComponentSystem& ecs;
-	SoundSource* noiseSpeaker;
+	SoundSource* speedUpSpeaker;
+	SoundSource* slowDownSpeaker;
 	uint32_t speedUpSound;
 	uint32_t slowDownSound;
 };
