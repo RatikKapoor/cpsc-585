@@ -137,5 +137,7 @@ void AIVehicle::handlePathfind()
 void AIVehicle::stepPhysics(double timeStep)
 {
 	handlePathfind();
+	updateEffects(timeStep);
 	gVehicle.step(timeStep, gVehicleSimulationContext);
+
 }

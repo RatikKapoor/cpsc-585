@@ -33,7 +33,7 @@ RayBeam::RayBeam(std::string n,
                  ShaderProgram *sp,
                  glm::vec3 s,
                  PhysicsProvider *pp, EntityComponentSystem &ecs, PxVec3 pos = {0.f, 0.f, 0.f},
-                 unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat)
+                 unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat), ecs(ecs)
 {
   coolDownTime = 2.0;
   isActive = false;
@@ -138,6 +138,7 @@ std::string RayBeam::castRayBeam()
     closestHit = hit.block.actor->getName();
     if(regex_match (hit.block.actor->getName(), regex("(car)(.*)") )){
       LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
+      ((AIVehicle*)ecs[closestHit])->applySlowdownEffect(5);
     }
   }
   return closestHit;

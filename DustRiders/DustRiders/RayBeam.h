@@ -30,8 +30,6 @@ public:
 
   RayBeamCallback *beamCallback;
 
-
-
   PxVec3 rayCastOrigin;
   PxTransform beamRotation;
   PxVec3 rayCastDirection;
@@ -45,6 +43,7 @@ public:
 
 protected:
   void initBeam(PxVec3 pos, EntityComponentSystem &ecs);
+  EntityComponentSystem &ecs;
   PxVec3 beamOriginOffset;
   PxVec3 beamDirRaw;
   double lastFireTime;
