@@ -25,6 +25,7 @@ public:
 	void RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth);
 	void RenderWin(int windowHeight, int windowWidth);
 	void RenderLoss(int windowHeight, int windowWidth);
+	void RenderStorm(int frameWidth, int frameHeight, float timePerFrame, int screenWidth, int screenHeight);
 	void RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight);
 	void RenderCharge(int charge, int screenWidth, int screenHeight);
 	void RenderPlace(int place, int screenWidth, int screenHeight);
