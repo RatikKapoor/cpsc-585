@@ -14,8 +14,11 @@ private:
 	double lastTime;
 	int nbFrames = 0;
 	int currentFps = 0;
-
+	std::map<std::string, ImTextureID> stormImagesMap;
+	unsigned int stormFrameCounter;
 	std::string selectedEntity;
+
+	ImTextureID loadFrameTexture(std::string);
 
 public:
 	Overlay();
@@ -25,7 +28,7 @@ public:
 	void RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth);
 	void RenderWin(int windowHeight, int windowWidth);
 	void RenderLoss(int windowHeight, int windowWidth);
-	void RenderStorm(int frameWidth, int frameHeight, float timePerFrame, int screenWidth, int screenHeight);
+	void RenderStorm(int frameWidth, int frameHeight, int screenWidth, int screenHeight);
 	void RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight);
 	void RenderCharge(int charge, int screenWidth, int screenHeight);
 	void RenderPlace(int place, int screenWidth, int screenHeight);

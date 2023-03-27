@@ -247,7 +247,7 @@ int main()
 					overlay.RenderCharge(100, windowWidth, windowHeight);
 					overlay.RenderPlace(10, windowWidth, windowHeight);
 					overlay.RenderSpeedometer(100, windowWidth, windowHeight);
-					overlay.RenderStorm(1422, 100, 0.3, windowWidth, windowHeight);
+					overlay.RenderStorm(1422, 100, windowWidth, windowHeight);
 
 					timer.playTime();
 					// Vehicle physics
@@ -347,10 +347,10 @@ int main()
 
 				auto entities = ecs.getAll();
 				renderer.updateRender(entities, camera, window.getAspectRatio());
-#ifdef _DEBUG
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
+#ifdef _DEBUG
 				playerVehicle->saveLocation(); // Save player location history to json
-#endif										   // _DEBUG
+#endif
 			}
 		}
 		timer.updateTime();
