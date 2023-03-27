@@ -152,6 +152,9 @@ std::string battery(int c) {
 std::string positionFancy(int x) {
 	switch (x)
 	{
+	case 1:
+		return "st";
+		break;
 	case 2:
 		return "nd";
 		break;
@@ -206,7 +209,7 @@ void Overlay::RenderStorm(int frameWidth, int frameHeight, int screenWidth, int 
 		stormFrameCounter++;
 }
 
-void Overlay::RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight) {
+void Overlay::RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -216,7 +219,7 @@ void Overlay::RenderSpeedometer(int currentSpeed, int screenWidth, int screenHei
 	ImGui::Begin("Speedometer", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
 	ImGui::SetWindowFontScale(2.0f);
-	ImGui::Text("%d m/s", currentSpeed);
+	ImGui::Text("%.2f m/s", currentSpeed);
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window

@@ -247,9 +247,19 @@ int main()
 				}
 				else // The game is active
 				{
+					// Figure out which position player is in
+					int position = 1;
+					auto loc = ((Vehicle*)ecs["car"])->transform->position.z;
+					for (auto& vehicle : vehicles) {
+						if (vehicle->transform->position.z > loc) {
+							position++;
+						}
+					}
+
+					// Render game overlays
 					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
-					overlay.RenderPlace(10, windowWidth, windowHeight);
-					overlay.RenderSpeedometer(100, windowWidth, windowHeight);
+					overlay.RenderPlace(position, windowWidth, windowHeight);
+					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight);
 					overlay.RenderStorm(1422, 100, windowWidth, windowHeight);
 
 					timer.playTime();
