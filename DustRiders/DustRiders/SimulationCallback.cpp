@@ -16,7 +16,7 @@ void SimulationCallback::onTrigger(PxTriggerPair* pairs, PxU32 count) {
 		((Vehicle*)ecs[actorEntityName])->applySpeedupEffect(5);
 		alSourcePlay(noiseSpeaker->Play(speedUpSound));
 	}
-	if (regex_match(triggerEntityName, regex("(slowDownZone)(.*)")) && regex_match(actorEntityName, regex("(car)(.*)"))) {
+	else if (regex_match(triggerEntityName, regex("(slowDownZone)(.*)")) && regex_match(actorEntityName, regex("(car)(.*)"))) {
 		((Vehicle*)ecs[actorEntityName])->applySlowdownEffect(5);
 		alSourcePlay(noiseSpeaker->Play(slowDownSound));
 	}
