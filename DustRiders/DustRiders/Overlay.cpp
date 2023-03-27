@@ -9,7 +9,7 @@
 
 Overlay::Overlay()
 {
-	lastTime = glfwGetTime();
+	lastTime = timeKeeper.getCurrentTime();
 
 	for (int i = 0; i < 14; i++) {
 		std::string imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
@@ -51,7 +51,7 @@ void Overlay::LoadingContent(int windowWidth, int windowHeight)
 void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::GameState prevGameState, std::vector<Entity *> entities, EntityComponentSystem *ecs)
 {
 	// Framerate calculations
-	double currentTime = glfwGetTime();
+	double currentTime = timeKeeper.getCurrentTime();
 	nbFrames++;
 	if (currentTime - lastTime >= 1.0)
 	{ // If last prinf() was more than 1 sec ago

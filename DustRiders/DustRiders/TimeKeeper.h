@@ -5,66 +5,85 @@
 
 
 class TimeKeeper {
-  public:
+public:
 
-    TimeKeeper(){
-      if(TimeKeeper::initialized == false){
-      TimeKeeper::currentTime = glfwGetTime();
-      TimeKeeper::deltaT = TimeKeeper::lastTime-TimeKeeper::currentTime;
-      TimeKeeper::paused = false;
-      TimeKeeper::initialized = true;
-      }
-    }
+	TimeKeeper() {
+		if (TimeKeeper::initialized == false) {
+			TimeKeeper::currentTime = glfwGetTime();
+			TimeKeeper::deltaT = TimeKeeper::lastTime - TimeKeeper::currentTime;
+			TimeKeeper::paused = false;
+			TimeKeeper::initialized = true;
+		}
+	}
 
-    void updateTime(){
-      TimeKeeper::lastTime = TimeKeeper::currentTime;
-      TimeKeeper::currentTime = glfwGetTime();
-        TimeKeeper::deltaT= TimeKeeper::currentTime-TimeKeeper::lastTime;
-      if(TimeKeeper::deltaT>0.1){
-          TimeKeeper::deltaT = 0.1;
-      }
-    }
+	void updateTime() {
+		TimeKeeper::lastTime = TimeKeeper::currentTime;
+		TimeKeeper::currentTime = glfwGetTime();
+		TimeKeeper::deltaT = TimeKeeper::currentTime - TimeKeeper::lastTime;
+		if (TimeKeeper::deltaT > 0.1) {
+			TimeKeeper::deltaT = 0.1;
+		}
+		TimeKeeper::counter += TimeKeeper::deltaT;
+	}
 
-    double getCurrentTime(){
-      return TimeKeeper::currentTime;
-    }
+	double getCounter() {
+		if (TimeKeeper::paused) {
+			return 0.f;
+		}
+		return TimeKeeper::counter;
+	}
 
-    double getLastTime(){
-      return TimeKeeper::lastTime;
-    }
+	double getCounterRaw() {
+		return TimeKeeper::counter;
+	}
 
-    double getDeltaT(){
-      if(paused){
-        return 0.0;
-      }else{
-         return TimeKeeper::deltaT;
-      }
-    }
+	void setCounter(double d) {
+		TimeKeeper::counter = d;
+	}
 
-    double getDeltaTRaw(){
-      return TimeKeeper::deltaT;
-    }
+	double getCurrentTime() {
+		return TimeKeeper::currentTime;
+	}
 
-    void pauseTime(){
-      TimeKeeper::paused = true;
-    }
+	double getLastTime() {
+		return TimeKeeper::lastTime;
+	}
 
-    void playTime(){
-      TimeKeeper::paused = false;
-    }
+	double getDeltaT() {
+		if (paused) {
+			return 0.0;
+		}
+		else {
+			return TimeKeeper::deltaT;
+		}
+	}
 
-    bool isPaused(){
-      return TimeKeeper::paused;
-    }
+	double getDeltaTRaw() {
+		return TimeKeeper::deltaT;
+	}
 
-    void setDeltaT(double newDeltaT){
-      TimeKeeper::deltaT = newDeltaT;
-    }
+	void pauseTime() {
+		TimeKeeper::paused = true;
+	}
+
+	void playTime() {
+		TimeKeeper::paused = false;
+	}
+
+	bool isPaused() {
+		return TimeKeeper::paused;
+	}
+
+	void setDeltaT(double newDeltaT) {
+		TimeKeeper::deltaT = newDeltaT;
+	}
 
 private:
-  static bool paused;
-  static bool initialized;
-  static double currentTime;
-  static double lastTime;
-  static double deltaT;
+	static bool paused;
+	static bool initialized;
+	static double currentTime;
+	static double lastTime;
+	static double deltaT;
+
+	static double counter;
 };
