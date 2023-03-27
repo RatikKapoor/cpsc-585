@@ -4,8 +4,10 @@ using namespace physx;
 using namespace physx::vehicle2;
 using namespace snippetvehicle2;
 
-PhysicsSystem::PhysicsSystem()
+PhysicsSystem::PhysicsSystem(EntityComponentSystem& ecs): ecs(ecs)
 {
+	simulationCallbacks = new SimulationCallback(ecs);
+
 	// Initialize PhysX
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	if (!gFoundation)
@@ -38,6 +40,7 @@ PhysicsSystem::PhysicsSystem()
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
 	gScene = gPhysics->createScene(sceneDesc);
+	gScene->setSimulationEventCallback(simulationCallbacks);
 
 	// Prep PVD
 	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();

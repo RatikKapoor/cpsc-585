@@ -71,6 +71,12 @@
     <Filter Include="Source Files\Log">
       <UniqueIdentifier>{beaac20f-4258-4700-84f4-2691bb752d9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Callbacks">
+      <UniqueIdentifier>{e8923478-5d7a-462c-9618-5da3ff0407a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Callbacks">
+      <UniqueIdentifier>{78e54d57-4de7-4502-b271-a30377a166cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -231,6 +237,12 @@
     </ClCompile>
     <ClCompile Include="TimeKeeper.cpp">
       <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="SimulationCallback.cpp">
+      <Filter>Source Files\Callbacks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -419,6 +431,12 @@
     </ClInclude>
     <ClInclude Include="TimeKeeper.h">
       <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerEntity.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="SimulationCallback.h">
+      <Filter>Header Files\Callbacks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

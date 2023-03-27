@@ -79,7 +79,6 @@ int main()
 	theme.changeMusicVolume(0.2f);
 #pragma endregion
 
-
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
 #ifdef _DEBUG
@@ -117,14 +116,14 @@ int main()
 		JoystickHandler::addJS(keyboardJS);
 	}
 
-	auto physics = new PhysicsSystem();
+	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
+
+	auto physics = new PhysicsSystem(ecs);
 	RenderingSystem renderer;
 
 	// Initialize Providers
 	ShaderProvider::initialize(renderer);
 	ModelProvider::initialize(renderer);
-
-	EntityComponentSystem ecs = *EntityComponentSystem::getInstance();
 
 	// Start chunking system
 	ChunkHandler::initialize(ecs, physics);
