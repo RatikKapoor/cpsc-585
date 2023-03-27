@@ -160,3 +160,7 @@ bool RayBeam::canFire() {
 		return true;
 	}
 }
+
+int RayBeam::getChargePercentage() {
+	return std::min((int)((timeKeep.getCurrentTime() - lastFireTime) / coolDownTime * 100), 100);
+}

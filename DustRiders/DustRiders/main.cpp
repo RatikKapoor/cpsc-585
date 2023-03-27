@@ -247,7 +247,7 @@ int main()
 				}
 				else // The game is active
 				{
-					overlay.RenderCharge(100, windowWidth, windowHeight);
+					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
 					overlay.RenderPlace(10, windowWidth, windowHeight);
 					overlay.RenderSpeedometer(100, windowWidth, windowHeight);
 					overlay.RenderStorm(1422, 100, windowWidth, windowHeight);

@@ -45,6 +45,7 @@ public:
 	bool targetInRange();
 
 	bool canFire();
+	int getChargePercentage();
 
 protected:
 	void initBeam(PxVec3 pos, EntityComponentSystem& ecs);
