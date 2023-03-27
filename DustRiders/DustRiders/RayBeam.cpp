@@ -10,7 +10,7 @@ RayBeam::RayBeam(std::string n,
 	Model* m,
 	ShaderProgram* sp,
 	glm::vec3 s,
-	PhysicsProvider* pp, 
+	PhysicsProvider* pp,
 	EntityComponentSystem& ecs,
 	PxVec3 pos = { 0.f, 0.f, 0.f },
 	unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat), ecs(ecs)
@@ -26,6 +26,7 @@ RayBeam::RayBeam(std::string n,
 	raybeamHitSpeaker = new SoundSource();
 	raybeamFireSound = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 	raybeamHitSound = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
+	beamFrameCount = 0;
 }
 
 void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem& ecs)
@@ -94,6 +95,16 @@ void RayBeam::updatePos(PxTransform vehiclePos, Transform* tf)
 
 	rayCastOrigin = rcOrigin->getGlobalPose().p;
 	rayCastDirection = (rcDirection->getGlobalPose().p - rcOrigin->getGlobalPose().p).getNormalized();
+
+	if(shouldRender){
+		if(beamFrameCount<20){
+			beamFrameCount++;
+			shouldRender = true;
+		}else{
+			beamFrameCount = 0;
+			shouldRender = false;
+		}
+	}
 }
 
 std::string RayBeam::castRayBeam()
@@ -104,8 +115,6 @@ std::string RayBeam::castRayBeam()
 	PxRaycastBuffer hit;
 
 	float f;
-	PxVec3 carRotation = vehiclePos.q.getImaginaryPart();
-	carRotation.normalize();
 
 	bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, 200.f, hit);
 
@@ -114,6 +123,7 @@ std::string RayBeam::castRayBeam()
 	}
 	else {
 		lastFireTime = timeKeep.getCurrentTime();
+		shouldRender = true;
 	}
 	if (hitStatus)
 	{
@@ -125,6 +135,19 @@ std::string RayBeam::castRayBeam()
 		}
 	}
 	return closestHit;
+}
+
+bool RayBeam::targetInRange(){
+	PxRaycastBuffer hit;
+	float f;
+
+	bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, Constants->aiRaygunAimingRange, hit);
+	if(hitStatus){
+		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)"))){
+			return true;
+		}
+	}
+	return false;
 }
 
 bool RayBeam::canFire() {

@@ -15,5 +15,7 @@
 
     "aiCarNextPositionDistanceBuffer": 20.0,
     "aiCarRandomPositionWidth": 20.0,
-    "aiCarRandomPositionSpacing": 100.0
+    "aiCarRandomPositionSpacing": 100.0,
+    "aiRaygunAimingRange": 30.0,
+    "aiRaygunShootingDelay": 0.7
 }

@@ -21,6 +21,11 @@ public:
 
 private:
 	void handlePathfind();
+	void handleShooting(double timeStep);
+
+	bool targetSpotted;
+	double aimDelay;
+
 
 	bool isClose(glm::vec3, glm::vec3);
 
