@@ -179,7 +179,6 @@ int main()
 	{
 		glfwPollEvents();
 		JoystickHandler::updateAll();
-		std::cout << timer.getDeltaT() << std::endl;
 		stateHandle.processJS(JoystickHandler::getFirstJS());
 
 		// The sound buffer should always update, not dependant on game state
