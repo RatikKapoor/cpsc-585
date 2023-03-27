@@ -127,8 +127,6 @@ int main()
 		botVehicle2};
 	std::vector<Vehicle *> inactiveVehicles;
 
-	// Add obstacles
-	ObstacleHandler::renderObstacles(ecs, physics);
 
 #ifndef NO_DEATH
 	// Start by focusing on the Player Vehicle
