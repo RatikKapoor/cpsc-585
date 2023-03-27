@@ -5,9 +5,10 @@
 #include "ModelProvider.h"
 #include "PhysicsProvider.h"
 #include "Ground.h"
+#include "ObstacleHandler.h"
 
 #define CHUNK_SIZE 300.0
-#define CHUNK_LOADING_DISTANCE 50.0
+#define CHUNK_LOADING_DISTANCE 100.0
 
 class ChunkHandler {
 public:

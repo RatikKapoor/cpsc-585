@@ -10,6 +10,8 @@ void ChunkHandler::initialize(EntityComponentSystem& system, PhysicsProvider* pr
 	ecs = &system;
 	physics = provider;
 
+	ObstacleHandler::initialize(system, provider);
+
 	setupFirstChunk();
 }
 
@@ -18,6 +20,9 @@ void ChunkHandler::reset() {
 		ecs->erase(chunk->name);
 	}
 	chunkList.clear();
+	chunkCounter = 0;
+
+	ObstacleHandler::reset();
 
 	setupFirstChunk();
 }
@@ -27,6 +32,8 @@ void ChunkHandler::setupFirstChunk() {
 	chunkList.push_back((*ecs)["ground0"]);
 	chunkCounter = 1;
 	maxChunkDistance = 150.f;
+
+	ObstacleHandler::addObstacles(30, 150);
 }
 
 void ChunkHandler::updateChunks(Entity* car) {
@@ -34,6 +41,8 @@ void ChunkHandler::updateChunks(Entity* car) {
 		auto chunkName = std::string("ground") + std::to_string(chunkCounter);
 		(*ecs)[chunkName] = new Ground(chunkName, ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, maxChunkDistance + 150.f), 0);
 		chunkList.push_back((*ecs)[chunkName]);
+		ObstacleHandler::addObstacles(maxChunkDistance, maxChunkDistance + CHUNK_SIZE);
+
 		chunkCounter++;
 		maxChunkDistance += CHUNK_SIZE;
 	}
