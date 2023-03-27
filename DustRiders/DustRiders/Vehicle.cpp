@@ -189,6 +189,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 	const float *analogs = js.getAnalogs();
 	const unsigned char *b = js.getButtons();
 
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity * pow(Constants->vehicleChunkAccelerationBaseExponent, ChunkHandler::chunkCounter));
 	gVehicle.mCommandState.nbBrakes = 1;
 
 	if (js.getButtonRaw(Xbox::Button::XBOX_A))

@@ -15,13 +15,13 @@ public:
 	static void initialize(EntityComponentSystem&, PhysicsProvider*);
 	static void reset();
 	static void updateChunks(Entity*);
+	
+	static unsigned int chunkCounter;
 
 private:
 	static void setupFirstChunk();
-
 	static EntityComponentSystem* ecs;
 	static PhysicsProvider* physics;
-	static unsigned int chunkCounter;
 	static float maxChunkDistance;
 	static std::vector<Entity*> chunkList;
 };

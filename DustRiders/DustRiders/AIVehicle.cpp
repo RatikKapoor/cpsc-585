@@ -138,6 +138,6 @@ void AIVehicle::stepPhysics(double timeStep)
 {
 	handlePathfind();
 	updateEffects(timeStep);
+	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity * pow(Constants->vehicleChunkAccelerationBaseExponent, ChunkHandler::chunkCounter));
 	gVehicle.step(timeStep, gVehicleSimulationContext);
-
 }
