@@ -1,9 +1,13 @@
 #include "RoadObjectHandler.h"
 
-std::vector<TriggerEntity*> RoadObjectHandler::obstacleList;
+std::vector<Obstacle*> RoadObjectHandler::obstacleList;
+std::vector<TriggerEntity*> RoadObjectHandler::triggerList;
 EntityComponentSystem* RoadObjectHandler::ecs;
 PhysicsProvider* RoadObjectHandler::physics;
 unsigned int RoadObjectHandler::obstacleCounter = 0;
+unsigned int RoadObjectHandler::speedUpZoneCounter = 0;
+unsigned int RoadObjectHandler::slowDownZoneCounter = 0;
+unsigned int RoadObjectHandler::roadObjectCounter = 0;
 
 void RoadObjectHandler::initialize(EntityComponentSystem& system, PhysicsProvider* provider) {
 	ecs = &system;
@@ -16,42 +20,104 @@ void RoadObjectHandler::reset() {
 	}
 	obstacleList.clear();
 	obstacleCounter = 0;
+
+	for (auto& zone : triggerList) {
+		ecs->erase(zone->name);
+	}
+	triggerList.clear();
+	speedUpZoneCounter = 0;
+	slowDownZoneCounter = 0;
+
+	roadObjectCounter = 0;
 }
 
 void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 	for (float dist = minDistance; dist <= maxDistance; dist += 20.0f)
 	{
-		std::string name = "speedUpZone" + std::to_string(obstacleCounter);
+		std::string name = "";
+		Model* roadObjectModel;
+		enum RoadObjectType type;
+		switch (roadObjectCounter % 3)
+		{
+		case 0:
+			// Create speed up zone
+			name = "speedUpZone" + std::to_string(speedUpZoneCounter);
+			type = RoadObjectType::SpeedUpZone;
+			roadObjectModel = ModelProvider::rock3; // TODO: Need good model
+			break;
+		case 1:
+			// Create slow down zone
+			name = "slowDownZone" + std::to_string(slowDownZoneCounter);
+			type = RoadObjectType::SlowDownZone;
+			roadObjectModel = ModelProvider::rock3; // TOOD: Need good model
+			break;
+		case 2:
+		default:
+			// Create rock
+			name = "obstacle" + std::to_string(obstacleCounter);
+			type = RoadObjectType::ObstacleRock;
+			switch (obstacleCounter % 3)
+			{
+			case 0:
+				roadObjectModel = ModelProvider::rock1;
+				break;
+			case 1:
+				roadObjectModel = ModelProvider::rock2;
+				break;
+			case 2:
+			default:
+				roadObjectModel = ModelProvider::rock3;
+				break;
+			}
+			break;
+		}
+
+		// Calculate position
 		float random = ((float)rand()) / (float)RAND_MAX;
 		float r = random * 40.f;
 		float x = -20.f + r;
 		float random2 = ((float)rand()) / (float)RAND_MAX;
 		float r2 = random2 * 2.f;
 		float z = -1.f + r;
-		Model* rock;
-		switch (obstacleCounter % 3)
+
+		switch (type)
 		{
-		case 0:
-			rock = ModelProvider::rock1;
+		case SpeedUpZone:
+			(*ecs)[name] = new TriggerEntity(name,
+				roadObjectModel,
+				ShaderProvider::carShader,
+				glm::vec3(1.f),
+				physics,
+				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				1);
+			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
+			speedUpZoneCounter++;
 			break;
-		case 1:
-			rock = ModelProvider::rock2;
+		case SlowDownZone:
+			(*ecs)[name] = new TriggerEntity(name,
+				roadObjectModel,
+				ShaderProvider::carShader,
+				glm::vec3(1.f),
+				physics,
+				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				1);
+			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
+			slowDownZoneCounter++;
 			break;
-		case 2:
+		case ObstacleRock:
 		default:
-			rock = ModelProvider::rock3;
+			(*ecs)[name] = new Obstacle(name,
+				roadObjectModel,
+				ShaderProvider::carShader,
+				glm::vec3(1.f),
+				physics,
+				PxVec3(x, -0.4f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				1);
+			obstacleList.push_back((Obstacle*)(*ecs)[name]);
+			obstacleCounter++;
 			break;
 		}
-		(*ecs)[name] = new TriggerEntity(name,
-			rock,
-			ShaderProvider::carShader,
-			glm::vec3(1.f),
-			physics,
-			PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
-			1);
 
-		obstacleList.push_back((TriggerEntity*)(*ecs)[name]);
-
-		obstacleCounter++;
+		roadObjectCounter++;
 	}
 }
