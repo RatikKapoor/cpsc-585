@@ -25,7 +25,7 @@
 #include "Overlay.h"
 #include "ShaderProvider.h"
 #include "ModelProvider.h"
-#include "ObstacleHandler.h"
+#include "RoadObjectHandler.h"
 #include "Geometry.h"
 #include "RenderingSystem.h"
 #include "InputHandler.h"

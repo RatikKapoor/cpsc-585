@@ -1,16 +1,16 @@
-#include "ObstacleHandler.h"
+#include "RoadObjectHandler.h"
 
-std::vector<Obstacle*> ObstacleHandler::obstacleList;
-EntityComponentSystem* ObstacleHandler::ecs;
-PhysicsProvider* ObstacleHandler::physics;
-unsigned int ObstacleHandler::obstacleCounter = 0;
+std::vector<TriggerEntity*> RoadObjectHandler::obstacleList;
+EntityComponentSystem* RoadObjectHandler::ecs;
+PhysicsProvider* RoadObjectHandler::physics;
+unsigned int RoadObjectHandler::obstacleCounter = 0;
 
-void ObstacleHandler::initialize(EntityComponentSystem& system, PhysicsProvider* provider) {
+void RoadObjectHandler::initialize(EntityComponentSystem& system, PhysicsProvider* provider) {
 	ecs = &system;
 	physics = provider;
 }
 
-void ObstacleHandler::reset() {
+void RoadObjectHandler::reset() {
 	for (auto& obstacle : obstacleList) {
 		ecs->erase(obstacle->name);
 	}
@@ -18,10 +18,10 @@ void ObstacleHandler::reset() {
 	obstacleCounter = 0;
 }
 
-void ObstacleHandler::addObstacles(float minDistance, float maxDistance) {
+void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 	for (float dist = minDistance; dist <= maxDistance; dist += 20.0f)
 	{
-		std::string name = "rock" + std::to_string(obstacleCounter);
+		std::string name = "speedUpZone" + std::to_string(obstacleCounter);
 		float random = ((float)rand()) / (float)RAND_MAX;
 		float r = random * 40.f;
 		float x = -20.f + r;
@@ -42,15 +42,15 @@ void ObstacleHandler::addObstacles(float minDistance, float maxDistance) {
 			rock = ModelProvider::rock3;
 			break;
 		}
-		(*ecs)[name] = new Obstacle(name,
+		(*ecs)[name] = new TriggerEntity(name,
 			rock,
 			ShaderProvider::carShader,
 			glm::vec3(1.f),
 			physics,
-			PxVec3(x, -0.48f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+			PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
 			1);
 
-		obstacleList.push_back((Obstacle*)(*ecs)[name]);
+		obstacleList.push_back((TriggerEntity*)(*ecs)[name]);
 
 		obstacleCounter++;
 	}

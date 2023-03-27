@@ -220,7 +220,7 @@
     <ClCompile Include="ModelProvider.cpp">
       <Filter>Source Files\Providers</Filter>
     </ClCompile>
-    <ClCompile Include="ObstacleHandler.cpp">
+    <ClCompile Include="RoadObjectHandler.cpp">
       <Filter>Source Files\Handlers</Filter>
     </ClCompile>
     <ClCompile Include="LogWriter.cpp">
@@ -423,7 +423,7 @@
     <ClInclude Include="ModelProvider.h">
       <Filter>Header Files\Providers</Filter>
     </ClInclude>
-    <ClInclude Include="ObstacleHandler.h">
+    <ClInclude Include="RoadObjectHandler.h">
       <Filter>Header Files\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="DebugDefines.h">

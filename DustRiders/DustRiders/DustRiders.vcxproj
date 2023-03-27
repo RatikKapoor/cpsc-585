@@ -182,7 +182,7 @@
     <ClCompile Include="ModelProvider.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="NavMesh.cpp" />
-    <ClCompile Include="ObstacleHandler.cpp" />
+    <ClCompile Include="RoadObjectHandler.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
@@ -243,7 +243,7 @@
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="ObstacleHandler.h" />
+    <ClInclude Include="RoadObjectHandler.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="PhysicsEntity.h" />
