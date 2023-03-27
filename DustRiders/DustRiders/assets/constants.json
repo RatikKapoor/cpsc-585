@@ -3,7 +3,7 @@
     "vehicleMaxAngularVelocity": 100.0,
     "vehicleMaxContactImpulse": 3264.0,
     "vehicleAngularDampening": 1.5,
-    "vehicleMassSpaceInertiaTensorX": 5200.0,
+    "vehicleMassSpaceInertiaTensorX": 8200.0,
     "vehicleMassSpaceInertiaTensorY": 3414.0,
     "vehicleMassSpaceInertiaTensorZ": 5050.0,
     "vehicleTireFriction": 4.0,
