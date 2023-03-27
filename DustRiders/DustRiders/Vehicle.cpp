@@ -6,6 +6,9 @@
 #include "LogWriter.h"
 #include "AIPathHandler.h"
 
+// Prevents vehicle from firing when the game is first started.
+bool firstFired = true;
+
 // Command gCommands[] =
 //		{
 //				{0.5f, 0.0f, 0.0f, 2.0f}, // brake on and come to rest for 2 seconds
@@ -185,10 +188,15 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 		{
 			if (rayGunBeam != NULL && rayGunBeam->canFire())
 			{
-					gunFired = true;
-					rayGunBeam->shouldRender = true;
-					rayGunBeam->castRayBeam();
-
+					if(firstFired){
+						firstFired = false;
+						gunFired = false;
+						rayGunBeam->shouldRender = false;
+					}else{
+						gunFired = true;
+						rayGunBeam->shouldRender = true;
+						rayGunBeam->castRayBeam();
+					}
 			}
 			rayGunBeam->isActive = true;
 		}
