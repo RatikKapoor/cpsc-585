@@ -18,9 +18,6 @@ using namespace snippetvehicle2;
 using namespace physx;
 using namespace physx::vehicle2;
 
-// Give the vehicle a name so it can be identified in PVD.
-const char gVehicleName[] = "directDrive";
-
 // Commands are issued to the vehicle in a pre-choreographed sequence.
 struct Command
 {

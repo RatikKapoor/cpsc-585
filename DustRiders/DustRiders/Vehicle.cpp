@@ -70,12 +70,12 @@ bool Vehicle::initVehicle(PxVec3 p)
 	}
 
 	gVehicle.mTransmissionCommandState.gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+	gVehicle.mPhysXState.physxActor.rigidBody->setName(name.c_str());
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(p, PxQuat(PxIdentity));
 	gVehicle.setUpActor(*gScene, pose, name.c_str());
 	physicsProvider->AddEntity((PxRigidDynamic *)gVehicle.mPhysXState.physxActor.rigidBody, this->transform);
-	gVehicle.mPhysXState.physxActor.rigidBody->setName(this->name.c_str());
 
 	// Set up the simulation context.
 	// The snippet is set up with
@@ -303,7 +303,7 @@ void Vehicle::reset()
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(initPos, PxQuat(PxIdentity));
-	gVehicle.setUpActor(*gScene, pose, gVehicleName);
+	gVehicle.setUpActor(*gScene, pose, name.c_str());
 
 	// Set the body to be kinematic (has to be manually moved)
 	gVehicle.mPhysXState.physxActor.rigidBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
