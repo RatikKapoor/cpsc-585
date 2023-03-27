@@ -29,7 +29,8 @@ struct Constants
 	float aiCarNextPositionDistanceBuffer = 20.0;
 	float aiCarRandomPositionWidth = 20.0;
 	float aiCarRandomPositionSpacing = 100.0;
-
+	float aiRaygunAimingRange = 30.0;
+	float aiRaygunShootingDelay = 1.0;
 };
 
 class ConstantsHelper {
@@ -86,6 +87,8 @@ private:
 		c->aiCarNextPositionDistanceBuffer = doc["aiCarNextPositionDistanceBuffer"].GetDouble();
 		c->aiCarRandomPositionWidth = doc["aiCarRandomPositionWidth"].GetDouble();
 		c->aiCarRandomPositionSpacing = doc["aiCarRandomPositionSpacing"].GetDouble();
+		c->aiRaygunAimingRange = doc["aiRaygunAimingRange"].GetDouble();
+		c->aiRaygunShootingDelay = doc["aiRaygunShootingDelay"].GetDouble();
 
 		loaded = true;
 	}

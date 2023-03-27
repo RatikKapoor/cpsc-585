@@ -96,7 +96,7 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicle.mPhysXState.physxActor.rigidBody->setAngularDamping(Constants->vehicleAngularDampening);
 	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensorX, Constants->vehicleMassSpaceInertiaTensorY, Constants->vehicleMassSpaceInertiaTensorZ));
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxContactImpulse(Constants->vehicleMaxContactImpulse);
-	
+
 	//auto tbt = gVehicle.mPhysXState.physxActor.rigidBody;
 	//LogWriter::log("Max Linear Velocity: " + std::to_string(tbt->getMaxLinearVelocity()));
 	//LogWriter::log("Max Angular Velocity: " + std::to_string(tbt->getMaxAngularVelocity()));
@@ -200,9 +200,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 			{
 					if(firstFired){
 						firstFired = false;
-						rayGunBeam->shouldRender = false;
 					}else{
-						rayGunBeam->shouldRender = true;
 						rayGunBeam->castRayBeam();
 					}
 			}
@@ -212,7 +210,6 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 		{
 			if (rayGunBeam != NULL)
 			{
-				rayGunBeam->shouldRender = false;
 			}
 		}
 	}

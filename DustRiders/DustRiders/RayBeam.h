@@ -39,9 +39,10 @@ public:
 	PxVec3 rayCastDirection;
 	PxTransform vehiclePos;
 
-
+	unsigned short beamFrameCount;
 
 	std::string castRayBeam();
+	bool targetInRange();
 
 	bool canFire();
 

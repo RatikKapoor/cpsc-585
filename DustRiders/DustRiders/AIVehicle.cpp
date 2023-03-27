@@ -140,4 +140,37 @@ void AIVehicle::stepPhysics(double timeStep)
 	updateEffects(timeStep);
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity * pow(Constants->vehicleChunkAccelerationBaseExponent, ChunkHandler::chunkCounter));
 	gVehicle.step(timeStep, gVehicleSimulationContext);
+	handleShooting(timeStep);
+}
+
+void AIVehicle::handleShooting(double timeStep){
+
+	// If raygunBeam does not exist
+	if(rayGunBeam==NULL){
+		return;
+	}
+
+	// If the raygun beam is active (primarily for graphics purposes)
+
+
+	// If aim delay is not currently active
+	// Check for target
+	if(aimDelay<=0){
+		targetSpotted = rayGunBeam->targetInRange();
+		if(!targetSpotted){
+			return;
+		}else{
+			aimDelay = Constants->aiRaygunShootingDelay;
+			return;
+		}
+	}
+
+	aimDelay-=timeStep;
+
+	if(aimDelay<=0 && rayGunBeam->canFire()){
+		if(((float)rand()/(float)RAND_MAX)>0.5){
+		rayGunBeam->castRayBeam();
+		}
+	}
+
 }
