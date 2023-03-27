@@ -44,6 +44,7 @@ public:
 	std::string castRayBeam();
 
 	bool canFire();
+	int getChargePercentage();
 
 protected:
 	void initBeam(PxVec3 pos, EntityComponentSystem& ecs);
