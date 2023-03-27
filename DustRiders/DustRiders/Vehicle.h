@@ -42,7 +42,7 @@ public:
 
 	bool engineGased(Joystick& js);
 	void stepPhysics(double);
-	bool stepPhysics(double timeStep, Joystick &js);
+	void stepPhysics(double timeStep, Joystick &js);
 
 	float currentSpeed();
 
