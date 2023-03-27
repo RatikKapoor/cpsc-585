@@ -10,6 +10,13 @@
 Overlay::Overlay()
 {
 	lastTime = glfwGetTime();
+
+	for (int i = 0; i < 14; i++) {
+		std::string imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
+		stormImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
+	}
+	
+	stormFrameCounter = 0;
 }
 
 void Overlay::LoadingContent(int windowWidth, int windowHeight)
@@ -157,12 +164,12 @@ std::string positionFancy(int x) {
 	}
 }
 
-ImTextureID loadFrameTexture(const char* filepath) {
+ImTextureID Overlay::loadFrameTexture(std::string filepath) {
 	int width, height, channels;
-	unsigned char* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
+	unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
 	if (!data) {
-		printf("Failed to load texture from file %s\n", filepath);
+		LogWriter::log("Failed to load texture from file " + filepath);
 		return nullptr;
 	}
 
@@ -178,27 +185,25 @@ ImTextureID loadFrameTexture(const char* filepath) {
 	return (ImTextureID)(intptr_t)texture_id;
 }
 
-void Overlay::RenderStorm(int frameWidth, int frameHeight, float timePerFrame, int screenWidth, int screenHeight)
+void Overlay::RenderStorm(int frameWidth, int frameHeight, int screenWidth, int screenHeight)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	ImTextureID animationFrames[15];
-	for (int i = 1; i < 16; i++) {
-		std::string imagePath = "sound/frame" + std::to_string(i) + ".png";
-		animationFrames[i-1] = (ImTextureID)loadFrameTexture(imagePath.c_str());
-	}
+	std::string imagePath = "./assets/stormImages/frame" + std::to_string(stormFrameCounter % 15) + ".png";
 
-	int currentFrame = (int)(ImGui::GetTime() / timePerFrame) % 15;
 	ImGui::SetNextWindowPos(ImVec2(0, screenHeight - frameHeight));
 	ImGui::Begin("storm", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
-	ImGui::Image(animationFrames[currentFrame], ImVec2(frameWidth, frameHeight));
+	ImGui::Image(stormImagesMap[imagePath], ImVec2(frameWidth, frameHeight));
 
 	ImGui::End();
 
 	ImGui::Render(); 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (nbFrames % 15 == 0)
+		stormFrameCounter++;
 }
 
 void Overlay::RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight) {
