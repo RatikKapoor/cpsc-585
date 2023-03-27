@@ -59,21 +59,21 @@ protected:
 	uint32_t raybeamHitSound;
 };
 
-class RayBeamCallback : public PxSimulationEventCallback
-{
-public:
-	RayBeamCallback(EntityComponentSystem& ecs, RayBeam& rb) : PxSimulationEventCallback(), ecs(ecs), rb(rb) {};
-
-	void onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) {};
-
-	void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {};
-
-	void onWake(PxActor** actors, PxU32 count) {};
-	void onSleep(PxActor** actors, PxU32 count) {};
-
-	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) {};
-
-	EntityComponentSystem& ecs;
-
-	RayBeam& rb;
-};
+//class RayBeamCallback : public PxSimulationEventCallback
+//{
+//public:
+//	RayBeamCallback(EntityComponentSystem& ecs, RayBeam& rb) : PxSimulationEventCallback(), ecs(ecs), rb(rb) {};
+//
+//	void onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) {};
+//
+//	void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {};
+//
+//	void onWake(PxActor** actors, PxU32 count) {};
+//	void onSleep(PxActor** actors, PxU32 count) {};
+//
+//	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) {};
+//
+//	EntityComponentSystem& ecs;
+//
+//	RayBeam& rb;
+//};

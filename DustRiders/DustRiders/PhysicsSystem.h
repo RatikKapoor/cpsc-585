@@ -9,6 +9,8 @@
 
 #include "PhysicsProvider.h"
 #include "Transform.h"
+#include "ECS.h"
+#include "SimulationCallback.h"
 
 class PhysicsSystem : public PhysicsProvider
 {
@@ -28,10 +30,13 @@ private:
 	physx::PxRigidStatic *groundPlane = NULL;
 	physx::PxCooking *gCooking = NULL;
 
+	EntityComponentSystem& ecs;
+	SimulationCallback* simulationCallbacks;
+
 	void updateTransforms();
 
 public:
-	PhysicsSystem();
+	PhysicsSystem(EntityComponentSystem&);
 	void updatePhysics(double);
 
 	physx::PxPhysics *GetPxPhysics();
