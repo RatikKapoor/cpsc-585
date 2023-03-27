@@ -20,6 +20,7 @@ struct Constants
 	float vehicleMassSpaceInertiaTensorY = 3414.0f;
 	float vehicleMassSpaceInertiaTensorZ = 750.0f;
 	float vehicleTireFriction = 4.0f;
+	float vehicleChunkAccelerationBaseExponent = 1.05f;
 
 	float rocksStartingZ = 30.0;
 	float rocksMaxGenerationDistance = 1000.5;
@@ -76,6 +77,7 @@ private:
 		c->vehicleMassSpaceInertiaTensorY = doc["vehicleMassSpaceInertiaTensorY"].GetDouble();
 		c->vehicleMassSpaceInertiaTensorZ = doc["vehicleMassSpaceInertiaTensorZ"].GetDouble();
 		c->vehicleTireFriction = doc["vehicleTireFriction"].GetDouble();
+		c->vehicleChunkAccelerationBaseExponent = doc["vehicleChunkAccelerationBaseExponent"].GetDouble();
 
 		c->rocksStartingZ = doc["rocksStartingZ"].GetDouble();
 		c->rocksMaxGenerationDistance = doc["rocksMaxGenerationDistance"].GetDouble();

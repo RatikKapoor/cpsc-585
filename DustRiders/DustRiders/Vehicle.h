@@ -12,6 +12,7 @@
 #include "PhysicsProvider.h"
 #include "PhysicsEntity.h"
 #include "RayBeam.h"
+#include "ChunkHandler.h"
 
 using namespace snippetvehicle2;
 
