@@ -14,7 +14,10 @@ TriggerEntity::TriggerEntity(std::string n,
 void TriggerEntity::initTriggerEntity(PxVec3 pos) {
 	auto shape = this->gPhysics->createShape(PxBoxGeometry(0.5, 0.5, 0.5), *gMaterial);
 
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eVISUALIZATION, false);
 
 	PxTransform localTm(pos);
 	PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
