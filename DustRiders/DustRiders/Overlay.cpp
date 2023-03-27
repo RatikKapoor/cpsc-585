@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <string>
+#include <stb_image.h>
 
 Overlay::Overlay()
 {
@@ -131,6 +132,84 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 
 	// End ImGui
 }
+
+
+std::string battery(int c) {
+	if (c == 100) { return "[][][][]"; }
+	if (c >= 75) { return "[][][]"; }
+	if (c >= 50) { return "[][]"; }
+	if (c >= 25) { return "[]"; }
+	return "";
+
+}
+std::string positionFancy(int x) {
+	switch (x)
+	{
+	case 2:
+		return "nd";
+		break;
+	case 3:
+		return "rd";
+		break;
+	default:
+		return "th";
+		break;
+	}
+}
+
+
+
+void Overlay::RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - screenWidth * 0.10 - 10, screenHeight * 0.05));
+	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.10f, screenHeight * 0.10f));
+	ImGui::Begin("Speedometer", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+
+	ImGui::SetWindowFontScale(2.0f);
+	ImGui::Text("%d m/s", currentSpeed);
+	ImGui::End();
+
+	ImGui::Render(); // Render the ImGui window
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+void Overlay::RenderCharge(int charge, int screenWidth, int screenHeight) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - screenWidth * 0.10 - 10, screenHeight * 0.15));
+	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.10, screenHeight * 0.10));
+	ImGui::Begin("Charge", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+
+	ImGui::SetWindowFontScale(2.0f);
+	ImGui::Text(battery(charge).c_str());
+	ImGui::End();
+
+	ImGui::Render(); // Render the ImGui window
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+void Overlay::RenderPlace(int place, int screenWidth, int screenHeight) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5, screenHeight * 0.05));
+	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.20, screenHeight * 0.10));
+	ImGui::Begin("place", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+
+	ImGui::SetWindowFontScale(2.0f);
+	ImGui::Text("%d%s", place, positionFancy(place).c_str());
+	ImGui::End(); 
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+
+
 
 void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth)
 {

@@ -58,7 +58,7 @@ int main()
 #pragma region Sound
 	SoundDevice *mysounddevice = SoundDevice::get();
 	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
-	//uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
+	// uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
 	// Collision sound effect
 	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
@@ -132,7 +132,6 @@ int main()
 	// Create main car
 	ecs["car"] = new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"]);
 
-
 	// Add AI cars
 	ecs["car2"] = new AIVehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, NULL, "./assets/drivingPaths/path1.json");
 	ecs["car3"] = new AIVehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, NULL
@@ -149,7 +148,6 @@ int main()
 		botVehicle1,
 		botVehicle2};
 	std::vector<Vehicle *> inactiveVehicles;
-
 
 #ifndef NO_DEATH
 	// Start by focusing on the Player Vehicle
@@ -184,7 +182,6 @@ int main()
 			alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
 		}
 
-
 		if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
 		{
 			theme.UpdateBufferStream();
@@ -204,7 +201,7 @@ int main()
 				// First few renders should be simulated with manual step to avoid objects clipping through ground
 				if (i < 15)
 				{
-					timer.setDeltaT(1.0/60.0);
+					timer.setDeltaT(1.0 / 60.0);
 					i++;
 				}
 				// Reset the cars back to where they were and restart the game
@@ -247,6 +244,10 @@ int main()
 				}
 				else // The game is active
 				{
+					overlay.RenderCharge(100, windowWidth, windowHeight);
+					overlay.RenderPlace(10, windowWidth, windowHeight);
+					overlay.RenderSpeedometer(100, windowWidth, windowHeight);
+
 					timer.playTime();
 					// Vehicle physics
 					for (Vehicle *vehicle : vehicles)
@@ -352,7 +353,6 @@ int main()
 			}
 		}
 		timer.updateTime();
-
 	}
 	window.close();
 
