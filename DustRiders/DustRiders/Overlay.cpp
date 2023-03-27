@@ -15,7 +15,7 @@ Overlay::Overlay()
 		std::string imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
 		stormImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
 	}
-	
+
 	stormFrameCounter = 0;
 }
 
@@ -194,15 +194,15 @@ void Overlay::RenderStorm(int frameWidth, int frameHeight, int screenWidth, int 
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	std::string imagePath = "./assets/stormImages/frame" + std::to_string(stormFrameCounter % 15) + ".png";
+	std::string imagePath = "./assets/stormImages/frame" + std::to_string(stormFrameCounter % 14) + ".png";
 
 	ImGui::SetNextWindowPos(ImVec2(0, screenHeight - frameHeight));
-	ImGui::Begin("storm", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+	ImGui::Begin("storm", (bool*)0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Image(stormImagesMap[imagePath], ImVec2(frameWidth, frameHeight));
 
 	ImGui::End();
 
-	ImGui::Render(); 
+	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	if (nbFrames % 15 == 0)
@@ -252,7 +252,7 @@ void Overlay::RenderPlace(int place, int screenWidth, int screenHeight) {
 
 	ImGui::SetWindowFontScale(2.0f);
 	ImGui::Text("%d%s", place, positionFancy(place).c_str());
-	ImGui::End(); 
+	ImGui::End();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

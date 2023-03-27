@@ -260,7 +260,7 @@ int main()
 					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
 					overlay.RenderPlace(position, windowWidth, windowHeight);
 					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight);
-					overlay.RenderStorm(1422, 100, windowWidth, windowHeight);
+					overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
 
 					timer.playTime();
 					// Vehicle physics
