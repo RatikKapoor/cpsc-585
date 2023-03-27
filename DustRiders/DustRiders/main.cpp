@@ -247,6 +247,7 @@ int main()
 					overlay.RenderCharge(100, windowWidth, windowHeight);
 					overlay.RenderPlace(10, windowWidth, windowHeight);
 					overlay.RenderSpeedometer(100, windowWidth, windowHeight);
+					overlay.RenderStorm(1422, 100, 0.3, windowWidth, windowHeight);
 
 					timer.playTime();
 					// Vehicle physics

@@ -157,7 +157,49 @@ std::string positionFancy(int x) {
 	}
 }
 
+ImTextureID loadFrameTexture(const char* filepath) {
+	int width, height, channels;
+	unsigned char* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
 
+	if (!data) {
+		printf("Failed to load texture from file %s\n", filepath);
+		return nullptr;
+	}
+
+	GLuint texture_id;
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	stbi_image_free(data);
+	return (ImTextureID)(intptr_t)texture_id;
+}
+
+void Overlay::RenderStorm(int frameWidth, int frameHeight, float timePerFrame, int screenWidth, int screenHeight)
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImTextureID animationFrames[15];
+	for (int i = 1; i < 16; i++) {
+		std::string imagePath = "sound/frame" + std::to_string(i) + ".png";
+		animationFrames[i-1] = (ImTextureID)loadFrameTexture(imagePath.c_str());
+	}
+
+	int currentFrame = (int)(ImGui::GetTime() / timePerFrame) % 15;
+	ImGui::SetNextWindowPos(ImVec2(0, screenHeight - frameHeight));
+	ImGui::Begin("storm", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+	ImGui::Image(animationFrames[currentFrame], ImVec2(frameWidth, frameHeight));
+
+	ImGui::End();
+
+	ImGui::Render(); 
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
 void Overlay::RenderSpeedometer(int currentSpeed, int screenWidth, int screenHeight) {
 	ImGui_ImplOpenGL3_NewFrame();
