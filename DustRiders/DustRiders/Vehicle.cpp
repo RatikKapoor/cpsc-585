@@ -183,9 +183,8 @@ bool Vehicle::engineGased(Joystick &js)
 	}
 }
 
-bool Vehicle::stepPhysics(double timeStep, Joystick &js)
+void Vehicle::stepPhysics(double timeStep, Joystick &js)
 {
-	bool gunFired = false;
 	float axisThreshold = 0.15f;
 	const float *analogs = js.getAnalogs();
 	const unsigned char *b = js.getButtons();
@@ -200,10 +199,8 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 			{
 					if(firstFired){
 						firstFired = false;
-						gunFired = false;
 						rayGunBeam->shouldRender = false;
 					}else{
-						gunFired = true;
 						rayGunBeam->shouldRender = true;
 						rayGunBeam->castRayBeam();
 					}
@@ -259,8 +256,6 @@ bool Vehicle::stepPhysics(double timeStep, Joystick &js)
 
 	updateEffects(timeStep);
 	gVehicle.step(timeStep, gVehicleSimulationContext);
-
-	return gunFired;
 }
 
 void Vehicle::stepPhysics(double timeStep)

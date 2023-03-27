@@ -55,6 +55,30 @@ int main()
 	Constants *Constants = ConstantsHelper::getConstants();
 	TimeKeeper timer;
 
+#pragma region Sound
+	SoundDevice *mysounddevice = SoundDevice::get();
+	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
+	//uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
+
+	// Collision sound effect
+	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
+
+	SoundSource engineSpeaker;
+	engineSpeaker.changeMusicVolume(0.5f);
+
+	ALint engineSoundState = AL_STOPPED;
+
+	MusicBuffer storm("sound/storm_long.wav");
+	storm.Play();
+	ALint stormState = AL_PLAYING;
+	storm.changeMusicVolume(0.3f);
+
+	MusicBuffer theme("sound/jumphigher.ogg");
+	theme.Play();
+	ALint themeState = AL_PLAYING;
+	theme.changeMusicVolume(0.2f);
+#pragma endregion
+
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
@@ -135,31 +159,6 @@ int main()
 	// Start by focusing on the Player Vehicle
 	Camera camera(ecs["car"], glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(30.0f), 125.0);
 #endif
-
-	SoundDevice *mysounddevice = SoundDevice::get();
-	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
-	uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
-
-	// Collision sound effect
-	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
-	// uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
-
-	SoundSource raybeamSpeaker;
-	SoundSource engineSpeaker;
-	engineSpeaker.changeMusicVolume(0.5f);
-
-	ALint engineSoundState = AL_STOPPED;
-
-	MusicBuffer storm("sound/storm_long.wav");
-	storm.Play();
-	ALint stormState = AL_PLAYING;
-	storm.changeMusicVolume(0.3f);
-
-	MusicBuffer theme("sound/jumphigher.ogg");
-	theme.Play();
-	ALint themeState = AL_PLAYING;
-	theme.changeMusicVolume(0.2f);
-
 
 	int i = 0;
 
@@ -261,11 +260,7 @@ int main()
 
 						if (vehicle == playerVehicle)
 						{
-							if (vehicle->stepPhysics(timer.getDeltaT(), std::ref(JoystickHandler::getFirstJS())))
-							{
-								alSourcePlay(raybeamSpeaker.Play(raybeamFire));
-							}
-
+							vehicle->stepPhysics(timer.getDeltaT(), std::ref(JoystickHandler::getFirstJS()));
 							alGetSourcei(engineSpeaker.getSource(), AL_SOURCE_STATE, &engineSoundState);
 							if (vehicle->currentSpeed() > 0.2 && engineSoundState != AL_PLAYING)
 							{
