@@ -43,13 +43,13 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 			// Create speed up zone
 			name = "speedUpZone" + std::to_string(speedUpZoneCounter);
 			type = RoadObjectType::SpeedUpZone;
-			roadObjectModel = ModelProvider::rock3; // TODO: Need good model
+			roadObjectModel = ModelProvider::speedupBlock;
 			break;
 		case 1:
 			// Create slow down zone
 			name = "slowDownZone" + std::to_string(slowDownZoneCounter);
 			type = RoadObjectType::SlowDownZone;
-			roadObjectModel = ModelProvider::rock3; // TOOD: Need good model
+			roadObjectModel = ModelProvider::slowdownBlock;
 			break;
 		case 2:
 		default:
@@ -89,7 +89,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				glm::vec3(1.f),
 				physics,
 				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
-				1);
+				0);
 			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
 			speedUpZoneCounter++;
 			break;
@@ -100,7 +100,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				glm::vec3(1.f),
 				physics,
 				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
-				1);
+				0);
 			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
 			slowDownZoneCounter++;
 			break;

@@ -7,6 +7,9 @@ Model* ModelProvider::rock3;
 Model* ModelProvider::rayBeam;
 Model* ModelProvider::straightPath;
 Model* ModelProvider::dividedPath;
+Model* ModelProvider::speedupBlock;
+Model* ModelProvider::slowdownBlock;
+
 
 void ModelProvider::initialize(RenderingSystem& renderer) {
 	carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
@@ -16,4 +19,6 @@ void ModelProvider::initialize(RenderingSystem& renderer) {
 	rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
 	straightPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
 	dividedPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathDivide.obj");
+	speedupBlock = renderer.loadModelFromFile("SpeedupBlock", "./assets/models/speedup-block.obj");
+	slowdownBlock = renderer.loadModelFromFile("SlowdownBlock", "./assets/models/slowdown-block.obj");
 }

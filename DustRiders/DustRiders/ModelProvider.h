@@ -15,4 +15,7 @@ public:
 	static Model* rayBeam;
 	static Model* straightPath;
 	static Model* dividedPath;
+	static Model* speedupBlock;
+	static Model* slowdownBlock;
+
 };
