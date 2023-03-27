@@ -5,8 +5,8 @@
 SimulationCallback::SimulationCallback(EntityComponentSystem& ecs) : PxSimulationEventCallback(), ecs(ecs) {
 	speedUpSpeaker = new SoundSource();
 	slowDownSpeaker = new SoundSource();
-	speedUpSound = SoundBuffer::get()->addSoundEffect("sound/blessing.ogg");
-	slowDownSound = SoundBuffer::get()->addSoundEffect("sound/spell.ogg");
+	speedUpSound = SoundBuffer::get()->addSoundEffect("sound/Speedup.wav");
+	slowDownSound = SoundBuffer::get()->addSoundEffect("sound/Slowdown.wav");
 }
 
 void SimulationCallback::onTrigger(PxTriggerPair* pairs, PxU32 count) {
