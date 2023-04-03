@@ -230,6 +230,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 	}
 
 	float currentSpeed = gVehicle.mBaseState.tireSpeedStates->speedStates[0];
+
 	physx::vehicle2::PxVehicleDirectDriveTransmissionCommandState::Enum gearState = gVehicle.mTransmissionCommandState.gear;
 	gVehicle.mTransmissionCommandState.gear = gearState;
 
@@ -237,18 +238,77 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 	float throttle = 0.f;
 	int brake = 1;
 
-	if (js.getButtonRaw(Xbox::Button::XBOX_LB))
+	// If either trigger is engaged
+	if (analogs[Xbox::Analog::XBOX_R_TRIGGER] > -0.99f || analogs[Xbox::Analog::XBOX_L_TRIGGER] > -0.99f)
 	{
-		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
-	}
-	else
-	{
-		gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
-	}
+		// If the vehicle is currently heading forward
+		if (gVehicle.mTransmissionCommandState.gear == gVehicle.mTransmissionCommandState.eFORWARD)
+		{
+			// check if vehicle is moving
+			if (currentSpeed > 0.5f)
+			{
+				throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
+				throttle /= 2.f;
+				brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
+			}
+			else
+			{
+				if (analogs[Xbox::Analog::XBOX_R_TRIGGER] > -1.0f)
+				{
+					throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
+					throttle /= 2.f;
+					brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
+				}
+				else
+				{
+					gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eREVERSE;
+					throttle = analogs[Xbox::Analog::XBOX_L_TRIGGER] + 1.f;
+					throttle /= 2.f;
+					brake = (int)(analogs[Xbox::Analog::XBOX_R_TRIGGER] > -1.f);
+				}
+			}
+		}
+		// If the vehicle is currently in reverse
+		else if (gVehicle.mTransmissionCommandState.gear == gVehicle.mTransmissionCommandState.eREVERSE)
+		{
+			// Check if vehicle is moving
+			if (currentSpeed > 0.5f)
+			{
+				throttle = analogs[Xbox::Analog::XBOX_L_TRIGGER] + 1.f;
+				throttle /= 2.f;
+				brake = (int)(analogs[Xbox::Analog::XBOX_R_TRIGGER] > -1.f);
+			}
+			else
+			{
+				if (analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.0f)
+				{
+					throttle = analogs[Xbox::Analog::XBOX_L_TRIGGER] + 1.f;
+					throttle /= 2.f;
+					brake = (int)(analogs[Xbox::Analog::XBOX_R_TRIGGER] > -1.f);
+				}
+				else
+				{
+					gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
+					throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
+					throttle /= 2.f;
+					brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
+				}
+			}
+		}
+		else
+		{
+			gVehicle.mTransmissionCommandState.gear = gVehicle.mTransmissionCommandState.eFORWARD;
 
-	throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
-	throttle /= 2.f;
-	brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
+			throttle = analogs[Xbox::Analog::XBOX_R_TRIGGER] + 1.f;
+			throttle /= 2.f;
+			brake = (int)(analogs[Xbox::Analog::XBOX_L_TRIGGER] > -1.f);
+		}
+	}
+	else // If no triggers are engaged, then turn on the brakes
+	{
+		throttle = 0.f;
+		brake = 1;
+	}
 
 	gVehicle.mCommandState.throttle = throttle;
 	gVehicle.mCommandState.brakes[0] = brake;
