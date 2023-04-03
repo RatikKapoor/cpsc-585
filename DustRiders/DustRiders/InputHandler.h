@@ -239,6 +239,28 @@ public:
 	{
 		if (pseudo)
 		{
+			if (!buttons[Xbox::Button::XBOX_RIGHT])
+			{
+				wasPressed[Xbox::Button::XBOX_RIGHT] = 1;
+			}
+			else
+			{
+				wasPressed[Xbox::Button::XBOX_RIGHT] = 0;
+			}
+			buttons[Xbox::Button::XBOX_RIGHT] = 1;
+		}
+	}
+	void releaseEnter()
+	{
+
+		buttons[Xbox::Button::XBOX_RIGHT] = 0;
+		wasPressed[Xbox::Button::XBOX_RIGHT] = 0;
+	}
+
+	void pressSpace()
+	{
+		if (pseudo)
+		{
 			if (!buttons[Xbox::Button::XBOX_A])
 			{
 				wasPressed[Xbox::Button::XBOX_A] = 1;
@@ -250,7 +272,7 @@ public:
 			buttons[Xbox::Button::XBOX_A] = 1;
 		}
 	}
-	void releaseEnter()
+	void releaseSpace()
 	{
 
 		buttons[Xbox::Button::XBOX_A] = 0;

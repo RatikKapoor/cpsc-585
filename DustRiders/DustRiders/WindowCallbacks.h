@@ -48,6 +48,15 @@ public:
       }
     }
 
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+      js.pressSpace();
+    }
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+    {
+      js.releaseSpace();
+    }
+
     if (key == GLFW_KEY_X && action == GLFW_RELEASE)
     {
       js.releaseX();

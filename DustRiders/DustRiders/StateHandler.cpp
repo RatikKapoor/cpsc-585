@@ -51,7 +51,7 @@ void StateHandler::processJS(Joystick &js)
       setGState(GameState::Exit);
       return;
     }
-    if (pressed[Xbox::Button::XBOX_A])
+    if (pressed[Xbox::Button::XBOX_RIGHT])
     {
       setRState(ReloadState::GameReset);
       setGState(GameState::PauseMenu);
@@ -71,7 +71,7 @@ void StateHandler::processJS(Joystick &js)
     }
     if (prevGState == GameState::GameLost || prevGState == GameState::GameWon || prevGState == GameState::PauseMenu)
     {
-      if (pressed[Xbox::Button::XBOX_A])
+      if (pressed[Xbox::Button::XBOX_RIGHT])
       {
         setGState(GameState::Playing);
         if (js.isPseudo())
@@ -100,7 +100,7 @@ void StateHandler::processJS(Joystick &js)
       setGState(GameState::Exit);
       return;
     }
-    else if (pressed[Xbox::Button::XBOX_A])
+    else if (pressed[Xbox::Button::XBOX_RIGHT])
     {
       setGState(GameState::Playing);
       if (js.isPseudo())
