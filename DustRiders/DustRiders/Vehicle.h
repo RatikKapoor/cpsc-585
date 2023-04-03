@@ -41,7 +41,7 @@ public:
 
 	virtual ~Vehicle() {}
 
-	bool engineGased(Joystick& js);
+	bool engineGased(Joystick &js);
 	void stepPhysics(double);
 	void stepPhysics(double timeStep, Joystick &js);
 
@@ -58,6 +58,9 @@ public:
 	void applySlowdownEffect(double seconds);
 	void applySpeedupEffect(double seconds);
 
+	bool hitVisible();
+	void setHitVisible(double seconds);
+
 	void removeEffects();
 
 protected:
@@ -68,12 +71,12 @@ protected:
 	void stepPhysics(double, float, float);
 
 	double lastEffectTime;
+	double visibleHit;
 
 	double slowdownTimeRemaining;
 	double speedupTimeRemaining;
 	float slowdownForce;
 	float speedupForce;
-
 
 	RayBeam *rayGunBeam;
 

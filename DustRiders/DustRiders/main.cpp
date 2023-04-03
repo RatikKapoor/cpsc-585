@@ -361,7 +361,7 @@ int main()
 				window.swapBuffers();
 
 				auto entities = ecs.getAll();
-				renderer.updateRender(entities, camera, window.getAspectRatio());
+				renderer.updateRender(ecs, camera, window.getAspectRatio());
 				overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
 #ifdef _DEBUG
 				playerVehicle->saveLocation(); // Save player location history to json
