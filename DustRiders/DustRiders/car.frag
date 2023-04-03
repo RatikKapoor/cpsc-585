@@ -5,7 +5,9 @@ in vec3 fragColor;
 in vec3 n;
 
 uniform vec3 cameraPos;
+uniform float hitVisible;
 in vec2 tc;
+in float hitVis;
 
 in vec3 lPos;
 in vec3 camPos;
@@ -28,7 +30,7 @@ void main() {
 
 	// Ambient
 	vec3 ambientLighting = 0.05*lightCol;
-	
+
 	// Diffusion
 	vec3 lightDir = normalize(lPos - fragPos);
 	vec3 diff = max(dot(norm, lightDir), 0.0)*lightCol;
@@ -44,8 +46,13 @@ void main() {
 
 	// Normal mapping
 	vec3 rgb_normal = n * 0.5 + 0.5;
+	vec3 visibleHit = vec3(0.f, 0.f, 0.f);
+	if(hitVis > 0.f){
+			visibleHit = vec3(1.f, 0.f, 0.f);
+	}
 
-	vec4 res = vec4((ambientLighting + specular + diff + vec3(emis)),d.a) * d; 
+
+	vec4 res = vec4((ambientLighting + specular + diff + vec3(emis) + visibleHit),d.a) * d;
 	color = res;
-	
+
 }

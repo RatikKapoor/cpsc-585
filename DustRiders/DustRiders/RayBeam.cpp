@@ -2,18 +2,17 @@
 #include "LogWriter.h"
 #include "AIVehicle.h"
 
-
 #include "TimeKeeper.h"
 #include <regex>
 
 RayBeam::RayBeam(std::string n,
-	Model* m,
-	ShaderProgram* sp,
-	glm::vec3 s,
-	PhysicsProvider* pp,
-	EntityComponentSystem& ecs,
-	PxVec3 pos = { 0.f, 0.f, 0.f },
-	unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat), ecs(ecs)
+								 Model *m,
+								 ShaderProgram *sp,
+								 glm::vec3 s,
+								 PhysicsProvider *pp,
+								 EntityComponentSystem &ecs,
+								 PxVec3 pos = {0.f, 0.f, 0.f},
+								 unsigned int mat = 0) : PhysicsEntity(n, m, sp, s, pp, pos, mat), ecs(ecs)
 {
 	coolDownTime = 2.0;
 	isActive = false;
@@ -29,7 +28,7 @@ RayBeam::RayBeam(std::string n,
 	beamFrameCount = 0;
 }
 
-void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem& ecs)
+void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem &ecs)
 {
 
 	// beamCallback = new RayBeamCallback(ecs, std::ref(*this));
@@ -38,7 +37,6 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem& ecs)
 
 	auto originMarker = this->gPhysics->createShape(PxBoxGeometry(0.1, 0.1, 0.1), *gMaterial);
 	auto directionMarker = this->gPhysics->createShape(PxBoxGeometry(0.2, 0.2, 0.2), *gMaterial);
-
 
 	originMarker->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	originMarker->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
@@ -71,14 +69,14 @@ void RayBeam::initBeam(PxVec3 pos, EntityComponentSystem& ecs)
 	directionMarker->release();
 }
 
-void RayBeam::updatePos(PxTransform vehiclePos, Transform* tf)
+void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 {
 	this->vehiclePos = vehiclePos;
 
 	PxQuat vehicleQuat = vehiclePos.q;
 	PxVec3 vQuatImaginary = vehicleQuat.getImaginaryPart();
 	PxMat44 vQuatMat(vehicleQuat);
-	PxVec3  vRotation = vQuatMat.transform(PxVec3(1.f, 1.f, 1.f));
+	PxVec3 vRotation = vQuatMat.transform(PxVec3(1.f, 1.f, 1.f));
 	vRotation.normalize();
 
 	// Moves the beam origin marker
@@ -92,15 +90,18 @@ void RayBeam::updatePos(PxTransform vehiclePos, Transform* tf)
 	PxTransform localDirPos(beamOriginOffset + vehiclePos.p + beamDirRaw);
 	this->rcDirection->setGlobalPose(localDirPos * beamDirRotation);
 
-
 	rayCastOrigin = rcOrigin->getGlobalPose().p;
 	rayCastDirection = (rcDirection->getGlobalPose().p - rcOrigin->getGlobalPose().p).getNormalized();
 
-	if(shouldRender){
-		if(beamFrameCount<20){
+	if (shouldRender)
+	{
+		if (beamFrameCount < 20)
+		{
 			beamFrameCount++;
 			shouldRender = true;
-		}else{
+		}
+		else
+		{
 			beamFrameCount = 0;
 			shouldRender = false;
 		}
@@ -118,49 +119,60 @@ std::string RayBeam::castRayBeam()
 
 	bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, 200.f, hit);
 
-	if (!canFire()) {
+	if (!canFire())
+	{
 		hitStatus = false;
 	}
-	else {
+	else
+	{
 		lastFireTime = timeKeep.getCurrentTime();
 		shouldRender = true;
 	}
 	if (hitStatus)
 	{
 		closestHit = hit.block.actor->getName();
-		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)"))) {
+		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)")))
+		{
 			LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
-			((AIVehicle*)ecs[closestHit])->applySlowdownEffect(5);
+			((AIVehicle *)ecs[closestHit])->applySlowdownEffect(5);
+			((AIVehicle *)ecs[closestHit])->setHitVisible(0.5);
 			alSourcePlay(raybeamHitSpeaker->Play(raybeamHitSound));
 		}
 	}
 	return closestHit;
 }
 
-bool RayBeam::targetInRange(){
+bool RayBeam::targetInRange()
+{
 	PxRaycastBuffer hit;
 	float f;
 
 	bool hitStatus = gScene->raycast(rayCastOrigin, rayCastDirection, Constants->aiRaygunAimingRange, hit);
-	if(hitStatus){
-		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)"))){
+	if (hitStatus)
+	{
+		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)")))
+		{
 			return true;
 		}
 	}
 	return false;
 }
 
-bool RayBeam::canFire() {
+bool RayBeam::canFire()
+{
 	double deltaT = timeKeep.getCurrentTime() - lastFireTime;
-	if (deltaT < coolDownTime) {
+	if (deltaT < coolDownTime)
+	{
 		LogWriter::log("Cooldown time not elapsed. Only " + std::to_string(deltaT) + " out of " + std::to_string(coolDownTime) + " elapsed.");
 		return false;
 	}
-	else {
+	else
+	{
 		return true;
 	}
 }
 
-int RayBeam::getChargePercentage() {
+int RayBeam::getChargePercentage()
+{
 	return std::min((int)((timeKeep.getCurrentTime() - lastFireTime) / coolDownTime * 100), 100);
 }

@@ -23,12 +23,12 @@ bool firstFired = true;
 // PxU32 gCommandProgress = 0; // The id of the current command.
 
 Vehicle::Vehicle(std::string n,
-				 Model *m,
-				 ShaderProgram *sp,
-				 glm::vec3 s,
-				 PhysicsProvider *pp,
-				 PxVec3 startingPos = {0.f, 0.f, 0.f},
-				 unsigned int mat = 0, RayBeam *rayGunBeam = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam)
+								 Model *m,
+								 ShaderProgram *sp,
+								 glm::vec3 s,
+								 PhysicsProvider *pp,
+								 PxVec3 startingPos = {0.f, 0.f, 0.f},
+								 unsigned int mat = 0, RayBeam *rayGunBeam = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam)
 {
 	initVehicle(startingPos);
 }
@@ -52,16 +52,17 @@ bool Vehicle::initVehicle(PxVec3 p)
 	slowdownForce = 10000.f;
 	speedupForce = 5000.f;
 	initPos = p;
+	visibleHit = 0.0;
 
 	this->flags["beamHit"] = false;
 
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-							  gVehicle.mPhysXParams);
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Set the states to default.
 	if (!gVehicle.initialize(*(physicsProvider->GetPxPhysics()), PxCookingParams(PxTolerancesScale()), *(physicsProvider->GetPxMaterial())))
@@ -97,14 +98,14 @@ bool Vehicle::initVehicle(PxVec3 p)
 	gVehicle.mPhysXState.physxActor.rigidBody->setMassSpaceInertiaTensor(PxVec3(Constants->vehicleMassSpaceInertiaTensorX, Constants->vehicleMassSpaceInertiaTensorY, Constants->vehicleMassSpaceInertiaTensorZ));
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxContactImpulse(Constants->vehicleMaxContactImpulse);
 
-	//auto tbt = gVehicle.mPhysXState.physxActor.rigidBody;
-	//LogWriter::log("Max Linear Velocity: " + std::to_string(tbt->getMaxLinearVelocity()));
-	//LogWriter::log("Max Angular Velocity: " + std::to_string(tbt->getMaxAngularVelocity()));
-	//LogWriter::log("Angular Dampening: " + std::to_string(tbt->getAngularDamping()));
-	//LogWriter::log("Mass Space Inertia X: " + std::to_string(tbt->getMassSpaceInertiaTensor().x));
-	//LogWriter::log("Mass Space Inertia Y: " + std::to_string(tbt->getMassSpaceInertiaTensor().y));
-	//LogWriter::log("Mass Space Inertia Z: " + std::to_string(tbt->getMassSpaceInertiaTensor().z));
-	//LogWriter::log("Contact Impulse: " + std::to_string(tbt->getMaxContactImpulse()));
+	// auto tbt = gVehicle.mPhysXState.physxActor.rigidBody;
+	// LogWriter::log("Max Linear Velocity: " + std::to_string(tbt->getMaxLinearVelocity()));
+	// LogWriter::log("Max Angular Velocity: " + std::to_string(tbt->getMaxAngularVelocity()));
+	// LogWriter::log("Angular Dampening: " + std::to_string(tbt->getAngularDamping()));
+	// LogWriter::log("Mass Space Inertia X: " + std::to_string(tbt->getMassSpaceInertiaTensor().x));
+	// LogWriter::log("Mass Space Inertia Y: " + std::to_string(tbt->getMassSpaceInertiaTensor().y));
+	// LogWriter::log("Mass Space Inertia Z: " + std::to_string(tbt->getMassSpaceInertiaTensor().z));
+	// LogWriter::log("Contact Impulse: " + std::to_string(tbt->getMaxContactImpulse()));
 
 	auto shapes = gVehicle.mPhysXState.physxActor.rigidBody->getNbShapes();
 	for (physx::PxU32 i = 0; i < shapes; i++)
@@ -127,7 +128,6 @@ bool Vehicle::initVehicle(PxVec3 p)
 
 	return true;
 }
-
 
 void Vehicle::stepPhysics(double timestep, float gas, float steer)
 {
@@ -198,11 +198,14 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 		{
 			if (rayGunBeam != NULL && rayGunBeam->canFire())
 			{
-					if(firstFired){
-						firstFired = false;
-					}else{
-						rayGunBeam->castRayBeam();
-					}
+				if (firstFired)
+				{
+					firstFired = false;
+				}
+				else
+				{
+					rayGunBeam->castRayBeam();
+				}
 			}
 			rayGunBeam->isActive = true;
 		}
@@ -259,7 +262,7 @@ void Vehicle::stepPhysics(double timeStep, Joystick &js)
 void Vehicle::stepPhysics(double timeStep)
 {
 	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-		updateEffects(timeStep);
+	updateEffects(timeStep);
 	stepPhysics(timeStep, -accel, 0);
 }
 
@@ -276,10 +279,10 @@ void Vehicle::reloadTuning()
 {
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-							  gVehicle.mPhysXParams);
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity);
 	gVehicle.mPhysXState.physxActor.rigidBody->setMaxAngularVelocity(Constants->vehicleMaxAngularVelocity);
@@ -290,7 +293,6 @@ void Vehicle::reloadTuning()
 	removeEffects();
 
 	return;
-
 }
 
 void Vehicle::reset()
@@ -303,10 +305,10 @@ void Vehicle::reset()
 	// Load the params from json or set directly.
 	readBaseParamsFromJsonFile(gVehicleDataPath, "Base.json", gVehicle.mBaseParams);
 	setPhysXIntegrationParams(gVehicle.mBaseParams.axleDescription,
-							  gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
-							  gVehicle.mPhysXParams);
+														gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction,
+														gVehicle.mPhysXParams);
 	readDirectDrivetrainParamsFromJsonFile(gVehicleDataPath, "DirectDrive.json",
-										   gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
+																				 gVehicle.mBaseParams.axleDescription, gVehicle.mDirectDriveParams);
 
 	// Apply a start pose to the physx actor and add it to the physx scene.
 	PxTransform pose(initPos, PxQuat(PxIdentity));
@@ -344,10 +346,10 @@ void Vehicle::suspend()
 void Vehicle::restore()
 {
 	shouldRender = true; // Allow rendering to screen
-						 // if (rayGunBeam != NULL)
-						 // {
-						 // 	rayGunBeam->isActive = false;
-						 // }
+											 // if (rayGunBeam != NULL)
+											 // {
+											 // 	rayGunBeam->isActive = false;
+											 // }
 }
 void Vehicle::updateRayBeamPos()
 {
@@ -363,33 +365,65 @@ float Vehicle::currentSpeed()
 	return gVehicle.mBaseState.tireSpeedStates->speedStates[0];
 }
 
-
-void Vehicle::applySlowdownEffect(double seconds){
+void Vehicle::applySlowdownEffect(double seconds)
+{
 	slowdownTimeRemaining += seconds;
 }
-void Vehicle::applySpeedupEffect(double seconds){
+void Vehicle::applySpeedupEffect(double seconds)
+{
 	speedupTimeRemaining += seconds;
 }
 
-void Vehicle::removeEffects(){
+void Vehicle::removeEffects()
+{
 	slowdownTimeRemaining = 0.0;
 	speedupTimeRemaining = 0.0;
 }
 
-void Vehicle::updateEffects(double deltaT){
-	if(slowdownTimeRemaining>0.0){
-		gVehicle.mPhysXState.physxActor.rigidBody->addForce(PxVec3(0.f, 0.f, -1.f*slowdownForce));
-
+void Vehicle::updateEffects(double deltaT)
+{
+	if (visibleHit > 0.0)
+	{
+		visibleHit -= deltaT;
+		if (visibleHit < 0.0)
+		{
+			visibleHit = 0.0;
+		}
 	}
-	if(speedupTimeRemaining>0.0){
+
+	if (slowdownTimeRemaining > 0.0)
+	{
+		gVehicle.mPhysXState.physxActor.rigidBody->addForce(PxVec3(0.f, 0.f, -1.f * slowdownForce));
+	}
+	if (speedupTimeRemaining > 0.0)
+	{
 		gVehicle.mPhysXState.physxActor.rigidBody->addForce(PxVec3(0.f, 0.f, speedupForce));
 	}
-	speedupTimeRemaining-=deltaT;
-	slowdownTimeRemaining-=deltaT;
-	if(speedupTimeRemaining<0.0){
+	speedupTimeRemaining -= deltaT;
+	slowdownTimeRemaining -= deltaT;
+	if (speedupTimeRemaining < 0.0)
+	{
 		speedupTimeRemaining = 0.0;
 	}
-	if(slowdownTimeRemaining<0.0){
+	if (slowdownTimeRemaining < 0.0)
+	{
 		slowdownTimeRemaining = 0.0;
 	}
+}
+
+bool Vehicle::hitVisible()
+{
+	if (visibleHit > 0.0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Vehicle::setHitVisible(double seconds)
+{
+	visibleHit = seconds;
 }

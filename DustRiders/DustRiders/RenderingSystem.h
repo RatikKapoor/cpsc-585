@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Entity.h"
+#include "ECS.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -36,5 +37,6 @@ public:
 	ShaderProgram *compileShader(std::string name, const std::string &vertexPath, const std::string &fragmentPath);
 	Texture loadTexture(std::string name, std::string path, GLint interpolation);
 
-	void updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect);
+	// void updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect);
+	void updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect);
 };

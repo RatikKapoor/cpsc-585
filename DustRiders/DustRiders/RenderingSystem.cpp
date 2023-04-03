@@ -1,6 +1,10 @@
 #include "RenderingSystem.h"
 
 #include "Geometry.h"
+#include "Vehicle.h"
+#include "AIVehicle.h"
+#include <regex>
+
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -147,7 +151,7 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	return textures;
 }
 
-void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect)
+void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect)
 {
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
@@ -162,7 +166,7 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 
 	int numRendered = 0;
 
-	for (Entity *entity : entityList)
+	for (Entity *entity : ecs.getAll())
 	{
 		if (entity->shouldRender)
 		{
@@ -194,6 +198,26 @@ void RenderingSystem::updateRender(std::vector<Entity *> &entityList, Camera &ca
 			location = glGetUniformLocation(shader, "cameraPos");
 			glUniform3fv(location, 1, glm::value_ptr(camPos));
 
+			if (regex_match(entity->name, regex("(car)(.*)")))
+			{
+				LogWriter::log("Rendering car \"" + entity->name + "\"");
+				location = glGetUniformLocation(shader, "hitVisible");
+				if (((AIVehicle *)ecs[entity->name])->hitVisible())
+				{
+					LogWriter::log("	Hit is visible.");
+					glUniform1f(location, 1.0f);
+				}
+				else
+				{
+					LogWriter::log("	Hit is not visible.");
+					glUniform1f(location, 0.0f);
+				}
+			}
+			else
+			{
+				location = glGetUniformLocation(shader, "hitVisible");
+				glUniform1f(location, 0.0f);
+			}
 			entity->model->draw(shader, entity->useMatInt);
 			numRendered++;
 		}
