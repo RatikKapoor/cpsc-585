@@ -293,7 +293,7 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 
 	if (prevState != StateHandler::GameState::Playing)
 	{
-		ImGui::Text("Press ENTER or A Button to start.");
+		ImGui::Text("Press ENTER or Right D-Pad to start.");
 		ImGui::Text("Press X or X Button to quit DustRiders.");
 		ImGui::End();
 	}
@@ -347,7 +347,7 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.05));
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-	ImGui::Text("Press ENTER or A Button to Start Game");
+	ImGui::Text("Press ENTER or Right D-Pad to Start Game");
 	ImGui::Text("Press X or X Button to Exit");
 	ImGui::End();
 
@@ -393,7 +393,7 @@ void Overlay::RenderWin(int windowHeight, int windowWidth)
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 
-	ImGui::Text("Press ENTER or A Button to Play Again");
+	ImGui::Text("Press ENTER or Right D-Pad to Play Again");
 	ImGui::Text("Press X or X Button to quit DustRiders");
 	ImGui::End();
 
@@ -433,7 +433,7 @@ void Overlay::RenderLoss(int windowHeight, int windowWidth)
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(3.0f);
 
-	ImGui::Text("Press ENTER or A Button to Play Again");
+	ImGui::Text("Press ENTER or Right D-Pad to Play Again");
 	ImGui::Text("Press X or X Button to quit DustRiders");
 	ImGui::End();
 
