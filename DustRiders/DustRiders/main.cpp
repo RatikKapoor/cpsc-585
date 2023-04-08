@@ -57,14 +57,16 @@ int main()
 
 #pragma region Sound
 	SoundDevice *mysounddevice = SoundDevice::get();
-	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.ogg");
+	uint32_t /*ALuint*/ engine = SoundBuffer::get()->addSoundEffect("sound/engine.wav");
 	// uint32_t raybeamFire = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");
 
 	// Collision sound effect
 	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
+	uint32_t /*ALuint*/ thunder = SoundBuffer::get()->addSoundEffect("sound/thunder.wav");
 
 	SoundSource engineSpeaker;
-	engineSpeaker.changeMusicVolume(0.5f);
+	SoundSource thunderSpeaker;
+	engineSpeaker.changeMusicVolume(0.05f);
 
 	ALint engineSoundState = AL_STOPPED;
 
@@ -348,6 +350,7 @@ int main()
 										stateHandle.setGState(StateHandler::GameState::GameLost);
 								}
 							}
+							alSourcePlay(thunderSpeaker.Play(thunder));
 						}
 #endif
 					}
