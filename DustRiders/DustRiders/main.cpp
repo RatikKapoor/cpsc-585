@@ -54,6 +54,7 @@ int main()
 	StateHandler stateHandle;
 	Constants *Constants = ConstantsHelper::getConstants();
 	TimeKeeper timer;
+	double startTime = 0;
 
 #pragma region Sound
 	SoundDevice *mysounddevice = SoundDevice::get();
@@ -259,10 +260,12 @@ int main()
 					}
 
 					// Render game overlays
-					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
-					overlay.RenderPlace(position, windowWidth, windowHeight);
-					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight);
+					overlay.RenderCanvis(windowWidth, windowHeight, 1.5);
+					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1.5);
+					overlay.RenderPlace(position, windowWidth, windowHeight, 1.5);
+					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight, 1.5);
 					overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+					overlay.RenderCanvisTint(windowWidth, windowHeight, 1.5);
 
 					timer.playTime();
 					// Vehicle physics
@@ -334,6 +337,7 @@ int main()
 							else
 							{
 								// erasing AI vehicle if it lost
+								
 
 								// store inactive vehicles
 								vehicles[i]->suspend();
