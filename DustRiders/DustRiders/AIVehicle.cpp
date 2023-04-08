@@ -138,15 +138,14 @@ void AIVehicle::stepPhysics(double timeStep)
 {
 	handlePathfind();
 	updateEffects(timeStep);
-	gVehicle.mPhysXState.physxActor.rigidBody->setMaxLinearVelocity(Constants->vehicleInitialMaxLinearVelocity * pow(Constants->vehicleChunkAccelerationBaseExponent, ChunkHandler::chunkCounter));
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 	handleShooting(timeStep);
 }
 
-void AIVehicle::handleShooting(double timeStep){
+void AIVehicle::handleShooting(double timeStep) {
 
 	// If raygunBeam does not exist
-	if(rayGunBeam==NULL){
+	if (rayGunBeam == NULL) {
 		return;
 	}
 
@@ -155,21 +154,22 @@ void AIVehicle::handleShooting(double timeStep){
 
 	// If aim delay is not currently active
 	// Check for target
-	if(aimDelay<=0){
+	if (aimDelay <= 0) {
 		targetSpotted = rayGunBeam->targetInRange();
-		if(!targetSpotted){
+		if (!targetSpotted) {
 			return;
-		}else{
+		}
+		else {
 			aimDelay = Constants->aiRaygunShootingDelay;
 			return;
 		}
 	}
 
-	aimDelay-=timeStep;
+	aimDelay -= timeStep;
 
-	if(aimDelay<=0 && rayGunBeam->canFire()){
-		if(((float)rand()/(float)RAND_MAX)>0.5){
-		rayGunBeam->castRayBeam();
+	if (aimDelay <= 0 && rayGunBeam->canFire()) {
+		if (((float)rand() / (float)RAND_MAX) < Constants->aiRaygunShootingChance) {
+			rayGunBeam->castRayBeam();
 		}
 	}
 

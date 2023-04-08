@@ -17,5 +17,15 @@
     "aiCarRandomPositionWidth": 20.0,
     "aiCarRandomPositionSpacing": 100.0,
     "aiRaygunAimingRange": 30.0,
-    "aiRaygunShootingDelay": 0.7
+    "aiRaygunShootingDelay": 0.7,
+    "aiRaygunShootingChance": 0.8,
+
+    "raygunEffectSeconds": 1.0,
+    "raygunHitVisibleSeconds": 0.5,
+    "speedUpEffectSeconds": 0.35,
+    "slowdownEffectSeconds": 0.35,
+    "speedUpForce": 10000.0,
+    "slowDownForce": 7500,
+    "effectDeltaVelocity": 5.0,
+    "maxEffectTime": 1.0
 }
