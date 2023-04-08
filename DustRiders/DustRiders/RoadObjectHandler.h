@@ -11,7 +11,8 @@ enum RoadObjectType
 {
 	ObstacleRock,
 	SpeedUpZone,
-	SlowDownZone
+	SlowDownZone,
+	None
 };
 
 class RoadObjectHandler {

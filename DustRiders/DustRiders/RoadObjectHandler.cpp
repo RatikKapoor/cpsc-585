@@ -37,22 +37,26 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 		std::string name = "";
 		Model* roadObjectModel;
 		enum RoadObjectType type;
-		switch (roadObjectCounter % 3)
+		switch (roadObjectCounter % 15)
 		{
 		case 0:
+		case 11:
 			// Create speed up zone
 			name = "speedUpZone" + std::to_string(speedUpZoneCounter);
 			type = RoadObjectType::SpeedUpZone;
 			roadObjectModel = ModelProvider::speedupBlock;
 			break;
-		case 1:
+		case 8:
+		case 4:
 			// Create slow down zone
 			name = "slowDownZone" + std::to_string(slowDownZoneCounter);
 			type = RoadObjectType::SlowDownZone;
 			roadObjectModel = ModelProvider::slowdownBlock;
 			break;
-		case 2:
-		default:
+		case 3:
+		case 5:
+		case 10:
+		case 13:
 			// Create rock
 			name = "obstacle" + std::to_string(obstacleCounter);
 			type = RoadObjectType::ObstacleRock;
@@ -69,6 +73,10 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				roadObjectModel = ModelProvider::rock3;
 				break;
 			}
+			break;
+		default:
+			type = RoadObjectType::None;
+			roadObjectModel = nullptr;
 			break;
 		}
 
@@ -105,7 +113,6 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 			slowDownZoneCounter++;
 			break;
 		case ObstacleRock:
-		default:
 			(*ecs)[name] = new Obstacle(name,
 				roadObjectModel,
 				ShaderProvider::carShader,
@@ -115,6 +122,8 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				1);
 			obstacleList.push_back((Obstacle*)(*ecs)[name]);
 			obstacleCounter++;
+			break;
+		default:
 			break;
 		}
 
