@@ -96,7 +96,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				ShaderProvider::carShader,
 				glm::vec3(1.f),
 				physics,
-				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				PxVec3(x, 0.5f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
 				0);
 			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
 			speedUpZoneCounter++;
@@ -107,7 +107,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				ShaderProvider::carShader,
 				glm::vec3(1.f),
 				physics,
-				PxVec3(x, 0.f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				PxVec3(x, 0.5f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
 				0);
 			triggerList.push_back((TriggerEntity*)(*ecs)[name]);
 			slowDownZoneCounter++;
@@ -118,7 +118,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 				ShaderProvider::carShader,
 				glm::vec3(1.f),
 				physics,
-				PxVec3(x, -0.4f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
+				PxVec3(x, -0.425f, (obstacleCounter % 5 == 0) ? dist + z : dist - z),
 				1);
 			obstacleList.push_back((Obstacle*)(*ecs)[name]);
 			obstacleCounter++;
