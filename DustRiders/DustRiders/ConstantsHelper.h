@@ -31,6 +31,16 @@ struct Constants
 	float aiCarRandomPositionSpacing = 100.0;
 	float aiRaygunAimingRange = 30.0;
 	float aiRaygunShootingDelay = 1.0;
+	float aiRaygunShootingChance = 0.5;
+
+	float raygunEffectSeconds = 2;
+	float raygunHitVisibleSeconds = 0.5;
+	float speedUpEffectSeconds = 5;
+	float slowdownEffectSeconds = 5;
+	float slowDownForce = 10000.f;
+	float speedUpForce = 5000.f;
+	float effectDeltaVelocity = 3.f;
+	float maxEffectTime = 5.f;
 };
 
 class ConstantsHelper {
@@ -89,6 +99,16 @@ private:
 		c->aiCarRandomPositionSpacing = doc["aiCarRandomPositionSpacing"].GetDouble();
 		c->aiRaygunAimingRange = doc["aiRaygunAimingRange"].GetDouble();
 		c->aiRaygunShootingDelay = doc["aiRaygunShootingDelay"].GetDouble();
+		c->aiRaygunShootingChance = doc["aiRaygunShootingChance"].GetDouble();
+
+		c->raygunEffectSeconds = doc["raygunEffectSeconds"].GetDouble();
+		c->raygunHitVisibleSeconds = doc["raygunHitVisibleSeconds"].GetDouble();
+		c->speedUpEffectSeconds = doc["speedUpEffectSeconds"].GetDouble();
+		c->slowdownEffectSeconds = doc["slowdownEffectSeconds"].GetDouble();
+		c->speedUpForce = doc["speedUpForce"].GetDouble();
+		c->slowDownForce = doc["slowDownForce"].GetDouble();
+		c->effectDeltaVelocity = doc["effectDeltaVelocity"].GetDouble();
+		c->maxEffectTime = doc["maxEffectTime"].GetDouble();
 
 		loaded = true;
 	}

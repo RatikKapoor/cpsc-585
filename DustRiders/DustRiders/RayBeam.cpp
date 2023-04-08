@@ -134,8 +134,8 @@ std::string RayBeam::castRayBeam()
 		if (regex_match(hit.block.actor->getName(), regex("(car)(.*)")))
 		{
 			LogWriter::log("Raycast Hit: " + std::string(hit.block.actor->getName()));
-			((AIVehicle *)ecs[closestHit])->applySlowdownEffect(5);
-			((AIVehicle *)ecs[closestHit])->setHitVisible(0.5);
+			((AIVehicle *)ecs[closestHit])->applySlowdownEffect(Constants->raygunEffectSeconds);
+			((AIVehicle *)ecs[closestHit])->setHitVisible(Constants->raygunHitVisibleSeconds);
 			alSourcePlay(raybeamHitSpeaker->Play(raybeamHitSound));
 		}
 	}

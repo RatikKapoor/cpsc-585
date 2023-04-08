@@ -75,8 +75,6 @@ protected:
 
 	double slowdownTimeRemaining;
 	double speedupTimeRemaining;
-	float slowdownForce;
-	float speedupForce;
 
 	RayBeam *rayGunBeam;
 
