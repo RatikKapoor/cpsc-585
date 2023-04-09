@@ -244,6 +244,9 @@
     <ClCompile Include="SimulationCallback.cpp">
       <Filter>Source Files\Callbacks</Filter>
     </ClCompile>
+    <ClCompile Include="GameHandler.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vehicle.h">
@@ -437,6 +440,15 @@
     </ClInclude>
     <ClInclude Include="SimulationCallback.h">
       <Filter>Header Files\Callbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="GameHandler.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioHelper.h">
+      <Filter>Header Files\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleHandler.h">
+      <Filter>Header Files\Handlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

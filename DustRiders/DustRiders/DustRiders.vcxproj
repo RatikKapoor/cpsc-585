@@ -172,6 +172,7 @@
     <ClCompile Include="ConstantsHelper.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="ElementBuffer.cpp" />
+    <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GLDebug.cpp" />
     <ClCompile Include="GLHandles.cpp" />
@@ -221,14 +222,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIVehicle.h" />
+    <ClInclude Include="AudioHelper.h" />
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="VehicleHandler.h" />
     <ClInclude Include="ConstantsHelper.h" />
     <ClInclude Include="ChunkHandler.h" />
     <ClInclude Include="DebugDefines.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="ElementBuffer.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameHandler.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GLDebug.h" />
     <ClInclude Include="GLHandles.h" />

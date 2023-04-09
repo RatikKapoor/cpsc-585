@@ -7,10 +7,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-Camera::Camera(Entity *focus, glm::vec3 offset, float t, float r)
-		: focusEntity(focus), focusOffset(offset), theta(t), radius(r)
+Camera::Camera(glm::vec3 offset, float t, float r)
+		: focusOffset(offset), theta(t), radius(r)
 {
-	lastDir = focusEntity->transform->position;
+	focusEntity = nullptr;
+	lastDir = glm::vec3(0.f);
 }
 
 void Camera::setFocusEntity(Entity *newFocus)

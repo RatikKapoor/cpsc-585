@@ -3,10 +3,12 @@
 #include "SimulationCallback.h"
 
 SimulationCallback::SimulationCallback(EntityComponentSystem& ecs) : PxSimulationEventCallback(), ecs(ecs) {
-	speedUpSpeaker = new SoundSource();
-	slowDownSpeaker = new SoundSource();
+	speedUpSpeaker = SoundSource();
+	slowDownSpeaker = SoundSource();
 	speedUpSound = SoundBuffer::get()->addSoundEffect("sound/power-up.wav");
 	slowDownSound = SoundBuffer::get()->addSoundEffect("sound/power-down.wav");
+	speedUpSoundState = AL_STOPPED;
+	slowDownSoundState = AL_STOPPED;
 }
 
 void SimulationCallback::onTrigger(PxTriggerPair* pairs, PxU32 count) {
@@ -15,10 +17,16 @@ void SimulationCallback::onTrigger(PxTriggerPair* pairs, PxU32 count) {
 
 	if (regex_match(triggerEntityName, regex("(speedUpZone)(.*)")) && regex_match(actorEntityName, regex("(car)(.*)"))) {
 		((Vehicle*)ecs[actorEntityName])->applySpeedupEffect(5);
-		alSourcePlay(speedUpSpeaker->Play(speedUpSound));
+		alGetSourcei(speedUpSpeaker.getSource(), AL_SOURCE_STATE, &speedUpSoundState);
+		if (speedUpSoundState != AL_PLAYING) {
+			alSourcePlay(speedUpSpeaker.Play(speedUpSound));
+		}
 	}
 	else if (regex_match(triggerEntityName, regex("(slowDownZone)(.*)")) && regex_match(actorEntityName, regex("(car)(.*)"))) {
 		((Vehicle*)ecs[actorEntityName])->applySlowdownEffect(5);
-		alSourcePlay(slowDownSpeaker->Play(slowDownSound));
+		alGetSourcei(slowDownSpeaker.getSource(), AL_SOURCE_STATE, &slowDownSoundState);
+		if (slowDownSoundState != AL_PLAYING) {
+			alSourcePlay(slowDownSpeaker.Play(slowDownSound));
+		}
 	}
 }

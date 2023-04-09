@@ -4,7 +4,7 @@
 class Camera
 {
 public:
-	Camera(Entity *focus, glm::vec3 offset, float t, float r);
+	Camera(glm::vec3 offset, float t, float r);
 
 	void setFocusEntity(Entity *newFocus);
 	glm::mat4 getView();
