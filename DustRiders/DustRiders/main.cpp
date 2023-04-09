@@ -63,22 +63,31 @@ int main()
 	// Collision sound effect
 	uint32_t /*ALuint*/ collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
 	uint32_t /*ALuint*/ thunder = SoundBuffer::get()->addSoundEffect("sound/thunder.wav");
+	uint32_t /*ALuint*/ storm = SoundBuffer::get()->addSoundEffect("sound/storm_long.wav");
+	uint32_t /*ALuint*/ theme = SoundBuffer::get()->addSoundEffect("sound/jumphigher.ogg");
 
 	SoundSource engineSpeaker;
 	SoundSource thunderSpeaker;
-	engineSpeaker.changeMusicVolume(0.05f);
+	SoundSource stormSpeaker;
+	SoundSource themeSpeaker;
 
+	stormSpeaker.changeMusicVolume(0.4f);
+	engineSpeaker.changeMusicVolume(0.05f);
+	themeSpeaker.changeMusicVolume(0.3f);
+
+	stormSpeaker.enableLooping();
+	themeSpeaker.enableLooping();
+	
 	ALint engineSoundState = AL_STOPPED;
 
-	MusicBuffer storm("sound/storm_long.wav");
-	storm.Play();
-	ALint stormState = AL_PLAYING;
-	storm.changeMusicVolume(0.3f);
+	alSourcePlay(stormSpeaker.Play(storm));
+	alSourcePlay(themeSpeaker.Play(theme));
 
-	MusicBuffer theme("sound/jumphigher.ogg");
-	theme.Play();
-	ALint themeState = AL_PLAYING;
-	theme.changeMusicVolume(0.2f);
+	//uint32_t /*ALuint*/ storm = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
+	//MusicBuffer storm("sound/storm_long.wav");
+	//storm.Play();
+	//ALint stormState = AL_PLAYING;
+	//storm.changeMusicVolume(0.0001f);
 #pragma endregion
 
 	Window window("DustRiders", glfwGetPrimaryMonitor());
@@ -182,17 +191,16 @@ int main()
 		stateHandle.processJS(JoystickHandler::getFirstJS());
 
 		// The sound buffer should always update, not dependant on game state
-		if (stormState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-		{
-			storm.UpdateBufferStream();
-			alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
-		}
-
-		if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-		{
-			theme.UpdateBufferStream();
-			alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
-		}
+		//if (stormState == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		//{
+		//	storm.UpdateBufferStream();
+		//	alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
+		//}
+		//if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
+		//{
+		//	theme.UpdateBufferStream();
+		//	alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
+		//}
 
 		// Game hasn't started, still on the initial start menu
 		if (stateHandle.getGState() == StateHandler::GameState::StartMenu)

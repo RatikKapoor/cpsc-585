@@ -7,6 +7,8 @@ public:
 	SoundSource();
 	~SoundSource();
 	ALint getSource();
+	void enableLooping();
+	void disableLooping();
 	ALuint Play(const ALuint buffer_to_play);
 	void changeMusicVolume(float newVolume);
 
