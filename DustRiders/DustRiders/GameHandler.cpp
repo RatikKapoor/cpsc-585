@@ -16,13 +16,9 @@ overlay(),
 renderer(),
 vehicleHandler(ecs, physics, stateHandle, timer)
 {
-	//stateHandle = StateHandler();
 	AudioHelper::Initialize();
 	Constants = ConstantsHelper::getConstants();
-	//timer = TimeKeeper();
-	//audioHelper = AudioHelper();
 
-	//window = Window("DustRiders", glfwGetPrimaryMonitor());
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
 #ifdef _DEBUG
 	windowHeight = 800;
@@ -32,12 +28,8 @@ vehicleHandler(ecs, physics, stateHandle, timer)
 	int windowWidth = window.getWidth();
 #endif // _DEBUG
 
-	//overlay = Overlay();
-
 	// Render Loading Content
 	RenderLoadingContent();
-
-	//renderer = RenderingSystem();
 
 	ShaderProvider::initialize(renderer);
 	ModelProvider::initialize(renderer);
