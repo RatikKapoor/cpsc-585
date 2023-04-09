@@ -28,7 +28,9 @@ Vehicle::Vehicle(std::string n,
 	glm::vec3 s,
 	PhysicsProvider* pp,
 	PxVec3 startingPos = { 0.f, 0.f, 0.f },
-	unsigned int mat = 0, RayBeam* rayGunBeam = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam)
+	unsigned int mat = 0,
+	RayBeam* rayGunBeam = NULL,
+	Joystick* js = NULL) : PhysicsEntity(n, m, sp, s, pp, startingPos, mat), rayGunBeam(rayGunBeam), js(js)
 {
 	initVehicle(startingPos);
 }
@@ -167,9 +169,12 @@ void Vehicle::stepPhysics(double timestep, float gas, float steer)
 	gVehicle.step(timestep, gVehicleSimulationContext);
 }
 
-bool Vehicle::engineGased(Joystick& js)
+bool Vehicle::engineGased()
 {
-	const float* analogs = js.getAnalogs();
+	if (js == nullptr)
+		return true;
+
+	const float* analogs = js->getAnalogs();
 
 	if (analogs[Xbox::Analog::XBOX_R_TRIGGER] > 0.0f)
 	{
@@ -181,15 +186,19 @@ bool Vehicle::engineGased(Joystick& js)
 	}
 }
 
-void Vehicle::stepPhysics(double timeStep, Joystick& js)
+void Vehicle::stepPhysics(double timeStep)
 {
+	if (js == nullptr) {
+		throw std::exception("Tried to step physics on player vehicle with no joystick");
+	}
+
 	float axisThreshold = 0.15f;
-	const float* analogs = js.getAnalogs();
-	const unsigned char* b = js.getButtons();
+	const float* analogs = js->getAnalogs();
+	const unsigned char* b = js->getButtons();
 
 	gVehicle.mCommandState.nbBrakes = 1;
 
-	if (js.getButtonRaw(Xbox::Button::XBOX_A))
+	if (js->getButtonRaw(Xbox::Button::XBOX_A))
 	{
 		if (!rayGunBeam->isActive)
 		{
@@ -218,11 +227,11 @@ void Vehicle::stepPhysics(double timeStep, Joystick& js)
 		rayGunBeam->isActive = false;
 	}
 
-	if (js.getButton(Xbox::Button::XBOX_UP))
+	if (js->getButton(Xbox::Button::XBOX_UP))
 	{
-		if (js.isPseudo())
+		if (js->isPseudo())
 		{
-			js.releaseR();
+			js->releaseR();
 		}
 	}
 
@@ -316,12 +325,12 @@ void Vehicle::stepPhysics(double timeStep, Joystick& js)
 	gVehicle.step(timeStep, gVehicleSimulationContext);
 }
 
-void Vehicle::stepPhysics(double timeStep)
-{
-	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
-	updateEffects(timeStep);
-	stepPhysics(timeStep, -accel, 0);
-}
+//void Vehicle::stepPhysics(double timeStep)
+//{
+//	auto accel = (double)std::rand() / RAND_MAX * 0.5 + 0.2;
+//	updateEffects(timeStep);
+//	stepPhysics(timeStep, -accel, 0);
+//}
 
 void Vehicle::saveLocation()
 {

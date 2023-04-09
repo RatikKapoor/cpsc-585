@@ -19,7 +19,18 @@ public:
 		physics(physics),
 		stateHandler(stateHandler),
 		timer(timer)
-	{}
+	{
+		Joystick keyboardJS;
+
+		if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+		{
+			JoystickHandler::addJS(GLFW_JOYSTICK_1);
+		}
+		else
+		{
+			JoystickHandler::addJS(keyboardJS);
+		}
+	}
 
 	void InitCars()
 	{
@@ -29,12 +40,28 @@ public:
 
 
 		// Create main car
-		vehicles.push_back(new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"]));
-		// Add AI cars
-		vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], "./assets/drivingPaths/path1.json"));
-		vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"]
-			//, "./assets/drivingPaths/path2.json"
-		));
+		vehicles.push_back(new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"], &JoystickHandler::getFirstJS()));
+		// Add other cars
+		if (glfwJoystickPresent(GLFW_JOYSTICK_2))
+		{
+			JoystickHandler::addJS(GLFW_JOYSTICK_2);
+			vehicles.push_back(new Vehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_2)));
+		}
+		else
+		{
+			vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], "./assets/drivingPaths/path1.json"));
+		}
+		if (glfwJoystickPresent(GLFW_JOYSTICK_3))
+		{
+			JoystickHandler::addJS(GLFW_JOYSTICK_3);
+			vehicles.push_back(new Vehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_3)));
+		}
+		else
+		{
+			vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"]
+				//, "./assets/drivingPaths/path2.json"
+			));
+		}
 
 		for (auto& v : vehicles) {
 			ecs[v->name] = v;
@@ -67,13 +94,13 @@ public:
 			//if (vehicle == playerVehicle)
 			if (!isAiVehicle(vehicle))
 			{
-				vehicle->stepPhysics(timer.getCounter(), std::ref(JoystickHandler::getFirstJS()));
+				vehicle->stepPhysics(timer.getCounter());
 				if (vehicle->currentSpeed() > 0.2)
 				{
 					AudioHelper::PlayEngineNoise();
 				}
 
-				if (vehicle->engineGased(std::ref(JoystickHandler::getFirstJS())))
+				if (vehicle->engineGased())
 				{
 					AudioHelper::SetEngineVolume(1.f);
 				}
