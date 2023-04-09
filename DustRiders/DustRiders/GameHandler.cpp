@@ -12,12 +12,12 @@ ecs(*EntityComponentSystem::getInstance()),
 physics(new PhysicsSystem(ecs)),
 stateHandle(),
 timer(),
-audioHelper(),
 overlay(),
 renderer(),
-vehicleHandler(ecs, physics, stateHandle, timer, audioHelper)
+vehicleHandler(ecs, physics, stateHandle, timer)
 {
 	//stateHandle = StateHandler();
+	AudioHelper::Initialize();
 	Constants = ConstantsHelper::getConstants();
 	//timer = TimeKeeper();
 	//audioHelper = AudioHelper();
@@ -99,7 +99,7 @@ void GameHandler::Loop()
 	//	theme.UpdateBufferStream();
 	//	alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
 	//}
-	audioHelper.PlayBackgroundNoise();
+	//AudioHelper::PlayBackgroundNoise();
 
 	// Game hasn't started, still on the initial start menu
 	if (stateHandle.getGState() == StateHandler::GameState::StartMenu)

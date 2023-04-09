@@ -46,7 +46,6 @@ protected:
 	Constants* Constants;
 
 	StateHandler stateHandle;
-	AudioHelper audioHelper;
 	Overlay overlay;
 
 	int windowHeight;

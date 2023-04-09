@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="AIPathHandler.cpp" />
     <ClCompile Include="AIVehicle.cpp" />
+    <ClCompile Include="AudioHelper.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChunkHandler.cpp" />
     <ClCompile Include="ConstantsHelper.cpp" />
