@@ -79,20 +79,6 @@ void GameHandler::Loop()
 	JoystickHandler::updateAll();
 	stateHandle.processJS(JoystickHandler::getFirstJS());
 
-	// The sound buffer should always update, not dependant on game state
-	//if (stormState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-	//{
-	//	storm.UpdateBufferStream();
-	//	alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
-	//}
-
-	//if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-	//{
-	//	theme.UpdateBufferStream();
-	//	alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
-	//}
-	//AudioHelper::PlayBackgroundNoise();
-
 	// Game hasn't started, still on the initial start menu
 	if (stateHandle.getGState() == StateHandler::GameState::StartMenu)
 	{
@@ -145,12 +131,6 @@ void GameHandler::Loop()
 			{
 				// Figure out which position player is in
 				int position = 1; // TODO: Needs UI refactor to show multiple players
-				//auto loc = ((Vehicle*)ecs["car"])->transform->position.z;
-				//for (auto& vehicle : vehicles) {
-				//	if (vehicle->transform->position.z > loc) {
-				//		position++;
-				//	}
-				//}
 
 				// Render game overlays
 				overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
