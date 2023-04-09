@@ -8,6 +8,11 @@
 #include <memory>
 #include <list>
 
+#define NOMINMAX
+#include <windows.h>
+#include <Xinput.h>
+#pragma comment(lib, "XInput.lib")
+
 // #define XBOX_A 0
 // #define XBOX_B 1
 // #define XBOX_X 2
@@ -107,7 +112,7 @@ public:
 		analogs[Xbox::Analog::XBOX_R_TRIGGER] = -1.f;
 	}
 
-	Joystick(const Joystick &js)
+	Joystick(const Joystick& js)
 	{
 		for (int i = 0; i < 14; i++)
 		{
@@ -122,7 +127,7 @@ public:
 		this->pseudo = js.pseudo;
 	}
 
-	Joystick &operator=(const Joystick &js)
+	Joystick& operator=(const Joystick& js)
 	{
 		if (this != &js)
 		{
@@ -146,28 +151,52 @@ public:
 	static std::string buttonToStr(int button);
 	static std::string analogToStr(int analog);
 
-	bool setInputs(const unsigned char *buttons, const float *analogs);
+	bool setInputs(const unsigned char* buttons, const float* analogs);
 
 	bool getButton(int buttonIndex) { return wasPressed[buttonIndex]; }
 	bool getButtonRaw(int buttonIndex) { return buttons[buttonIndex]; }
 	float getAnalog(int analogIndex) { return analogs[analogIndex]; }
 	int getID() { return jsID; }
 
-	const float *getAnalogs() { return analogs; }
+	const float* getAnalogs() { return analogs; }
 
 	/**
 	 * @brief Get the list of buttons currently pressed. Ignores previous values.
 	 *
 	 * @return const unsigned char*
 	 */
-	const unsigned char *getButtonsRaw() { return buttons; };
+	const unsigned char* getButtonsRaw() { return buttons; };
 
 	/**
 	 * @brief Get the list of buttons have been pressed since the list of buttons was last updated.
 	 *
 	 * @return const unsigned char*
 	 */
-	const unsigned char *getButtons() { return wasPressed; }
+	const unsigned char* getButtons() { return wasPressed; }
+
+	void setVibrate(bool b) {
+		shouldVibrate = b;
+	}
+
+	void vibrate() {
+		XINPUT_VIBRATION v;
+		ZeroMemory(&v, sizeof(XINPUT_VIBRATION));
+		if (shouldVibrate)
+		{
+			v.wLeftMotorSpeed = 2000;
+			v.wRightMotorSpeed = 2000;
+		}
+		else
+		{
+			v.wLeftMotorSpeed = 0;
+			v.wRightMotorSpeed = 0;
+		}
+
+		if (shouldVibrate && !isVibrating || !shouldVibrate && isVibrating)
+			XInputSetState(jsID, &v);
+
+		isVibrating = shouldVibrate;
+	}
 
 	// For printing button names, for testing
 	std::string buttonList();
@@ -393,6 +422,8 @@ protected:
 	float analogs[6];
 	int jsID;
 	bool pseudo;
+	bool shouldVibrate;
+	bool isVibrating;
 };
 
 class JoystickHandler

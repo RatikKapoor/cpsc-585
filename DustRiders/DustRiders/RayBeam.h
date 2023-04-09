@@ -10,6 +10,10 @@
 #include "SoundSource.h"
 #include "SoundBuffer.h"
 
+#ifdef _MSC_VER
+#undef GetObject
+#endif
+
 class RayBeamCallback;
 
 class RayBeam : public PhysicsEntity
