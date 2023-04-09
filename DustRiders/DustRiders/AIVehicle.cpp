@@ -10,7 +10,7 @@ AIVehicle::AIVehicle(std::string name,
 	PxVec3 pos,
 	unsigned int matIdx,
 	RayBeam* rb,
-	std::string pathFile) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb)
+	std::string pathFile) : Vehicle(name, m, sp, s, pp, pos, matIdx, rb, NULL)
 {
 	this->shouldFindNewDest = true;
 	dest = glm::vec3(0);

@@ -432,14 +432,14 @@ public:
 	JoystickHandler() {}
 
 	static bool addJS(int jsID);
-	static bool addJS(Joystick &js);
+	static bool addJS(Joystick& js);
 
 	static bool removeJS(int jsID);
 
 	static std::map<int, Joystick> getJSMap();
 	static void printJSMap();
-	static Joystick getJoystick(int jsID);
-	static Joystick &getFirstJS() { return jsMap.begin()->second; }
+	static Joystick& getJoystick(int jsID);
+	static Joystick& getFirstJS() { return jsMap.begin()->second; }
 
 	/**
 	 * @brief Update the inputs for all the joysticks in the map.

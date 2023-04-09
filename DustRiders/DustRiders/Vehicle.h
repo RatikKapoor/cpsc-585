@@ -32,18 +32,19 @@ class Vehicle : public PhysicsEntity
 {
 public:
 	Vehicle(std::string,
-					Model *,
-					ShaderProgram *,
-					glm::vec3,
-					PhysicsProvider *,
-					PxVec3,
-					unsigned int, RayBeam *);
+		Model*,
+		ShaderProgram*,
+		glm::vec3,
+		PhysicsProvider*,
+		PxVec3,
+		unsigned int,
+		RayBeam*,
+		Joystick*);
 
 	virtual ~Vehicle() {}
 
-	bool engineGased(Joystick &js);
+	bool engineGased();
 	void stepPhysics(double);
-	void stepPhysics(double timeStep, Joystick &js);
 
 	float currentSpeed();
 
@@ -76,10 +77,11 @@ protected:
 	double slowdownTimeRemaining;
 	double speedupTimeRemaining;
 
-	RayBeam *rayGunBeam;
+	RayBeam* rayGunBeam;
+	Joystick* js;
 
 	// The path to the vehicle json files to be loaded.
-	const char *gVehicleDataPath = "./media/vehicledata";
+	const char* gVehicleDataPath = "./media/vehicledata";
 
 	// The vehicle with direct drivetrain
 	DirectDriveVehicle gVehicle;
