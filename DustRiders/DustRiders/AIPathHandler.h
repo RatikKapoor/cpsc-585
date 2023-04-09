@@ -10,6 +10,10 @@
 #include "LogWriter.h"
 #include "glm/glm.hpp"
 
+#ifdef _MSC_VER
+#undef GetObject
+#endif
+
 using namespace std;
 using namespace rapidjson;
 using vec3 = glm::vec3;

@@ -255,8 +255,10 @@ void JoystickHandler::updateAll()
   while (jsIter != jsMap.end())
   {
     jsIter->second.updateAllInputs();
+    jsIter->second.vibrate();
     jsIter++;
   }
+
   return;
 }
 

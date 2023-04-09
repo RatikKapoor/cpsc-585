@@ -331,6 +331,17 @@ int main()
 					{
 						glm::vec3 drawPos = perspective * view * glm::vec4{vehicles[i]->transform->position, 1.0f};
 
+#pragma region Controller Rumble When Close to Storm
+						if (vehicles[i] == playerVehicle) {
+							LogWriter::log("Test: " + std::to_string(drawPos.y) + "-" + std::to_string(drawPos.z) + " " + std::to_string(drawPos.y / drawPos.z));
+							if (drawPos.y / drawPos.z < -0.7f)
+								JoystickHandler::getFirstJS().setVibrate(true);
+							else
+								JoystickHandler::getFirstJS().setVibrate(false);
+						}
+#pragma endregion
+
+
 						// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
 #ifndef NO_DEATH
