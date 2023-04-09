@@ -22,6 +22,17 @@ ALint SoundSource::getSource()
 	return p_Source;
 }
 
+void SoundSource::enableLooping()
+{
+	alSourcei(p_Source, AL_LOOPING, 1);
+
+}
+
+void SoundSource::disableLooping()
+{
+	alSourcei(p_Source, AL_LOOPING, 0);
+}
+
 void SoundSource::changeMusicVolume(float newVolume)
 {
 	alSourcef(p_Source, AL_GAIN, newVolume);
@@ -36,15 +47,15 @@ ALuint SoundSource::Play(const ALuint buffer_to_play)
 	}
 
 	return p_Source;
-	alSourcePlay(p_Source);
+	//alSourcePlay(p_Source);
 
 
-	ALint state = AL_PLAYING;
-	std::cout << "playing sound\n";
-	while (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
-	{
-		std::cout << "currently playing sound\n";
-		alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
-	}
-	std::cout << "done playing sound\n";
+	//ALint state = AL_PLAYING;
+	//std::cout << "playing sound\n";
+	//while (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
+	//{
+	//	std::cout << "currently playing sound\n";
+	//	alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
+	//}
+	//std::cout << "done playing sound\n";
 }
