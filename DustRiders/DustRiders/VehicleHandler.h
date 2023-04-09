@@ -15,11 +15,10 @@
 
 class VehicleHandler {
 public:
-	VehicleHandler(EntityComponentSystem& ecs, PhysicsSystem* physics, StateHandler& stateHandler, TimeKeeper& timer, AudioHelper& ah) : ecs(ecs),
+	VehicleHandler(EntityComponentSystem& ecs, PhysicsSystem* physics, StateHandler& stateHandler, TimeKeeper& timer) : ecs(ecs),
 		physics(physics),
 		stateHandler(stateHandler),
-		timer(timer),
-		audioHelper(ah)
+		timer(timer)
 	{}
 
 	void InitCars()
@@ -71,16 +70,16 @@ public:
 				vehicle->stepPhysics(timer.getCounter(), std::ref(JoystickHandler::getFirstJS()));
 				if (vehicle->currentSpeed() > 0.2)
 				{
-					audioHelper.PlayEngineNoise();
+					AudioHelper::PlayEngineNoise();
 				}
 
 				if (vehicle->engineGased(std::ref(JoystickHandler::getFirstJS())))
 				{
-					audioHelper.SetEngineVolume(1.f);
+					AudioHelper::SetEngineVolume(1.f);
 				}
 				else
 				{
-					audioHelper.SetEngineVolume(0.5f);
+					AudioHelper::SetEngineVolume(0.5f);
 				}
 			}
 			else
@@ -141,7 +140,7 @@ public:
 							stateHandler.setGState(StateHandler::GameState::GameLost);
 					}
 				}
-				audioHelper.PlayThunder();
+				AudioHelper::PlayThunder();
 			}
 #endif
 		}
@@ -172,7 +171,6 @@ protected:
 	PhysicsSystem* physics;
 	StateHandler& stateHandler;
 	TimeKeeper& timer;
-	AudioHelper& audioHelper;
 
 	std::vector<Vehicle*> vehicles;
 	std::vector<Vehicle*> inactiveVehicles;

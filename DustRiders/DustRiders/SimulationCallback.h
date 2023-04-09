@@ -3,7 +3,7 @@
 #include "PhysicsEntity.h"
 #include "Vehicle.h"
 #include "ECS.h"
-#include "SoundSource.h"
+#include "AudioHelper.h"
 
 class SimulationCallback : public PxSimulationEventCallback {
 public:
@@ -18,10 +18,4 @@ public:
 
 private:
 	EntityComponentSystem& ecs;
-	SoundSource speedUpSpeaker;
-	SoundSource slowDownSpeaker;
-	uint32_t speedUpSound;
-	uint32_t slowDownSound;
-	ALint speedUpSoundState;
-	ALint slowDownSoundState;
 };

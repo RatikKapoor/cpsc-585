@@ -7,84 +7,45 @@
 
 class AudioHelper {
 public:
-	AudioHelper(): storm("sound/storm_long.wav"), theme("sound/jumphigher.ogg")
-	{
-		engine = SoundBuffer::get()->addSoundEffect("sound/engine_2.wav");
-		collision = SoundBuffer::get()->addSoundEffect("sound/collision.ogg");
-		thunder = SoundBuffer::get()->addSoundEffect("sound/thunder.wav");
-		storm = SoundBuffer::get()->addSoundEffect("sound/storm_long.wav");
-		theme = SoundBuffer::get()->addSoundEffect("sound/jumphigher.ogg");
+	static void Initialize();
 
-		engineSpeaker = SoundSource();
-		thunderSpeaker = SoundSource();
-		stormSpeaker = SoundSource();
-		themeSpeaker = SoundSource();
-
-		engineSpeaker.changeMusicVolume(0.05f);
-		stormSpeaker.changeMusicVolume(0.4f);
-		themeSpeaker.changeMusicVolume(0.3f);
-
-		stormSpeaker.enableLooping();
-		themeSpeaker.enableLooping();
-
-		engineSoundState = AL_STOPPED;
-		thunderSoundState = AL_STOPPED;
-
-		alSourcePlay(stormSpeaker.Play(storm));
-		alSourcePlay(themeSpeaker.Play(theme));
-	}
-
-	void PlayBackgroundNoise()
-	{
-		// The sound buffer should always update, not dependant on game state
-		if (stormState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-		{
-			storm.UpdateBufferStream();
-			alGetSourcei(storm.getSource(), AL_SOURCE_STATE, &stormState);
-		}
-
-		if (themeState == AL_PLAYING && alGetError() == AL_NO_ERROR)
-		{
-			theme.UpdateBufferStream();
-			alGetSourcei(theme.getSource(), AL_SOURCE_STATE, &themeState);
-		}
-	}
-
-	void PlayEngineNoise()
-	{
-		alGetSourcei(engineSpeaker.getSource(), AL_SOURCE_STATE, &engineSoundState);
-		if (engineSoundState != AL_PLAYING) {
-			alSourcePlay(engineSpeaker.Play(engine));
-		}
-	}
-
-	void SetEngineVolume(float v)
-	{
-		engineSpeaker.changeMusicVolume(v);
-	}
-
-	void PlayThunder()
-	{
-		alGetSourcei(thunderSpeaker.getSource(), AL_SOURCE_STATE, &thunderSoundState);
-		if (thunderSoundState != AL_PLAYING) {
-			alSourcePlay(thunderSpeaker.Play(thunder));
-		}
-	}
+	// static void PlayBackgroundNoise();
+	static void PlayEngineNoise();
+	static void SetEngineVolume(float v);
+	static void PlayThunder();
+	static void PlayLaser();
+	static void PlayCollision();
+	static void PlayPowerUp();
+	static void PlayPowerDown();
 
 protected:
-	SoundSource engineSpeaker;
-	SoundSource thunderSpeaker;
-	SoundSource stormSpeaker;
-	SoundSource themeSpeaker;
+	static SoundSource* engineSpeaker;
+	static SoundSource* thunderSpeaker;
+	static SoundSource* laserSpeaker;
+	static SoundSource* collisionSpeaker;
+	static SoundSource* powerUpSpeaker;
+	static SoundSource* powerDownSpeaker;
+	static SoundSource* stormSpeaker;
+	static SoundSource* themeSpeaker;
 
-	uint32_t engine;
-	uint32_t collision;
-	uint32_t thunder;
-	uint32_t storm;
-	uint32_t theme;
+	static uint32_t engine;
+	static uint32_t thunder;
+	static uint32_t laser;
+	static uint32_t collision;
+	static uint32_t powerUp;
+	static uint32_t powerDown;
+	static uint32_t storm;
+	static uint32_t theme;
 
-	ALint engineSoundState;
-	ALint stormSoundState;
-	ALint themeSoundState;
-	ALint thunderSoundState;
+	static ALint themeState;
+	static ALint stormState;
+	static ALint engineSoundState;
+	static ALint thunderSoundState;
+	static ALint laserSoundState;
+	static ALint collisionSoundState;
+	static ALint powerUpSoundState;
+	static ALint powerDownSoundState;
+
+private:
+	AudioHelper();
 };
