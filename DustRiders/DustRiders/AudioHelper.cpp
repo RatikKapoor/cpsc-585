@@ -30,6 +30,8 @@ ALint AudioHelper::powerDownSoundState;
 
 void AudioHelper::Initialize()
 {
+	SoundDevice* mysounddevice = SoundDevice::get();
+
 	engine = SoundBuffer::get()->addSoundEffect("sound/engine_2.wav");
 	thunder = SoundBuffer::get()->addSoundEffect("sound/thunder.wav");
 	laser = SoundBuffer::get()->addSoundEffect("sound/laser-shoot.wav");

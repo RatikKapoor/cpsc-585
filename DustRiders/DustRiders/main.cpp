@@ -2,7 +2,6 @@
 
 int main()
 {
-	SoundDevice* mysounddevice = SoundDevice::get();
 	glfwInit();
 	GameHandler* game = GameHandler::GetInstance();
 
