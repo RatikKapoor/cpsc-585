@@ -174,17 +174,17 @@ public:
 	 */
 	const unsigned char* getButtons() { return wasPressed; }
 
-	void setVibrate(bool b) {
-		shouldVibrate = b;
+	void setVibrate(short b) {
+		vibrationSpeed = b;
 	}
 
 	void vibrate() {
 		XINPUT_VIBRATION v;
 		ZeroMemory(&v, sizeof(XINPUT_VIBRATION));
-		if (shouldVibrate)
+		if (vibrationSpeed > 10)
 		{
-			v.wLeftMotorSpeed = 2000;
-			v.wRightMotorSpeed = 2000;
+			v.wLeftMotorSpeed = vibrationSpeed;
+			v.wRightMotorSpeed = vibrationSpeed;
 		}
 		else
 		{
@@ -192,10 +192,10 @@ public:
 			v.wRightMotorSpeed = 0;
 		}
 
-		if (shouldVibrate && !isVibrating || !shouldVibrate && isVibrating)
+		if (vibrationSpeed != vibratingAt)
 			XInputSetState(jsID, &v);
 
-		isVibrating = shouldVibrate;
+		vibratingAt = vibrationSpeed;
 	}
 
 	// For printing button names, for testing
@@ -422,8 +422,8 @@ protected:
 	float analogs[6];
 	int jsID;
 	bool pseudo;
-	bool shouldVibrate;
-	bool isVibrating;
+	short vibrationSpeed;
+	short vibratingAt;
 };
 
 class JoystickHandler
