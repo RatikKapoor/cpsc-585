@@ -13,6 +13,8 @@
 #include "PhysicsEntity.h"
 #include "RayBeam.h"
 #include "ChunkHandler.h"
+#include <cmath>
+#define _USE_MATH_DEFINES
 
 using namespace snippetvehicle2;
 
@@ -28,18 +30,54 @@ struct Command
 	PxF32 duration;
 };
 
+class Flames : public Entity
+{
+public:
+	Flames(std::string n, Model *m, ShaderProgram *sp, glm::vec3 s, unsigned int mat) : Entity(n, m, sp, s, 0) {}
+
+	virtual ~Flames(){};
+	void updatePos(Transform *transform, bool shouldRender)
+	{
+		this->transform = transform;
+		this->shouldRender = true;
+	}
+	void setScaleFactor(float scale)
+	{
+		scaleFactor = scale;
+		glm::vec3 tscale = this->scale;
+		if (scaleFactor > 0.4)
+		{
+			scaleFactor += 0.2;
+		}
+		if(scaleFactor>1.0){
+			scaleFactor = 1.0;
+		}
+
+		this->scale = glm::vec3(tscale.x, pow(scaleFactor, 1.2), pow(scaleFactor, 1.5));
+	}
+
+protected:
+	float scaleFactor;
+	void initFlames(Transform *vehicleTransform)
+	{
+		this->transform = vehicleTransform;
+		shouldRender = false;
+		scaleFactor = 1.f;
+	}
+};
+
 class Vehicle : public PhysicsEntity
 {
 public:
 	Vehicle(std::string,
-		Model*,
-		ShaderProgram*,
-		glm::vec3,
-		PhysicsProvider*,
-		PxVec3,
-		unsigned int,
-		RayBeam*,
-		Joystick*);
+					Model *,
+					ShaderProgram *,
+					glm::vec3,
+					PhysicsProvider *,
+					PxVec3,
+					unsigned int,
+					RayBeam *,
+					Joystick *);
 
 	virtual ~Vehicle() {}
 
@@ -63,6 +101,7 @@ public:
 	void setHitVisible(double seconds);
 
 	void removeEffects();
+	void setFlames(Flames *flames);
 
 protected:
 	bool wasReset;
@@ -77,11 +116,12 @@ protected:
 	double slowdownTimeRemaining;
 	double speedupTimeRemaining;
 
-	RayBeam* rayGunBeam;
-	Joystick* js;
+	RayBeam *rayGunBeam;
+	Flames *flames;
+	Joystick *js;
 
 	// The path to the vehicle json files to be loaded.
-	const char* gVehicleDataPath = "./media/vehicledata";
+	const char *gVehicleDataPath = "./media/vehicledata";
 
 	// The vehicle with direct drivetrain
 	DirectDriveVehicle gVehicle;
