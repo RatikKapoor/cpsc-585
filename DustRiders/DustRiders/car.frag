@@ -33,7 +33,7 @@ void main() {
 
 	// Diffusion
 	vec3 lightDir = normalize(lPos - fragPos);
-	vec3 diff = max(dot(norm, lightDir), 0.0)*lightCol;
+	vec3 diff = max(dot(norm, lightDir), 0.0)*lightCol*0.9;
 
 	// Specular
 	float specularStrength = 0.9;
