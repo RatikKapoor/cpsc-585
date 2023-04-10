@@ -17,8 +17,8 @@ void ModelProvider::initialize(RenderingSystem& renderer) {
 	rock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
 	rock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
 	rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
-	straightPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathStraight.obj");
-	dividedPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/DesertPathDivide.obj");
+	straightPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/chunk-straight.obj");
+	dividedPath = renderer.loadModelFromFile("GroundPlane", "./assets/models/chunk-1divide.obj");
 	speedupBlock = renderer.loadModelFromFile("SpeedupBlock", "./assets/models/speedup-block.obj");
 	slowdownBlock = renderer.loadModelFromFile("SlowdownBlock", "./assets/models/slowdown-block.obj");
 }

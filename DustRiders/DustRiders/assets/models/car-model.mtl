@@ -1,86 +1,52 @@
-# Blender 3.4.1 MTL File: 'FinalCarModel-Blue.blend'
+# Blender 3.5.0 MTL File: 'car-final-rework.blend'
 # www.blender.org
 
-newmtl blue-body
-Ns 360.000000
+newmtl red
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.450000
 d 1.000000
 illum 2
+map_Kd car-base-red.png
+map_Ks car-base-specular.png
+map_Ke car-base-emission.png
 
-map_Kd car-texture-blue.png
-map_Ks car-specular-map.png
-map_Ke car-emission-map.png
-
-newmtl red-body
-Ns 360.000000
+newmtl blue
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.450000
 d 1.000000
 illum 2
+map_Kd car-base-blue.png
+map_Ks car-base-specular.png
+map_Ke car-base-emission.png
 
-map_Kd car-texture-red.png
-map_Ks car-specular-map.png
-map_Ke car-emission-map.png
-
-newmtl green-body
-Ns 360.000000
+newmtl green
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.450000
 d 1.000000
 illum 2
+map_Kd car-base-green.png
+map_Ks car-base-specular.png
+map_Ke car-base-emission.png
 
-map_Kd car-texture-green.png
-map_Ks car-specular-map.png
-map_Ke car-emission-map.png
-
-newmtl creme-body
-Ns 360.000000
+newmtl yellow
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.450000
 d 1.000000
 illum 2
+map_Kd car-base-yellow.png
+map_Ks car-base-specular.png
+map_Ke car-base-emission.png
 
-map_Kd car-texture-creme.png
-map_Ks car-specular-map.png
-map_Ke car-emission-map.png
-
-newmtl pink-body
-Ns 360.000000
+newmtl pink
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.450000
 d 1.000000
 illum 2
-
-map_Kd car-texture-pink.png
-map_Ks car-specular-map.png
-map_Ke car-emission-map.png
-
-# newmtl neon-body
-# Ns 360.000000
-# Ka 1.000000 1.000000 1.000000
-# Kd 0.800000 0.800000 0.800000
-# Ks 0.500000 0.500000 0.500000
-# Ke 0.000000 0.000000 0.000000
-# Ni 1.000000
-# d 1.000000
-# illum 2
-#
-# map_Kd car-texture-neon.png
-# map_Ks car-specular-map.png
-# map_Ke car-emission-map.png
+map_Kd car-base-pink.png
+map_Ks car-base-specular.png
+map_Ke car-base-emission.png
