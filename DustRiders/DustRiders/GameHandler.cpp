@@ -1,20 +1,20 @@
 #include "GameHandler.h"
 
-GameHandler* GameHandler::_instance = nullptr;
+GameHandler *GameHandler::_instance = nullptr;
 
 GameHandler::GameHandler() : window("DustRiders", glfwGetPrimaryMonitor()),
 #ifndef NO_DEATH
-camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0),
+														 camera(glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 125.0),
 #else
 camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(30.0f), 125.0)),
 #endif
-ecs(*EntityComponentSystem::getInstance()),
-physics(new PhysicsSystem(ecs)),
-stateHandle(),
-timer(),
-overlay(),
-renderer(),
-vehicleHandler(ecs, physics, stateHandle, timer)
+														 ecs(*EntityComponentSystem::getInstance()),
+														 physics(new PhysicsSystem(ecs)),
+														 stateHandle(),
+														 timer(),
+														 overlay(),
+														 renderer(),
+														 vehicleHandler(ecs, physics, stateHandle, timer)
 {
 	AudioHelper::Initialize();
 	Constants = ConstantsHelper::getConstants();
@@ -24,8 +24,8 @@ vehicleHandler(ecs, physics, stateHandle, timer)
 	windowHeight = 800;
 	windowWidth = 1422;
 #else
-	int windowHeight = window.getHeight();
-	int windowWidth = window.getWidth();
+	windowHeight = window.getHeight();
+	windowWidth = window.getWidth();
 #endif // _DEBUG
 
 	// Render Loading Content
@@ -133,9 +133,9 @@ void GameHandler::Loop()
 				int position = 1; // TODO: Needs UI refactor to show multiple players
 
 				// Render game overlays
-				overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
+				overlay.RenderCharge(((RayBeam *)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
 				overlay.RenderPlace(position, windowWidth, windowHeight);
-				overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed(), windowWidth, windowHeight);
+				overlay.RenderSpeedometer(((Vehicle *)ecs["car"])->currentSpeed(), windowWidth, windowHeight);
 				overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
 
 				timer.playTime();
@@ -169,7 +169,7 @@ void GameHandler::Loop()
 			renderer.updateRender(ecs, camera, window.getAspectRatio());
 			overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
 
-			vehicleHandler.Debug();	// Only does anything in debug mode
+			vehicleHandler.Debug(); // Only does anything in debug mode
 
 			timer.setCounter(0.f);
 		}
@@ -177,8 +177,8 @@ void GameHandler::Loop()
 	timer.updateTime();
 }
 
-void GameHandler::Reset() {
-
+void GameHandler::Reset()
+{
 }
 
 StateHandler::GameState GameHandler::GetGameState()
@@ -186,7 +186,8 @@ StateHandler::GameState GameHandler::GetGameState()
 	return stateHandle.getGState();
 }
 
-void GameHandler::Close() {
+void GameHandler::Close()
+{
 	window.close();
 
 #ifdef _DEBUG
