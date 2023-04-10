@@ -479,6 +479,12 @@
     <None Include="debug.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="map.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="map.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\models\test-rock-base.png">

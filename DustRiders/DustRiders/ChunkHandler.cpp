@@ -1,12 +1,13 @@
 #include "ChunkHandler.h"
 
-EntityComponentSystem* ChunkHandler::ecs;
-PhysicsProvider* ChunkHandler::physics;
+EntityComponentSystem *ChunkHandler::ecs;
+PhysicsProvider *ChunkHandler::physics;
 unsigned int ChunkHandler::chunkCounter = 0;
 float ChunkHandler::maxChunkDistance = 0.f;
-std::vector<Entity*> ChunkHandler::chunkList;
+std::vector<Entity *> ChunkHandler::chunkList;
 
-void ChunkHandler::initialize(EntityComponentSystem& system, PhysicsProvider* provider) {
+void ChunkHandler::initialize(EntityComponentSystem &system, PhysicsProvider *provider)
+{
 	ecs = &system;
 	physics = provider;
 
@@ -15,8 +16,10 @@ void ChunkHandler::initialize(EntityComponentSystem& system, PhysicsProvider* pr
 	setupFirstChunk();
 }
 
-void ChunkHandler::reset() {
-	for (auto& chunk : chunkList) {
+void ChunkHandler::reset()
+{
+	for (auto &chunk : chunkList)
+	{
 		ecs->erase(chunk->name);
 	}
 	chunkList.clear();
@@ -27,8 +30,9 @@ void ChunkHandler::reset() {
 	setupFirstChunk();
 }
 
-void ChunkHandler::setupFirstChunk() {
-	(*ecs)["ground0"] = new Ground("ground0", ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
+void ChunkHandler::setupFirstChunk()
+{
+	(*ecs)["ground0"] = new Ground("ground0", ModelProvider::straightPath, ShaderProvider::mapShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, 0.f), 0);
 	chunkList.push_back((*ecs)["ground0"]);
 	chunkCounter = 1;
 	maxChunkDistance = 150.f;
@@ -36,10 +40,12 @@ void ChunkHandler::setupFirstChunk() {
 	RoadObjectHandler::addObstacles(30, 150);
 }
 
-void ChunkHandler::updateChunks(Entity* car) {
-	if (maxChunkDistance - car->transform->position.z < (float)CHUNK_LOADING_DISTANCE) {
+void ChunkHandler::updateChunks(Entity *car)
+{
+	if (maxChunkDistance - car->transform->position.z < (float)CHUNK_LOADING_DISTANCE)
+	{
 		auto chunkName = std::string("ground") + std::to_string(chunkCounter);
-		(*ecs)[chunkName] = new Ground(chunkName, ModelProvider::straightPath, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, maxChunkDistance + 150.f), 0);
+		(*ecs)[chunkName] = new Ground(chunkName, ModelProvider::straightPath, ShaderProvider::mapShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.f, maxChunkDistance + 150.f), 0);
 		chunkList.push_back((*ecs)[chunkName]);
 		RoadObjectHandler::addObstacles(maxChunkDistance, maxChunkDistance + CHUNK_SIZE);
 
