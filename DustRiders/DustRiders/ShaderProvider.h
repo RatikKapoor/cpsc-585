@@ -13,4 +13,5 @@ public:
 	static ShaderProgram *mainShader;
 	static ShaderProgram *debugShader;
 	static ShaderProgram *mapShader;
+	static ShaderProgram *flameShader;
 };
