@@ -200,16 +200,16 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 
 			if (regex_match(entity->name, regex("(car)(.*)")))
 			{
-				LogWriter::log("Rendering car \"" + entity->name + "\"");
+				// LogWriter::log("Rendering car \"" + entity->name + "\"");
 				location = glGetUniformLocation(shader, "hitVisible");
 				if (((AIVehicle *)ecs[entity->name])->hitVisible())
 				{
-					LogWriter::log("	Hit is visible.");
+					// LogWriter::log("	Hit is visible.");
 					glUniform1f(location, 1.0f);
 				}
 				else
 				{
-					LogWriter::log("	Hit is not visible.");
+					// LogWriter::log("	Hit is not visible.");
 					glUniform1f(location, 0.0f);
 				}
 			}
