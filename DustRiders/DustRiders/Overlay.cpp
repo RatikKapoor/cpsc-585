@@ -263,8 +263,6 @@ void Overlay::RenderPlace(int place, int screenWidth, int screenHeight) {
 
 void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth)
 {
-	bool isKeyboard = JoystickHandler::getFirstJS().isPseudo();
-
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -405,8 +403,6 @@ void Overlay::RenderWin(int windowHeight, int windowWidth)
 
 void Overlay::RenderLoss(int windowHeight, int windowWidth)
 {
-	bool isKeyboard = !JoystickHandler::getFirstJS().isPseudo();
-
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();

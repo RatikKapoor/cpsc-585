@@ -6,7 +6,7 @@ GameHandler::GameHandler() : window("DustRiders", glfwGetPrimaryMonitor()),
 #ifndef NO_DEATH
 														 camera(glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 125.0),
 #else
-camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(30.0f), 125.0)),
+camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0),
 #endif
 														 ecs(*EntityComponentSystem::getInstance()),
 														 physics(new PhysicsSystem(ecs)),
@@ -152,8 +152,8 @@ void GameHandler::Loop()
 				camera.setFocusEntity(furthest);
 				ChunkHandler::updateChunks(furthest);
 #else
-				camera.setFocusEntity(playerVehicle);
-				ChunkHandler::updateChunks(playerVehicle);
+				camera.setFocusEntity(ecs["car"]);
+				ChunkHandler::updateChunks(ecs["car"]);
 #endif
 
 				glm::mat4 perspective = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.01f, 1000.f);
