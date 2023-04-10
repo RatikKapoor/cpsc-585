@@ -102,6 +102,8 @@ public:
 
 	void removeEffects();
 	void setFlames(Flames *flames);
+	
+	Joystick* js;
 
 protected:
 	bool wasReset;
@@ -118,7 +120,6 @@ protected:
 
 	RayBeam *rayGunBeam;
 	Flames *flames;
-	Joystick *js;
 
 	// The path to the vehicle json files to be loaded.
 	const char *gVehicleDataPath = "./media/vehicledata";

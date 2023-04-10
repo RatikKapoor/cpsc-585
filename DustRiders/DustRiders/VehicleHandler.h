@@ -144,9 +144,9 @@ public:
 			if (!isAiVehicle(vehicles[i]))
 			{
 				if (drawPos.y / drawPos.z < -0.7f)
-					JoystickHandler::getFirstJS().setVibrate(2000); // TODO: Use JS for car
+					vehicles[i]->js->setVibrate(2000);
 				else
-					JoystickHandler::getFirstJS().setVibrate(0); // TODO: Use JS for car
+					vehicles[i]->js->setVibrate(0);
 			}
 #pragma endregion
 
