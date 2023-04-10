@@ -4,6 +4,7 @@ ShaderProgram *ShaderProvider::carShader;
 ShaderProgram *ShaderProvider::mainShader;
 ShaderProgram *ShaderProvider::debugShader;
 ShaderProgram *ShaderProvider::mapShader;
+ShaderProgram *ShaderProvider::flameShader;
 
 void ShaderProvider::initialize(RenderingSystem &renderer)
 {
@@ -11,4 +12,5 @@ void ShaderProvider::initialize(RenderingSystem &renderer)
 	mainShader = renderer.compileShader("basic", "./Main.vert", "./Main.frag");
 	debugShader = renderer.compileShader("debug", "./debug.vert", "./debug.frag");
 	mapShader = renderer.compileShader("map", "./map.vert", "./map.frag");
+	flameShader = renderer.compileShader("flame", "./flame.vert", "./flame.frag");
 }
