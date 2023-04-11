@@ -49,6 +49,7 @@ public:
 	bool targetInRange();
 
 	bool canFire();
+	bool wasJustCharged();
 	int getChargePercentage();
 
 protected:
@@ -63,4 +64,7 @@ protected:
 	SoundSource *raybeamHitSpeaker;
 	uint32_t raybeamFireSound;
 	uint32_t raybeamHitSound;
+
+private:
+	bool wasCharged;
 };

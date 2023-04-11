@@ -102,6 +102,7 @@ public:
 
 	void removeEffects();
 	void setFlames(Flames *flames);
+	bool wasRaybeamJustCharged();
 	
 	Joystick* js;
 

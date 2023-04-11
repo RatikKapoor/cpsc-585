@@ -110,6 +110,7 @@ void RayBeam::updatePos(PxTransform vehiclePos, Transform *tf)
 
 std::string RayBeam::castRayBeam()
 {
+	wasCharged = false;
 	alSourcePlay(raybeamFireSpeaker->Play(raybeamFireSound));
 	std::string closestHit = "";
 
@@ -175,4 +176,14 @@ bool RayBeam::canFire()
 int RayBeam::getChargePercentage()
 {
 	return std::min((int)((timeKeep.getCurrentTime() - lastFireTime) / coolDownTime * 100), 100);
+}
+
+bool RayBeam::wasJustCharged()
+{
+	if (getChargePercentage() == 100 && !wasCharged)
+	{
+		wasCharged = true;
+		return true;
+	}
+	return false;
 }
