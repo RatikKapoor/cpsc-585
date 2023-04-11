@@ -35,10 +35,10 @@ public:
 	void RenderWin(int windowHeight, int windowWidth);
 	void RenderLoss(int windowHeight, int windowWidth);
 	void RenderStorm(int frameWidth, int frameHeight, int screenWidth, int screenHeight);
-	void RenderCanvis(int screenWidth, int screenHeight, float scaler);
-	void RenderCanvisTint(int screenWidth, int screenHeight, float scaler);
-	void RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight, float scaler);
-	void RenderCharge(int charge, int screenWidth, int screenHeight, float scaler);
-	void RenderPlace(int place, int screenWidth, int screenHeight, float scaler);
+	void RenderCanvis(int screenWidth, int screenHeight, float scaler, float position);
+	void RenderCanvisTint(int screenWidth, int screenHeight, float scaler, float position);
+	void RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight, float scaler, float position);
+	void RenderCharge(int charge, int screenWidth, int screenHeight, float scaler, float position);
+	void RenderPlace(int place, int screenWidth, int screenHeight, float scaler, float position);
 	void Cleanup();
 };

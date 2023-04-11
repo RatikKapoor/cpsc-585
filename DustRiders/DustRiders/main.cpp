@@ -55,6 +55,7 @@ int main()
 	Constants *Constants = ConstantsHelper::getConstants();
 	TimeKeeper timer;
 	double startTime = 0;
+	int numberOfHumans = 3;
 
 #pragma region Sound
 	SoundDevice *mysounddevice = SoundDevice::get();
@@ -258,14 +259,66 @@ int main()
 							position++;
 						}
 					}
+					// Render game overlays
+					switch (numberOfHumans)
+					{
+					case 1:
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed(), windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.5);
+						break;
+					case 2:
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed(), windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.25);
+
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam2"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car2"])->currentSpeed(), windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.75);
+						break;
+					case 3:
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed(), windowWidth, windowHeight, 1, 0.25);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.25);
+
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam2"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car2"])->currentSpeed(), windowWidth, windowHeight, 1, 0.5);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.5);
+
+						overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderCharge(((RayBeam*)ecs["raybeam3"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderSpeedometer(((Vehicle*)ecs["car3"])->currentSpeed(), windowWidth, windowHeight, 1, 0.75);
+						overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
+						overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.75);
+					default:
+						break;
+					}
 
 					// Render game overlays
-					overlay.RenderCanvis(windowWidth, windowHeight, 1.5);
-					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1.5);
-					overlay.RenderPlace(position, windowWidth, windowHeight, 1.5);
-					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight, 1.5);
+					/*
+					overlay.RenderCanvis(windowWidth, windowHeight, 1, 0.25);
+					overlay.RenderCharge(((RayBeam*)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight, 1, 0.25);
+					overlay.RenderPlace(position, windowWidth, windowHeight, 1, 0.25);
+					overlay.RenderSpeedometer(((Vehicle*)ecs["car"])->currentSpeed() , windowWidth, windowHeight, 1, 0.25);
 					overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
-					overlay.RenderCanvisTint(windowWidth, windowHeight, 1.5);
+					overlay.RenderCanvisTint(windowWidth, windowHeight, 1, 0.25);
+					*/
 
 					timer.playTime();
 					// Vehicle physics
