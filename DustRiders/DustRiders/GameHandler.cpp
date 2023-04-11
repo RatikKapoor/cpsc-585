@@ -159,6 +159,7 @@ void GameHandler::Loop()
 				glm::mat4 perspective = glm::perspective(glm::radians(45.0f), window.getAspectRatio(), 0.01f, 1000.f);
 				glm::mat4 view = camera.getView();
 				vehicleHandler.CheckForDeath(perspective * view);
+				vehicleHandler.ControllerChargeNotification();
 			}
 			physics->updatePhysics(timer.getCounter());
 			vehicleHandler.UpdateRayBeamPositions();

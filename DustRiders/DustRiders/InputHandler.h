@@ -176,26 +176,40 @@ public:
 
 	void setVibrate(short b) {
 		vibrationSpeed = b;
+		if (b == 0)
+		{
+			vibrationFramesLeft = 0;
+		}
+		else
+		{
+			vibrationFramesLeft = 999; // Seems big enough?
+		}
+	}
+
+	void setVibrateFrames(short b, int frames)
+	{
+		vibrationSpeed = b;
+		vibrationFramesLeft = frames;
 	}
 
 	void vibrate() {
 		XINPUT_VIBRATION v;
 		ZeroMemory(&v, sizeof(XINPUT_VIBRATION));
-		if (vibrationSpeed > 10)
-		{
-			v.wLeftMotorSpeed = vibrationSpeed;
-			v.wRightMotorSpeed = vibrationSpeed;
-		}
-		else
-		{
-			v.wLeftMotorSpeed = 0;
-			v.wRightMotorSpeed = 0;
-		}
+		v.wLeftMotorSpeed = vibrationSpeed;
+		v.wRightMotorSpeed = vibrationSpeed;
 
 		if (vibrationSpeed != vibratingAt)
 			XInputSetState(jsID, &v);
 
 		vibratingAt = vibrationSpeed;
+		if (vibrationFramesLeft > 0)
+		{
+			vibrationFramesLeft--;
+		}
+		else
+		{
+			vibrationSpeed = 0;
+		}
 	}
 
 	// For printing button names, for testing
@@ -422,8 +436,9 @@ protected:
 	float analogs[6];
 	int jsID;
 	bool pseudo;
-	short vibrationSpeed;
-	short vibratingAt;
+	short vibrationSpeed = 0;
+	short vibratingAt = 0;
+	int vibrationFramesLeft;
 };
 
 class JoystickHandler

@@ -191,6 +191,18 @@ public:
 		}
 	}
 
+	void ControllerChargeNotification() {
+		for (Vehicle* v : vehicles)
+		{
+			if (v->js == NULL)
+				continue;
+			if (v->wasRaybeamJustCharged())
+			{
+				v->js->setVibrateFrames(65534, 30); // Vibrate for 30 frames (half a second)
+			}
+		}
+	}
+
 	void Debug()
 	{
 #ifdef _DEBUG

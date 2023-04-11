@@ -519,3 +519,8 @@ void Vehicle::setHitVisible(double seconds)
 {
 	visibleHit = seconds;
 }
+
+bool Vehicle::wasRaybeamJustCharged()
+{
+	return rayGunBeam->wasJustCharged();
+}
