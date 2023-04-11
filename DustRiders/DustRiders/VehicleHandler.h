@@ -144,7 +144,7 @@ public:
 			if (!isAiVehicle(vehicles[i]))
 			{
 				if (drawPos.y / drawPos.z < -0.7f)
-					vehicles[i]->js->setVibrate(2000);
+					vehicles[i]->js->setVibrate(65535);
 				else
 					vehicles[i]->js->setVibrate(0);
 			}
@@ -191,14 +191,15 @@ public:
 		}
 	}
 
-	void ControllerChargeNotification() {
-		for (Vehicle* v : vehicles)
+	void ControllerChargeNotification()
+	{
+		for (Vehicle *v : vehicles)
 		{
 			if (v->js == NULL)
 				continue;
 			if (v->wasRaybeamJustCharged())
 			{
-				v->js->setVibrateFrames(65534, 30); // Vibrate for 30 frames (half a second)
+				v->js->setVibrateFrames(65534, 60); // Vibrate for 30 frames (half a second)
 			}
 		}
 	}
