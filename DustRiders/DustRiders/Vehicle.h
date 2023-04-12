@@ -103,7 +103,8 @@ public:
 	void removeEffects();
 	void setFlames(Flames *flames);
 	bool wasRaybeamJustCharged();
-	
+
+	// In case of AI car, this pointer will be null
 	Joystick* js;
 
 protected:
