@@ -6,9 +6,6 @@
 #include "LogWriter.h"
 #include "AIPathHandler.h"
 
-// Prevents vehicle from firing when the game is first started.
-bool firstFired = true;
-
 Vehicle::Vehicle(std::string n,
 								 Model *m,
 								 ShaderProgram *sp,
@@ -194,14 +191,7 @@ void Vehicle::stepPhysics(double timeStep)
 		{
 			if (rayGunBeam != NULL && rayGunBeam->canFire())
 			{
-				if (firstFired)
-				{
-					firstFired = false;
-				}
-				else
-				{
-					rayGunBeam->castRayBeam();
-				}
+				rayGunBeam->castRayBeam();
 			}
 			rayGunBeam->isActive = true;
 		}
