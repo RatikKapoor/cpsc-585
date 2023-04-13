@@ -6,7 +6,7 @@ GameHandler::GameHandler() : window("DustRiders", glfwGetPrimaryMonitor()),
 #ifndef NO_DEATH
 														 camera(glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 125.0),
 #else
-camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0),
+														 camera(glm::vec3{0.0f, 0.0f, -3.0f}, glm::radians(60.0f), 125.0),
 #endif
 														 ecs(*EntityComponentSystem::getInstance()),
 														 physics(new PhysicsSystem(ecs)),
@@ -30,6 +30,8 @@ camera(glm::vec3{ 0.0f, 0.0f, -3.0f }, glm::radians(60.0f), 125.0),
 
 	// Render Loading Content
 	RenderLoadingContent();
+	renderer.screenHeight = windowHeight;
+	renderer.screenWidth = windowWidth;
 
 	ShaderProvider::initialize(renderer);
 	ModelProvider::initialize(renderer);

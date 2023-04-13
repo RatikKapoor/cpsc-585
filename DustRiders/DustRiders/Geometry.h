@@ -22,6 +22,7 @@ struct Vertex
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
+	Vertex(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 normal = glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2 texCoord = glm::vec2(0.0f, 0.0f)) : position(position), normal(normal), texCoord(texCoord) {}
 };
 
 // VAO and two VBOs for storing vertices and texture coordinates, respectively

@@ -151,8 +151,18 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	return textures;
 }
 
+#define SHADOW_ONLY
+
 void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect)
 {
+
+#ifdef SHADOW_ONLY
+	drawShadowMap(ecs, cam, aspect, glm::vec3(200.0f, 2.0f, 200.0f));
+	createShadowmap(ecs, cam, aspect);
+	renderDepth(ecs, cam, aspect);
+	return;
+#endif
+
 	// Rendering Objects
 	glEnable(GL_FRAMEBUFFER_SRGB);
 	glEnable(GL_DEPTH_TEST);
@@ -163,6 +173,8 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 	glm::vec3 camPos = cam.getPos();
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
+	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
+	glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
 
 	int numRendered = 0;
 
@@ -170,6 +182,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 	{
 		if (entity->shouldRender)
 		{
+
 			ShaderProgram &shader = *entity->shaderProgram;
 			shader.use();
 
@@ -177,8 +190,6 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 			model = glm::translate(model, entity->transform->position);
 			model = model * glm::toMat4(entity->transform->rotation);
 			model = glm::scale(model, entity->scale);
-			glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
-			glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
 
 			GLuint location = glGetUniformLocation(shader, "M");
 			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
@@ -224,4 +235,142 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 	}
 
 	glDisable(GL_FRAMEBUFFER_SRGB); // disable sRGB for things like imgui
+}
+
+void RenderingSystem::createShadowmap(EntityComponentSystem &ecs, Camera &cam, float aspect)
+{
+	glGenFramebuffers(1, &fbo);
+
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, screenWidth, screenHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "ERROR::FRAMEBUFFER::Framebuffer is not complete" << std::endl;
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
+{
+	glm::mat4 lightProjection, lightView, lightSpaceMatrix;
+	float nearPlane = 0.01f;
+	float farPlane = 600.0f;
+	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
+	lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lightSpaceMatrix = lightProjection * lightView;
+	return lightSpaceMatrix;
+}
+
+void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, float aspect, glm::vec3 lightPos)
+{
+
+	ShaderProgram &shader = *ShaderProvider::depthShader;
+	shader.use();
+	glm::mat4 lightSpaceMatrix = getLightSpaceMatrix(lightPos);
+	unsigned int lightSpaceMatrixLoc = glGetUniformLocation(shader, "lightSpaceMatrix");
+	glUniformMatrix4fv(lightSpaceMatrixLoc, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
+	glViewport(0, 0, screenWidth, screenHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	glm::mat4 view = cam.getView();
+	glm::vec3 camPos = cam.getPos();
+
+	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
+	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
+
+	int numRendered = 0;
+
+	for (Entity *entity : ecs.getAll())
+	{
+		if (entity->shouldRender)
+		{
+
+			glm::mat4 model(1.0f);
+			model = glm::translate(model, entity->transform->position);
+			model = model * glm::toMat4(entity->transform->rotation);
+			model = glm::scale(model, entity->scale);
+
+			GLuint location = glGetUniformLocation(shader, "M");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(model));
+
+			location = glGetUniformLocation(shader, "V");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(view));
+
+			location = glGetUniformLocation(shader, "P");
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(perspective));
+
+			location = glGetUniformLocation(shader, "lightPos");
+			glUniform3fv(location, 1, glm::value_ptr(lightPos));
+
+			location = glGetUniformLocation(shader, "lightCol");
+			glUniform3fv(location, 1, glm::value_ptr(lightCol));
+
+			location = glGetUniformLocation(shader, "cameraPos");
+			glUniform3fv(location, 1, glm::value_ptr(camPos));
+
+			if (regex_match(entity->name, regex("(car)(.*)")))
+			{
+				// LogWriter::log("Rendering car \"" + entity->name + "\"");
+				location = glGetUniformLocation(shader, "hitVisible");
+				if (((AIVehicle *)ecs[entity->name])->hitVisible())
+				{
+					// LogWriter::log("	Hit is visible.");
+					glUniform1f(location, 1.0f);
+				}
+				else
+				{
+					// LogWriter::log("	Hit is not visible.");
+					glUniform1f(location, 0.0f);
+				}
+			}
+			else
+			{
+				location = glGetUniformLocation(shader, "hitVisible");
+				glUniform1f(location, 0.0f);
+			}
+			entity->model->draw(shader, entity->useMatInt);
+			numRendered++;
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderingSystem::renderDepth(EntityComponentSystem &ecs, Camera &cam, float aspect)
+{
+
+	createShadowmap(ecs, cam, aspect);
+
+	glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ShaderProgram &shader = *ShaderProvider::shadowShader;
+
+	shader.use();
+
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	GPU_Geometry gpuGeom;
+	std::vector<Vertex> verts{
+			Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.f, 0.0f, -1.f), glm::vec2(0.0f, 1.0f)),
+			Vertex(glm::vec3(-1.f, -1.0f, 0.0f), glm::vec3(0.f, 0.0f, -1.f), glm::vec2(0.0f, 0.0f)),
+			Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f)),
+			Vertex(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f))};
+	gpuGeom.setVerts(verts);
+	gpuGeom.bind();
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
 }

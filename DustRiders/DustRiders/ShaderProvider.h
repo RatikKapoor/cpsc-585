@@ -14,4 +14,6 @@ public:
 	static ShaderProgram *debugShader;
 	static ShaderProgram *mapShader;
 	static ShaderProgram *flameShader;
+	static ShaderProgram *depthShader;
+	static ShaderProgram *shadowShader;
 };
