@@ -21,8 +21,12 @@ class RenderingSystem
 	std::unordered_map<std::string, Model *> models;
 	std::unordered_map<std::string, ShaderProgram *> shaders;
 	std::unordered_map<std::string, Texture *> textures;
+	GLuint fbo;
+	GLuint shadowMap;
 
 public:
+	int screenWidth;
+	int screenHeight;
 	Model *addModel(std::string name, Model *model);
 
 	Model *loadModelFromFile(std::string name, std::string filepath);
@@ -39,4 +43,10 @@ public:
 
 	// void updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect);
 	void updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect);
+	void createShadowmap(EntityComponentSystem &ecs, Camera &cam, float aspect);
+	void drawShadowMap(EntityComponentSystem &ecs, Camera &cam, float aspect, glm::vec3 lightPos);
+
+	void renderDepth(EntityComponentSystem &ecs, Camera &cam, float aspect);
+
+	glm::mat4 getLightSpaceMatrix(glm::vec3 lightPos);
 };

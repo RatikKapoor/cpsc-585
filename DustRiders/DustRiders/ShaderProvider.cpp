@@ -5,6 +5,8 @@ ShaderProgram *ShaderProvider::mainShader;
 ShaderProgram *ShaderProvider::debugShader;
 ShaderProgram *ShaderProvider::mapShader;
 ShaderProgram *ShaderProvider::flameShader;
+ShaderProgram *ShaderProvider::depthShader;
+ShaderProgram *ShaderProvider::shadowShader;
 
 void ShaderProvider::initialize(RenderingSystem &renderer)
 {
@@ -13,4 +15,6 @@ void ShaderProvider::initialize(RenderingSystem &renderer)
 	debugShader = renderer.compileShader("debug", "./debug.vert", "./debug.frag");
 	mapShader = renderer.compileShader("map", "./map.vert", "./map.frag");
 	flameShader = renderer.compileShader("flame", "./flame.vert", "./flame.frag");
+	depthShader = renderer.compileShader("depth", "./depth.vert", "./depth.frag");
+	shadowShader = renderer.compileShader("shadow", "./shadow.vert", "./shadow.frag");
 }

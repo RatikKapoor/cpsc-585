@@ -491,6 +491,14 @@
     <None Include="flame.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="depth.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="depth.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shadow.frag" />
+    <None Include="shadow.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\models\test-rock-base.png">

@@ -329,10 +329,14 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <FileType>Document</FileType>
     </Media>
+    <None Include="depth.frag" />
+    <None Include="depth.vert" />
     <None Include="flame.frag" />
     <None Include="flame.vert" />
     <None Include="map.frag" />
     <None Include="map.vert" />
+    <None Include="shadow.frag" />
+    <None Include="shadow.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\models\better-car-v2.obj">
