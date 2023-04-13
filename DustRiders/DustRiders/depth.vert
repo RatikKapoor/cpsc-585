@@ -2,6 +2,7 @@
 layout (location = 0) in vec3 pos;
 
 
+
 uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;

@@ -25,6 +25,7 @@ class RenderingSystem
 	GLuint shadowMap;
 
 public:
+	int lastChunkCount;
 	int screenWidth;
 	int screenHeight;
 	Model *addModel(std::string name, Model *model);

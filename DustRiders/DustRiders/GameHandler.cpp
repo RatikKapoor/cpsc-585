@@ -20,6 +20,7 @@ GameHandler::GameHandler() : window("DustRiders", glfwGetPrimaryMonitor()),
 	Constants = ConstantsHelper::getConstants();
 
 	window.setCallbacks(std::make_shared<DustRidersWindowCallbacks>(std::ref(window), std::ref(stateHandle)));
+	renderer.lastChunkCount = 0;
 #ifdef _DEBUG
 	windowHeight = 800;
 	windowWidth = 1422;
@@ -40,6 +41,7 @@ GameHandler::GameHandler() : window("DustRiders", glfwGetPrimaryMonitor()),
 
 	vehicleHandler.InitCars();
 
+	renderer.createShadowmap(ecs, camera, window.getAspectRatio());
 	// Render first frames
 	RenderFirstFewFrames();
 
