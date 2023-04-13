@@ -69,6 +69,14 @@ public:
 		glBindVertexArray(0);
 	}
 
+	void shadowDraw(ShaderProgram &shader)
+	{
+
+		geometry.bind();
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+
 	Mesh(std::vector<Vertex> &v, std::vector<unsigned int> &i, std::vector<std::vector<Texture>> &materialTextures)
 			: verts(v), indices(i),
 				materialTextures(materialTextures)

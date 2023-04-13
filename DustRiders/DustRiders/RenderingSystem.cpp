@@ -157,8 +157,12 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 {
 
 #ifdef SHADOW_ONLY
-	createShadowmap(ecs, cam, aspect);
-	drawShadowMap(ecs, cam, aspect, glm::vec3(20.0f, 2.0f, 20.0f));
+	if (ChunkHandler::chunkCounter != lastChunkCount)
+	{
+	}
+	// drawShadowMap(ecs, cam, aspect, glm::vec3(5.0f, 10.0f, -20.0f));
+	drawShadowMap(ecs, cam, aspect, glm::vec3(cam.getPos().x, 15.f, cam.getPos().z + 50.f));
+	lastChunkCount = ChunkHandler::chunkCounter;
 	renderDepth(ecs, cam, aspect);
 	return;
 #endif
@@ -174,7 +178,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
-	glm::vec3 lightPos = glm::vec3{200.0f, 2.0f, 200.0f};
+	glm::vec3 lightPos = glm::vec3(cam.getPos().x, cam.getPos().y - 50.f, cam.getPos().z - 50.f);
 
 	int numRendered = 0;
 
@@ -266,9 +270,9 @@ glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
 {
 	glm::mat4 lightProjection, lightView, lightSpaceMatrix;
 	float nearPlane = 0.01f;
-	float farPlane = 50.0f;
-	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
-	lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	float farPlane = 200.0f;
+	lightProjection = glm::ortho(-70.0f, 70.0f, -70.0f, 70.0f, nearPlane, farPlane);
+	lightView = glm::lookAt(lightPos, glm::vec3(1.f, -3.f, 0.5f) + lightPos, glm::vec3(0.0f, 1.0f, 0.0f));
 	lightSpaceMatrix = lightProjection * lightView;
 	return lightSpaceMatrix;
 }
@@ -288,14 +292,15 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	glm::mat4 view = cam.getView();
 	glm::vec3 camPos = cam.getPos();
 
-	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 50.f);
+	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
 
 	int numRendered = 0;
 
 	for (Entity *entity : ecs.getAll())
 	{
-		if (regex_match(entity->name, regex("(ground)(.*)")))
+		if (entity->shouldRender)
+		// if (regex_match(entity->name, regex("(car)(.*)")))
 		{
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
@@ -340,7 +345,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 				location = glGetUniformLocation(shader, "hitVisible");
 				glUniform1f(location, 0.0f);
 			}
-			entity->model->draw(shader, entity->useMatInt);
+			entity->model->shadowDraw(shader);
 			numRendered++;
 		}
 	}
@@ -349,8 +354,6 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 
 void RenderingSystem::renderDepth(EntityComponentSystem &ecs, Camera &cam, float aspect)
 {
-
-	createShadowmap(ecs, cam, aspect);
 
 	glEnable(GL_FRAMEBUFFER_SRGB);
 	glEnable(GL_DEPTH_TEST);

@@ -17,4 +17,11 @@ public:
 			meshes[i].draw(shader, useMatInd);
 		}
 	}
+
+	void shadowDraw(ShaderProgram &shader) {
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			meshes[i].shadowDraw(shader);
+		}
+	}
 };
