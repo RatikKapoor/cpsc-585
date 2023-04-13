@@ -2,6 +2,8 @@
   "files.associations": {
     "*.theme-css": "css",
     "*.vert": "glsl",
-    "vector": "cpp"
+    "vector": "cpp",
+    "ostream": "cpp",
+    "regex": "cpp"
   }
 }
