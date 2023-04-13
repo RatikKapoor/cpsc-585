@@ -157,8 +157,8 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 {
 
 #ifdef SHADOW_ONLY
-	drawShadowMap(ecs, cam, aspect, glm::vec3(200.0f, 2.0f, 200.0f));
 	createShadowmap(ecs, cam, aspect);
+	drawShadowMap(ecs, cam, aspect, glm::vec3(20.0f, 2.0f, 20.0f));
 	renderDepth(ecs, cam, aspect);
 	return;
 #endif
@@ -246,8 +246,8 @@ void RenderingSystem::createShadowmap(EntityComponentSystem &ecs, Camera &cam, f
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, screenWidth, screenHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
@@ -266,7 +266,7 @@ glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
 {
 	glm::mat4 lightProjection, lightView, lightSpaceMatrix;
 	float nearPlane = 0.01f;
-	float farPlane = 600.0f;
+	float farPlane = 50.0f;
 	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
 	lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	lightSpaceMatrix = lightProjection * lightView;
@@ -275,7 +275,6 @@ glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
 
 void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, float aspect, glm::vec3 lightPos)
 {
-
 	ShaderProgram &shader = *ShaderProvider::depthShader;
 	shader.use();
 	glm::mat4 lightSpaceMatrix = getLightSpaceMatrix(lightPos);
@@ -289,16 +288,15 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	glm::mat4 view = cam.getView();
 	glm::vec3 camPos = cam.getPos();
 
-	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
+	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 50.f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
 
 	int numRendered = 0;
 
 	for (Entity *entity : ecs.getAll())
 	{
-		if (entity->shouldRender)
+		if (regex_match(entity->name, regex("(ground)(.*)")))
 		{
-
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
 			model = model * glm::toMat4(entity->transform->rotation);
@@ -361,7 +359,6 @@ void RenderingSystem::renderDepth(EntityComponentSystem &ecs, Camera &cam, float
 	ShaderProgram &shader = *ShaderProvider::shadowShader;
 
 	shader.use();
-
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
 	GPU_Geometry gpuGeom;
 	std::vector<Vertex> verts{
@@ -369,8 +366,9 @@ void RenderingSystem::renderDepth(EntityComponentSystem &ecs, Camera &cam, float
 			Vertex(glm::vec3(-1.f, -1.0f, 0.0f), glm::vec3(0.f, 0.0f, -1.f), glm::vec2(0.0f, 0.0f)),
 			Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f)),
 			Vertex(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f))};
-	gpuGeom.setVerts(verts);
 	gpuGeom.bind();
+	gpuGeom.setVerts(verts);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
+	glDisable(GL_FRAMEBUFFER_SRGB);
 }
