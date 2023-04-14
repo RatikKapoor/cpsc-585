@@ -37,7 +37,7 @@ void ChunkHandler::setupFirstChunk()
 	chunkCounter = 1;
 	maxChunkDistance = HALF_CHUNK_SIZE;
 
-	RoadObjectHandler::addObstacles(30, 150);
+	RoadObjectHandler::addObstacles(30, HALF_CHUNK_SIZE);
 }
 
 void ChunkHandler::updateChunks(Entity* car)
