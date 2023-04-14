@@ -169,6 +169,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, screenWidth, screenHeight);
 
 	glm::mat4 view = cam.getView();
 	glm::vec3 camPos = cam.getPos();
@@ -255,11 +256,11 @@ void RenderingSystem::createShadowmap(EntityComponentSystem &ecs, Camera &cam, f
 
 	glGenTextures(1, &shadowMap);
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, screenWidth, screenHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, screenWidth*4, screenHeight*4, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
@@ -278,8 +279,8 @@ glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
 {
 	glm::mat4 lightProjection, lightView, lightSpaceMatrix;
 	float nearPlane = 300.0f;
-	float farPlane = 400.0f;
-	lightProjection = glm::ortho(-80.0f, 80.0f, -40.0f, 40.0f, nearPlane, farPlane);
+	float farPlane = 450.0f;
+	lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, nearPlane, farPlane);
 	lightView = glm::lookAt(lightPos, (-1.0f*lightOffset)+lightPos+glm::vec3(0.f, -100.f, 0.f), glm::vec3(0.0f, 1.0f, 0.0f));
 	lightSpaceMatrix = lightProjection * lightView;
 	return lightSpaceMatrix;
@@ -293,7 +294,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	unsigned int lightSpaceMatrixLoc = glGetUniformLocation(shader, "lightSpaceMatrix");
 	glUniformMatrix4fv(lightSpaceMatrixLoc, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
-	glViewport(0, 0, screenWidth, screenHeight);
+	glViewport(0, 0, screenWidth*4, screenHeight*4);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -308,7 +309,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	for (Entity *entity : ecs.getAll())
 	{
 		if (entity->shouldRender){
-		if (!regex_match(entity->name, regex("(ground)(.*)"))&&!regex_match(entity->name,regex("(ray)(.*)")))
+		if (!regex_match(entity->name,regex("(ray)(.*)")))
 		{
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
@@ -369,6 +370,7 @@ void RenderingSystem::renderDepth(EntityComponentSystem &ecs, Camera &cam, float
 	glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ShaderProgram &shader = *ShaderProvider::shadowShader;
+	glViewport(0, 0, screenWidth, screenHeight);
 
 	shader.use();
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
