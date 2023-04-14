@@ -16,10 +16,10 @@
 class VehicleHandler
 {
 public:
-	VehicleHandler(EntityComponentSystem &ecs, PhysicsSystem *physics, StateHandler &stateHandler, TimeKeeper &timer) : ecs(ecs),
-																																																											physics(physics),
-																																																											stateHandler(stateHandler),
-																																																											timer(timer)
+	VehicleHandler(EntityComponentSystem& ecs, PhysicsSystem* physics, StateHandler& stateHandler, TimeKeeper& timer) : ecs(ecs),
+		physics(physics),
+		stateHandler(stateHandler),
+		timer(timer)
 	{
 		Joystick keyboardJS;
 
@@ -43,36 +43,33 @@ public:
 		ecs["flames3"] = new Flames("flames3", ModelProvider::carFlames, ShaderProvider::flameShader, glm::vec3(1.f), 1);
 
 		// Create main car
-		vehicles.push_back(new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam *)ecs["raybeam"], &JoystickHandler::getFirstJS()));
-		vehicles.back()->setFlames((Flames *)ecs["flames"]);
+		vehicles.push_back(new Vehicle("car", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(0.f, 0.5f, 0.f), 2, (RayBeam*)ecs["raybeam"], &JoystickHandler::getFirstJS()));
+		vehicles.back()->setFlames((Flames*)ecs["flames"]);
 		// Add other cars
 		if (glfwJoystickPresent(GLFW_JOYSTICK_2))
 		{
 			JoystickHandler::addJS(GLFW_JOYSTICK_2);
-			vehicles.push_back(new Vehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam *)ecs["raybeam2"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_2)));
-			vehicles.back()->setFlames((Flames *)ecs["flames2"]);
+			vehicles.push_back(new Vehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_2)));
+			vehicles.back()->setFlames((Flames*)ecs["flames2"]);
 		}
 		else
 		{
-			vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam *)ecs["raybeam2"], "./assets/drivingPaths/path1.json"));
-			vehicles.back()->setFlames((Flames *)ecs["flames2"]);
+			vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], "./assets/drivingPaths/car2path.json"));
+			vehicles.back()->setFlames((Flames*)ecs["flames2"]);
 		}
 		if (glfwJoystickPresent(GLFW_JOYSTICK_3))
 		{
 			JoystickHandler::addJS(GLFW_JOYSTICK_3);
-			vehicles.push_back(new Vehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam *)ecs["raybeam3"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_3)));
-			vehicles.back()->setFlames((Flames *)ecs["flames3"]);
+			vehicles.push_back(new Vehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_3)));
+			vehicles.back()->setFlames((Flames*)ecs["flames3"]);
 		}
 		else
 		{
-			vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam *)ecs["raybeam3"]
-
-																			 //, "./assets/drivingPaths/path2.json"
-																			 ));
-			vehicles.back()->setFlames((Flames *)ecs["flames3"]);
+			vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"], "./assets/drivingPaths/car3path.json"));
+			vehicles.back()->setFlames((Flames*)ecs["flames3"]);
 		}
 
-		for (auto &v : vehicles)
+		for (auto& v : vehicles)
 		{
 			ecs[v->name] = v;
 		}
@@ -83,7 +80,7 @@ public:
 		vehicles.insert(vehicles.end(), inactiveVehicles.begin(), inactiveVehicles.end());
 		inactiveVehicles.clear();
 
-		for (Vehicle *vehicle : vehicles)
+		for (Vehicle* vehicle : vehicles)
 		{
 			vehicle->restore();
 			vehicle->reset();
@@ -92,7 +89,7 @@ public:
 
 	void UpdateVehiclePhysics()
 	{
-		for (Vehicle *vehicle : vehicles)
+		for (Vehicle* vehicle : vehicles)
 		{
 			if (stateHandler.getRState() == StateHandler::ReloadState::Tuning)
 			{
@@ -120,15 +117,15 @@ public:
 			}
 			else
 			{
-				((AIVehicle *)vehicle)->stepPhysics(timer.getCounter());
+				((AIVehicle*)vehicle)->stepPhysics(timer.getCounter());
 			}
 		}
 	}
 
-	Entity *GetFurthestVehicle()
+	Entity* GetFurthestVehicle()
 	{
-		Entity *newFocus = nullptr;
-		for (Vehicle *vehicle : vehicles)
+		Entity* newFocus = nullptr;
+		for (Vehicle* vehicle : vehicles)
 			if (!newFocus || vehicle->transform->position.z > newFocus->transform->position.z)
 				newFocus = vehicle;
 		return newFocus;
@@ -138,7 +135,7 @@ public:
 	{
 		for (int i = 0; i < vehicles.size(); i++)
 		{
-			glm::vec3 drawPos = pv * glm::vec4{vehicles[i]->transform->position, 1.0f};
+			glm::vec3 drawPos = pv * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
 #pragma region Controller Rumble When Close to Storm
 			if (!isAiVehicle(vehicles[i]))
@@ -185,7 +182,7 @@ public:
 
 	void UpdateRayBeamPositions()
 	{
-		for (Vehicle *v : vehicles)
+		for (Vehicle* v : vehicles)
 		{
 			v->updateRayBeamPos();
 		}
@@ -193,7 +190,7 @@ public:
 
 	void ControllerChargeNotification()
 	{
-		for (Vehicle *v : vehicles)
+		for (Vehicle* v : vehicles)
 		{
 			if (v->js == NULL)
 				continue;
@@ -207,22 +204,22 @@ public:
 	void Debug()
 	{
 #ifdef _DEBUG
-		((Vehicle *)ecs["car"])->saveLocation(); // Save player location history to json
+		((Vehicle*)ecs["car"])->saveLocation(); // Save player location history to json
 #endif
 	}
 
 protected:
-	bool isAiVehicle(Vehicle *v)
+	bool isAiVehicle(Vehicle* v)
 	{
 		auto name = v->name;
 		return name.compare(name.length() - 2, name.length(), "ai") == 0;
 	}
 
-	EntityComponentSystem &ecs;
-	PhysicsSystem *physics;
-	StateHandler &stateHandler;
-	TimeKeeper &timer;
+	EntityComponentSystem& ecs;
+	PhysicsSystem* physics;
+	StateHandler& stateHandler;
+	TimeKeeper& timer;
 
-	std::vector<Vehicle *> vehicles;
-	std::vector<Vehicle *> inactiveVehicles;
+	std::vector<Vehicle*> vehicles;
+	std::vector<Vehicle*> inactiveVehicles;
 };

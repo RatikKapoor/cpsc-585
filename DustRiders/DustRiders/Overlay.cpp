@@ -1,11 +1,4 @@
 #include "Overlay.h"
-#include "StateHandler.h"
-#include "InputHandler.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stdio.h>
-#include <string>
-#include <stb_image.h>
 
 Overlay::Overlay()
 {
@@ -86,6 +79,10 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 	ImGui::Text("FPS: %i", currentFps);
 	ImGui::Text("Previous State: %s", std::string(prevGameState).c_str());
 	ImGui::Text("Current State: %s", std::string(gameState).c_str());
+	auto carRef = ((Vehicle*)ecs->get("car"));
+	ImGui::Text("Current Chunk: %s", ChunkHandler::getChunkForZ(carRef->transform->position.z).c_str());
+	auto& carPosRef = carRef->transform->position;
+	ImGui::Text("Normalized Location: %f %f %f", carPosRef.x, carPosRef.y, std::fmod(carPosRef.z + HALF_CHUNK_SIZE, CHUNK_SIZE));
 	if (ImGui::CollapsingHeader("Entity Introspection"))
 	{
 		if (ImGui::BeginCombo("Entities", &selectedEntity[0]))
@@ -219,7 +216,7 @@ void Overlay::RenderSpeedometer(float currentSpeed, int screenWidth, int screenH
 	ImGui::Begin("Speedometer", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
 	ImGui::SetWindowFontScale(2.0f);
-	ImGui::Text("%.2f m/s", currentSpeed);
+	ImGui::Text("%.1f km/h", currentSpeed * 3.6);
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window

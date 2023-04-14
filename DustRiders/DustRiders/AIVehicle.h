@@ -32,6 +32,6 @@ private:
 	glm::vec3 dest;
 	bool shouldFindNewDest;
 	int brakeCounter = 0;
-	std::vector<vec3> locations;
-	int nextLocPtr = 0;
+	chunkMapLocation locations;
+	std::map<std::string, int> nextLocPtrs;
 };
