@@ -37,7 +37,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 		std::string name = "";
 		Model* roadObjectModel;
 		enum RoadObjectType type;
-		switch (roadObjectCounter % 15)
+		switch (roadObjectCounter % 20)
 		{
 		case 0:
 		case 11:
@@ -86,7 +86,7 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 		float x = -20.f + r;
 		float random2 = ((float)rand()) / (float)RAND_MAX;
 		float r2 = random2 * 2.f;
-		float z = -1.f + r;
+		float z = -1.f + r2;
 
 		switch (type)
 		{
