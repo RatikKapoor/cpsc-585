@@ -360,7 +360,7 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Overlay::RenderWin(int windowHeight, int windowWidth)
+void Overlay::RenderWin(int windowHeight, int windowWidth, StateHandler::GameState player)
 {
 
 	ImGui_ImplOpenGL3_NewFrame();
@@ -382,7 +382,7 @@ void Overlay::RenderWin(int windowHeight, int windowWidth)
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.75, windowHeight / 2));
 	ImGui::Begin("DustRiderWin", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 100.0f);
-	ImGui::Text("You Win!");
+	ImGui::Text("%s", player.operator std::string().c_str());
 
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7, windowHeight * 1.2));
 	ImGui::Begin("ScoreText", (bool *)0, textWindowFlags);

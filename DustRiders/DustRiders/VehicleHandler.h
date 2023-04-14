@@ -50,24 +50,33 @@ public:
 		{
 			JoystickHandler::addJS(GLFW_JOYSTICK_2);
 			vehicles.push_back(new Vehicle("car2", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_2)));
-			vehicles.back()->setFlames((Flames*)ecs["flames2"]);
+			numberOfHumans++;
 		}
 		else
 		{
-			vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"], "./assets/drivingPaths/car2path.json"));
-			vehicles.back()->setFlames((Flames*)ecs["flames2"]);
+			vehicles.push_back(new AIVehicle("car2ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(-20.f, 0.5f, 0.f), 4, (RayBeam*)ecs["raybeam2"]
+#ifndef RANDOM_AI
+				, "./assets/drivingPaths/car2path.json"
+#endif // !RANDOM_AI
+			));
 		}
+		vehicles.back()->setFlames((Flames*)ecs["flames2"]);
+
 		if (glfwJoystickPresent(GLFW_JOYSTICK_3))
 		{
 			JoystickHandler::addJS(GLFW_JOYSTICK_3);
 			vehicles.push_back(new Vehicle("car3", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"], &JoystickHandler::getJoystick(GLFW_JOYSTICK_3)));
-			vehicles.back()->setFlames((Flames*)ecs["flames3"]);
+			numberOfHumans++;
 		}
 		else
 		{
-			vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"], "./assets/drivingPaths/car3path.json"));
-			vehicles.back()->setFlames((Flames*)ecs["flames3"]);
+			vehicles.push_back(new AIVehicle("car3ai", ModelProvider::carModel, ShaderProvider::carShader, glm::vec3(1.f), physics, PxVec3(20.f, 0.5f, 0.f), 3, (RayBeam*)ecs["raybeam3"]
+#ifndef RANDOM_AI
+				, "./assets/drivingPaths/car3path.json"
+#endif // !RANDOM_AI
+			));
 		}
+		vehicles.back()->setFlames((Flames*)ecs["flames3"]);
 
 		for (auto& v : vehicles)
 		{
@@ -133,46 +142,68 @@ public:
 
 	void CheckForDeath(glm::mat4 pv)
 	{
+		int humanPlayersLeft = 0;
 		for (int i = 0; i < vehicles.size(); i++)
 		{
 			glm::vec3 drawPos = pv * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
-#pragma region Controller Rumble When Close to Storm
 			if (!isAiVehicle(vehicles[i]))
 			{
+				humanPlayersLeft++;
+#pragma region Controller Rumble When Close to Storm
 				if (drawPos.y / drawPos.z < -0.7f)
 					vehicles[i]->js->setVibrate(65535);
 				else
 					vehicles[i]->js->setVibrate(0);
-			}
 #pragma endregion
+			}
 
 			// giving a little bit of leeway by setting this to 1.1. This should become a parameter and approach 0 as the game progresses to force a winner. This is the storm distance
 
 #ifndef NO_DEATH
 			if (drawPos.y / drawPos.z < -1.1f)
 			{
-				JoystickHandler::getFirstJS().setVibrate(0);
 				// Vehicle has lost the game
 				if (!isAiVehicle(vehicles[i]))
 				{
-					stateHandler.setGState(StateHandler::GameState::GameLost);
+					vehicles[i]->js->setVibrate(0);
+					humanPlayersLeft--;
 				}
-				else
-				{
-					// erasing AI vehicle if it lost
-					// store inactive vehicles
-					vehicles[i]->suspend();
-					inactiveVehicles.push_back(vehicles[i]);
-					vehicles.erase(vehicles.begin() + i);
 
-					if (vehicles.size() == 1)
+				// erasing AI vehicle if it lost
+				// store inactive vehicles
+				vehicles[i]->suspend();
+				inactiveVehicles.push_back(vehicles[i]);
+				vehicles.erase(vehicles.begin() + i);
+
+				if (vehicles.size() == 1)
+				{
+					if (isAiVehicle(vehicles[0])) // The AI won
+						stateHandler.setGState(StateHandler::GameState::GameLost);
+					else // A player won
 					{
-						if (!isAiVehicle(vehicles[0]))
-							stateHandler.setGState(StateHandler::GameState::GameWon);
+						auto& vehicleName = vehicles[0]->name;
+						if (vehicleName.rfind("car3") == 0)
+						{
+							// Player 3 won
+							stateHandler.setGState(StateHandler::GameState::GameWonPlayer3);
+						}
+						else if (vehicleName.rfind("car2") == 0)
+						{
+							// Player 2 won
+							stateHandler.setGState(StateHandler::GameState::GameWonPlayer2);
+						}
 						else
-							stateHandler.setGState(StateHandler::GameState::GameLost);
+						{
+							// Player 1 won
+							stateHandler.setGState(StateHandler::GameState::GameWonPlayer1);
+						}
 					}
+				}
+
+				if (humanPlayersLeft == 0)
+				{
+					stateHandler.setGState(StateHandler::GameState::GameLost);
 				}
 				AudioHelper::PlayThunder();
 			}
@@ -222,4 +253,6 @@ protected:
 
 	std::vector<Vehicle*> vehicles;
 	std::vector<Vehicle*> inactiveVehicles;
+
+	int numberOfHumans = 1;
 };

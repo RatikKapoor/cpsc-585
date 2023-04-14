@@ -117,9 +117,11 @@ void GameHandler::Loop()
 					timer.pauseTime();
 					overlay.RenderPause(stateHandle.getPrevGState(), windowHeight / 2, windowWidth / 2);
 					break;
-				case StateHandler::GameState::GameWon:
+				case StateHandler::GameState::GameWonPlayer1:
+				case StateHandler::GameState::GameWonPlayer2:
+				case StateHandler::GameState::GameWonPlayer3:
 					timer.pauseTime();
-					overlay.RenderWin(windowHeight / 2, windowWidth / 2);
+					overlay.RenderWin(windowHeight / 2, windowWidth / 2, gState);
 					break;
 				case StateHandler::GameState::GameLost:
 					timer.pauseTime();
