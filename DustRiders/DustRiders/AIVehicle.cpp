@@ -49,17 +49,35 @@ void AIVehicle::handlePathfind()
 	if (shouldFindNewDest || wasReset)
 	{
 		if (wasReset) {
-			LogWriter::log("was reset");
 			dest.z = 0;
-			nextLocPtr = 0;
+			nextLocPtrs.clear(); // Set all back to 0
 		}
 
-		if (locations.size() > nextLocPtr) {
-			this->dest = locations[nextLocPtr++];
+		auto targetZ = transform->position.z + Constants->aiCarNextPositionDistanceBuffer;
+		auto targetChunkName = ChunkHandler::getChunkForZ(targetZ);
+		if ((bool)locations.count(targetChunkName))
+		{
+			// List of points exists for chunk
+			auto& pts = locations[targetChunkName];
+			auto& ptr = nextLocPtrs[targetChunkName];
+
+			auto carMapRelativePosition = std::fmod(targetZ + HALF_CHUNK_SIZE, CHUNK_SIZE);
+
+			while (pts.size() - 1 > ptr && pts[ptr].z < carMapRelativePosition)
+			{
+				ptr++;
+				if (pts.size() - 1 <= ptr) {
+					ptr = 0;
+					break;
+				}
+			}
+
+			auto destPoint = pts[ptr];
+			this->dest = { destPoint.x, destPoint.y, targetZ };
 		}
 		else
 		{
-			// Handle in case we're out of points
+			// Handle in case chunk point list doesn't exist
 			float random = ((float)rand()) / (float)RAND_MAX;
 			float r = random * Constants->aiCarRandomPositionWidth;
 			float x = (transform->position.x < 0) ? transform->position.x + r : transform->position.x - r;
