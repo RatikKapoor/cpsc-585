@@ -179,7 +179,7 @@ bool Joystick::updateAllInputs()
 	const float* tempAnalogs = glfwGetJoystickAxes(jsID, &countAnalogs);
 	for (int i = 0; i < countAnalogs; i++)
 	{
-		analogs[i] = tempAnalogs[i];
+		analogs[i] = pow(tempAnalogs[i], 3); // [-1, 1], power of 3 to smooth out inputs
 	}
 
 	return true;

@@ -136,9 +136,6 @@
     <ClCompile Include="GLHandles.cpp">
       <Filter>Source Files\Window &amp; Render</Filter>
     </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
-      <Filter>Source Files\Window &amp; Render</Filter>
-    </ClCompile>
     <ClCompile Include="Overlay.cpp">
       <Filter>Source Files\Window &amp; Render</Filter>
     </ClCompile>
@@ -248,6 +245,9 @@
       <Filter>Source Files\Handlers</Filter>
     </ClCompile>
     <ClCompile Include="AudioHelper.cpp">
+      <Filter>Source Files\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files\Handlers</Filter>
     </ClCompile>
   </ItemGroup>
