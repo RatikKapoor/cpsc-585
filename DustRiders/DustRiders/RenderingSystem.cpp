@@ -309,7 +309,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	for (Entity *entity : ecs.getAll())
 	{
 		if (entity->shouldRender){
-		if (!regex_match(entity->name,regex("(ray)(.*)")))
+		if (!regex_match(entity->name,regex("(ray)(.*)"))&&!regex_match(entity->name,regex("(flame)(.*)")))
 		{
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
