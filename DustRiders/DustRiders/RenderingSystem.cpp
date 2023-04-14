@@ -308,8 +308,8 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 	for (Entity *entity : ecs.getAll())
 	{
 		if (entity->shouldRender){
-		// if (!regex_match(entity->name, regex("(ground)(.*)")))
-		// {
+		if (!regex_match(entity->name, regex("(ground)(.*)"))&&!regex_match(entity->name,regex("(ray)(.*)")))
+		{
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
 			model = model * glm::toMat4(entity->transform->rotation);
@@ -357,7 +357,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 			numRendered++;
 		}
 	}
-	// }
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
