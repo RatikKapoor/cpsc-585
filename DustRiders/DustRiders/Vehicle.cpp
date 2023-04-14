@@ -514,3 +514,8 @@ bool Vehicle::wasRaybeamJustCharged()
 {
 	return rayGunBeam->wasJustCharged();
 }
+
+int Vehicle::getRaybeamChargePercentage()
+{
+	return rayGunBeam->getChargePercentage();
+}

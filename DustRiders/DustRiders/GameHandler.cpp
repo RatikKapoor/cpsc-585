@@ -131,13 +131,8 @@ void GameHandler::Loop()
 			}
 			else // The game is active
 			{
-				// Figure out which position player is in
-				int position = 1; // TODO: Needs UI refactor to show multiple players
-
 				// Render game overlays
-				overlay.RenderCharge(((RayBeam *)ecs["raybeam"])->getChargePercentage(), windowWidth, windowHeight);
-				overlay.RenderPlace(position, windowWidth, windowHeight);
-				overlay.RenderSpeedometer(((Vehicle *)ecs["car"])->currentSpeed(), windowWidth, windowHeight);
+				vehicleHandler.RenderPlayerDataOverlay(overlay, windowWidth, windowHeight);
 				overlay.RenderStorm(1920, 150, windowWidth, windowHeight);
 
 				timer.playTime();

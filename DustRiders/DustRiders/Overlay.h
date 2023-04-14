@@ -24,9 +24,12 @@ private:
 	int nbFrames = 0;
 	int currentFps = 0;
 	std::map<std::string, ImTextureID> stormImagesMap;
+	std::map<std::string, ImTextureID> batteryImagesMap;
 	unsigned int stormFrameCounter;
 	std::string selectedEntity;
 	TimeKeeper timeKeeper;
+	ImTextureID canvasImagePath;
+	ImTextureID canvasTintImagePath;
 
 	ImTextureID loadFrameTexture(std::string);
 
@@ -39,8 +42,10 @@ public:
 	void RenderWin(int windowHeight, int windowWidth, StateHandler::GameState player);
 	void RenderLoss(int windowHeight, int windowWidth);
 	void RenderStorm(int frameWidth, int frameHeight, int screenWidth, int screenHeight);
-	void RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight);
-	void RenderCharge(int charge, int screenWidth, int screenHeight);
-	void RenderPlace(int place, int screenWidth, int screenHeight);
+	void RenderCanvas(int screenWidth, int screenHeight, float scaler, float position);
+	void RenderCanvasTint(int screenWidth, int screenHeight, float scaler, float position);
+	void RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight, float scaler, float position);
+	void RenderCharge(int charge, int screenWidth, int screenHeight, float scaler, float position);
+	void RenderPlace(int place, int screenWidth, int screenHeight, float scaler, float position);
 	void Cleanup();
 };
