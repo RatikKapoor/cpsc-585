@@ -6,17 +6,24 @@ Overlay::Overlay()
 
 	std::string imagePath;
 
+	// Storm images
 	for (int i = 0; i < 14; i++) {
 		imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
 		stormImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
 	}
+
+	// Battery charge images
 	for (int i = 0; i < 5; i++) {
 		imagePath = "./assets/playerDataImages/batteryCharge" + std::to_string(i) + ".png";
 		batteryImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
 	}
 
-	canvasImagePath = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvas.png");
-	canvasTintImagePath = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasTint.png");
+	// Canvas coloured images
+	canvasImageRed = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasRed.png");
+	canvasImageGreen = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasGreen.png");
+	canvasImageBlue = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasBlue.png");
+	canvasImageBlack = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvas.png");
+	canvasTintImage = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasTint.png");
 
 	stormFrameCounter = 0;
 }
@@ -215,14 +222,30 @@ void Overlay::RenderStorm(int frameWidth, int frameHeight, int screenWidth, int 
 		stormFrameCounter++;
 }
 
-void Overlay::RenderCanvas(int screenWidth, int screenHeight, float scaler, float position) {
+void Overlay::RenderCanvas(int colour, int screenWidth, int screenHeight, float scaler, float position) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowPos(ImVec2(screenWidth - 150 * scaler, screenHeight * position - 100 * scaler));
 	ImGui::Begin("canvas", (bool*)0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Image(canvasImagePath, ImVec2(150 * scaler, 100 * scaler));
+	ImTextureID canvasImage;
+	switch (colour)
+	{
+	case 2:
+		canvasImage = canvasImageGreen;
+		break;
+	case 4:
+		canvasImage = canvasImageRed;
+		break;
+	case 3:
+		canvasImage = canvasImageBlue;
+		break;
+	default:
+		canvasImage = canvasImageBlack;
+		break;
+	}
+	ImGui::Image(canvasImage, ImVec2(150 * scaler, 100 * scaler));
 
 	ImGui::End();
 
@@ -237,7 +260,7 @@ void Overlay::RenderCanvasTint(int screenWidth, int screenHeight, float scaler, 
 
 	ImGui::SetNextWindowPos(ImVec2(screenWidth - 150 * scaler, screenHeight * position - 100 * scaler));
 	ImGui::Begin("tint", (bool*)0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Image(canvasTintImagePath, ImVec2(150 * scaler, 100 * scaler));
+	ImGui::Image(canvasTintImage, ImVec2(150 * scaler, 100 * scaler));
 
 	ImGui::End();
 
