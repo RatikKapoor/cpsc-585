@@ -13,7 +13,7 @@
 #include "StateHandler.h"
 #include "AudioHelper.h"
 #include "Overlay.h"
-	
+
 struct positionCompare {
 	bool operator() (const std::pair<Vehicle*, float>& lhs, const std::pair<Vehicle*, float>& rhs) const {
 		return lhs.second > rhs.second;
@@ -42,11 +42,11 @@ public:
 
 	void InitCars()
 	{
-		ecs["raybeam"] = new RayBeam("raybeam", ModelProvider::rayBeam, ShaderProvider::flameShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
+		ecs["raybeam"] = new RayBeam("raybeam", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 		ecs["flames"] = new Flames("flames", ModelProvider::carFlames, ShaderProvider::flameShader, glm::vec3(1.f), 1);
-		ecs["raybeam2"] = new RayBeam("raybeam2", ModelProvider::rayBeam, ShaderProvider::flameShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
+		ecs["raybeam2"] = new RayBeam("raybeam2", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 		ecs["flames2"] = new Flames("flames2", ModelProvider::carFlames, ShaderProvider::flameShader, glm::vec3(1.f), 1);
-		ecs["raybeam3"] = new RayBeam("raybeam3", ModelProvider::rayBeam, ShaderProvider::flameShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
+		ecs["raybeam3"] = new RayBeam("raybeam3", ModelProvider::rayBeam, ShaderProvider::debugShader, glm::vec3(1.f), physics, std::ref(ecs), PxVec3(0.f, 1.75f, 0.f), 1);
 		ecs["flames3"] = new Flames("flames3", ModelProvider::carFlames, ShaderProvider::flameShader, glm::vec3(1.f), 1);
 
 		// Create main car
