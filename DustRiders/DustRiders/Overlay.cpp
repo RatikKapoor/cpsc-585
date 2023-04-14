@@ -374,6 +374,26 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 	ImGui::Text("ESC or START to toggle pause");
 	ImGui::End();
 
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 1.6, windowHeight * 0.6));
+	ImGui::Begin("CarColours", (bool *)0, textWindowFlags);
+	ImGui::SetWindowFontScale(windowHeight / 270.0f);
+	ImGui::Text("Player 1: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(58, 91, 50, 255));
+	ImGui::Text("Green");
+	ImGui::PopStyleColor();
+	ImGui::Text("Player 2: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(136, 64, 47, 255));
+	ImGui::Text("Red");
+	ImGui::PopStyleColor();
+	ImGui::Text("Player 3: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(44, 42, 102, 255));
+	ImGui::Text("Blue");
+	ImGui::PopStyleColor();
+	ImGui::End();
+
 	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -419,6 +439,26 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui::Text("WASD to Steer (Keyboard)");
 	ImGui::Text("SPACE to Shoot (Keyboard)");
 	ImGui::Text("ESC or START to toggle pause");
+	ImGui::End();
+
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 1.6, windowHeight * 1.6));
+	ImGui::Begin("CarColours", (bool *)0, textWindowFlags);
+	ImGui::SetWindowFontScale(windowHeight / 270.0f);
+	ImGui::Text("Player 1: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(58, 91, 50, 255));
+	ImGui::Text("Green");
+	ImGui::PopStyleColor();
+	ImGui::Text("Player 2: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(136, 64, 47, 255));
+	ImGui::Text("Red");
+	ImGui::PopStyleColor();
+	ImGui::Text("Player 3: ");
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(44, 42, 102, 255));
+	ImGui::Text("Blue");
+	ImGui::PopStyleColor();
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window

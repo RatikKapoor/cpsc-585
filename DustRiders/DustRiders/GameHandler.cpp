@@ -167,9 +167,11 @@ void GameHandler::Loop()
 
 			window.swapBuffers();
 
-			auto entities = ecs.getAll();
 			renderer.updateRender(ecs, camera, window.getAspectRatio());
+#ifdef _DEBUG
+			auto entities = ecs.getAll();
 			overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);
+#endif // _DEBUG
 
 			vehicleHandler.Debug(); // Only does anything in debug mode
 
