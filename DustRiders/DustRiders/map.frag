@@ -8,6 +8,7 @@ uniform vec3 cameraPos;
 uniform float hitVisible;
 in vec2 tc;
 in float hitVis;
+in vec4 projCoords;
 
 in vec3 lPos;
 in vec3 camPos;
@@ -15,6 +16,7 @@ in vec3 camPos;
 uniform sampler2D baseTex;
 uniform sampler2D specularTex;
 uniform sampler2D emissionTex;
+uniform sampler2D shadowMap;
 
 out vec4 color;
 
@@ -40,6 +42,12 @@ void main() {
 
 	// Emission
 
+
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+	float shadow = (currentDepth > closestDepth) ? 1.0 : 0.0;
+
+
 	// Normal mapping
 	vec3 rgb_normal = n * 0.5 + 0.5;
 	vec3 visibleHit = vec3(0.f, 0.f, 0.f);
@@ -48,7 +56,11 @@ void main() {
 	}
 
 
-	vec4 res = vec4((ambientLighting + specular + diff + 2*vec3(emis)),d.a) * d;
+	vec4 res = vec4((ambientLighting + (1.0-shadow)*(specular + diff) + 2*vec3(emis)),d.a) * d;
+		// vec4 res = vec4((ambientLighting + shadow + 2*vec3(emis)),d.a) * d;
+
+	// vec4 res = vec4(((1.0-shadow)*(ambientLighting + specular + diff) + 2*vec3(emis)),d.a) * d;
+
 	color = res;
 
 }

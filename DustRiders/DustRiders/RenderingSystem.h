@@ -23,6 +23,9 @@ class RenderingSystem
 	std::unordered_map<std::string, Texture *> textures;
 	GLuint fbo;
 	GLuint shadowMap;
+	glm::vec3 lightOffset = glm::vec3(400.f, 200.f, 100.f);
+
+	glm::vec3 lightPos;
 
 public:
 	int lastChunkCount;
