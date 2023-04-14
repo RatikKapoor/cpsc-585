@@ -82,6 +82,8 @@ public:
 		{
 			ecs[v->name] = v;
 		}
+
+		humanPlayersLeft = numberOfHumans;
 	}
 
 	void Reset()
@@ -94,6 +96,8 @@ public:
 			vehicle->restore();
 			vehicle->reset();
 		}
+
+		humanPlayersLeft = numberOfHumans;
 	}
 
 	void UpdateVehiclePhysics()
@@ -142,14 +146,12 @@ public:
 
 	void CheckForDeath(glm::mat4 pv)
 	{
-		int humanPlayersLeft = 0;
 		for (int i = 0; i < vehicles.size(); i++)
 		{
 			glm::vec3 drawPos = pv * glm::vec4{ vehicles[i]->transform->position, 1.0f };
 
 			if (!isAiVehicle(vehicles[i]))
 			{
-				humanPlayersLeft++;
 #pragma region Controller Rumble When Close to Storm
 				if (drawPos.y / drawPos.z < -0.7f)
 					vehicles[i]->js->setVibrate(65535);
@@ -255,4 +257,5 @@ protected:
 	std::vector<Vehicle*> inactiveVehicles;
 
 	int numberOfHumans = 1;
+	int humanPlayersLeft;
 };
