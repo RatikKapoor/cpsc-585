@@ -364,11 +364,13 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
-	ImGui::Text("RT to accelerlate, LT to brake/reverse (Controller)");
+	ImGui::Text("RT to accelerate, LT to brake/reverse (Controller)");
 	ImGui::Text("Left JS to steer (Controller)");
 	ImGui::Text("A to Shoot (Controller)");
+	ImGui::Text("Y to reset (Controller)");
 	ImGui::Text("WASD to Steer (Keyboard)");
-	ImGui::Text("A to Shoot (Keyboard)");
+	ImGui::Text("SPACE to Shoot (Keyboard)");
+	ImGui::Text("BACKSPACE to reset (Keyboard)");
 	ImGui::Text("ESC or START to toggle pause");
 	ImGui::End();
 
@@ -411,11 +413,11 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-	ImGui::Text("RT to accelerlate, LT to brake/reverse (Controller)");
+	ImGui::Text("RT to accelerate, LT to brake/reverse (Controller)");
 	ImGui::Text("Left JS to steer (Controller)");
 	ImGui::Text("A to Shoot (Controller)");
 	ImGui::Text("WASD to Steer (Keyboard)");
-	ImGui::Text("A to Shoot (Keyboard)");
+	ImGui::Text("SPACE to Shoot (Keyboard)");
 	ImGui::Text("ESC or START to toggle pause");
 	ImGui::End();
 
