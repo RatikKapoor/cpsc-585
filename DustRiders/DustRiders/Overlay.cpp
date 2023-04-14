@@ -350,13 +350,13 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 	if (prevState != StateHandler::GameState::Playing)
 	{
 		ImGui::Text("Press ENTER or Right D-Pad to start.");
-		ImGui::Text("Press X or X Button to quit DustRiders.");
+		ImGui::Text("Press X or X Button to quit.");
 		ImGui::End();
 	}
 	else
 	{
-		ImGui::Text("Press ESC or START Button to resume playing.");
-		ImGui::Text("Press X or X Button to quit DustRiders.");
+		ImGui::Text("Press ESC or START to resume.");
+		ImGui::Text("Press X or X Button to quit.");
 		ImGui::End();
 	}
 
@@ -364,10 +364,11 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
-	ImGui::Text("RT to accerlate, LT to brake (Controller)");
+	ImGui::Text("RT to accelerlate, LT to brake/reverse (Controller)");
 	ImGui::Text("Left JS to steer (Controller)");
+	ImGui::Text("A to Shoot (Controller)");
 	ImGui::Text("WASD to Steer (Keyboard)");
-	ImGui::Text("Hold Left Shift or LB to Reverse");
+	ImGui::Text("A to Shoot (Keyboard)");
 	ImGui::Text("ESC or START to toggle pause");
 	ImGui::End();
 
@@ -410,10 +411,11 @@ void Overlay::RenderMenu(int windowHeight, int windowWidth)
 	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
-	ImGui::Text("RT to accerlate, LT to brake (Controller)");
+	ImGui::Text("RT to accelerlate, LT to brake/reverse (Controller)");
 	ImGui::Text("Left JS to steer (Controller)");
+	ImGui::Text("A to Shoot (Controller)");
 	ImGui::Text("WASD to Steer (Keyboard)");
-	ImGui::Text("Hold Left Shift or LB to Reverse");
+	ImGui::Text("A to Shoot (Keyboard)");
 	ImGui::Text("ESC or START to toggle pause");
 	ImGui::End();
 
@@ -450,7 +452,7 @@ void Overlay::RenderWin(int windowHeight, int windowWidth, StateHandler::GameSta
 	ImGui::SetWindowFontScale(3.0f);
 
 	ImGui::Text("Press ENTER or Right D-Pad to Play Again");
-	ImGui::Text("Press X or X Button to quit DustRiders");
+	ImGui::Text("Press X or X Button to quit");
 	ImGui::End();
 
 	ImGui::End();
