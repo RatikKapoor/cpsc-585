@@ -18,9 +18,9 @@ void ModelProvider::initialize(RenderingSystem &renderer)
 {
 	carModel = renderer.loadModelFromFile("TestCar", "./assets/models/car-model.obj");
 	carFlames = renderer.loadModelFromFile("CarFlames", "./assets/models/car-flames.obj");
-	rock1 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock1.obj");
-	rock2 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock2.obj");
-	rock3 = renderer.loadModelFromFile("TestRock", "./assets/models/test-rock3.obj");
+	rock1 = renderer.loadModelFromFile("TestRock", "./assets/models/rock1.obj");
+	rock2 = renderer.loadModelFromFile("TestRock", "./assets/models/rock2.obj");
+	rock3 = renderer.loadModelFromFile("TestRock", "./assets/models/rock3.obj");
 	rayBeam = renderer.loadModelFromFile("RayBeam", "./assets/models/raygun-beam.obj");
 	straightPath = renderer.loadModelFromFile("StraightPath", "./assets/models/chunk-straight.obj");
 	oneDividedPath = renderer.loadModelFromFile("OneDividedPath", "./assets/models/chunk-1divide.obj");
