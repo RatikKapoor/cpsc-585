@@ -43,6 +43,7 @@ void Overlay::LoadingContent(int windowWidth, int windowHeight)
 
 void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::GameState prevGameState, std::vector<Entity *> entities, EntityComponentSystem *ecs)
 {
+#ifdef _DEBUG
 	// Framerate calculations
 	double currentTime = timeKeeper.getCurrentTime();
 	nbFrames++;
@@ -54,8 +55,6 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 		nbFrames = 0;
 		lastTime += 1.0;
 	}
-
-	JoystickHandler jsHand;
 
 	// ImGui
 	ImGui_ImplOpenGL3_NewFrame();
@@ -135,6 +134,7 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Some middleware thing
 
 	// End ImGui
+#endif // _DEBUG
 }
 
 
