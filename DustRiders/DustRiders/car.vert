@@ -29,7 +29,7 @@ void main() {
 	n = mat3(transpose(inverse(M))) * normal;
 	tc = texCoord;
 	gl_Position = P * V * M * vec4(pos, 1.0);
-	lPos =  vec3( vec4((lightPos),1.0 ));
+	lPos =  vec3( inverse(M)*vec4((lightPos),1.0 ));
 	camPos = vec3(M*vec4((cameraPos),1.0));
 	hitVis = hitVisible;
 }
