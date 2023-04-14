@@ -4,10 +4,19 @@ Overlay::Overlay()
 {
 	lastTime = timeKeeper.getCurrentTime();
 
+	std::string imagePath;
+
 	for (int i = 0; i < 14; i++) {
-		std::string imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
+		imagePath = "./assets/stormImages/frame" + std::to_string(i) + ".png";
 		stormImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
 	}
+	for (int i = 0; i < 5; i++) {
+		imagePath = "./assets/playerDataImages/batteryCharge" + std::to_string(i) + ".png";
+		batteryImagesMap[imagePath] = (ImTextureID)loadFrameTexture(imagePath.c_str());
+	}
+
+	canvasImagePath = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvas.png");
+	canvasTintImagePath = (ImTextureID)loadFrameTexture("./assets/playerDataImages/playerInformationCanvasTint.png");
 
 	stormFrameCounter = 0;
 }
@@ -139,13 +148,13 @@ void Overlay::RenderOverlay(StateHandler::GameState gameState, StateHandler::Gam
 
 
 std::string battery(int c) {
-	if (c == 100) { return "[][][][]"; }
-	if (c >= 75) { return "[][][]"; }
-	if (c >= 50) { return "[][]"; }
-	if (c >= 25) { return "[]"; }
-	return "";
-
+	if (c == 100) { return "./assets/playerDataImages/batteryCharge4.png"; }
+	if (c >= 75) { return "./assets/playerDataImages/batteryCharge3.png"; }
+	if (c >= 50) { return "./assets/playerDataImages/batteryCharge2.png"; }
+	if (c >= 25) { return "./assets/playerDataImages/batteryCharge1.png"; }
+	return "./assets/playerDataImages/batteryCharge0.png";
 }
+
 std::string positionFancy(int x) {
 	switch (x)
 	{
@@ -206,49 +215,78 @@ void Overlay::RenderStorm(int frameWidth, int frameHeight, int screenWidth, int 
 		stormFrameCounter++;
 }
 
-void Overlay::RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight) {
+void Overlay::RenderCanvas(int screenWidth, int screenHeight, float scaler, float position) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::SetNextWindowPos(ImVec2(screenWidth - screenWidth * 0.10 - 10, screenHeight * 0.05));
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - 150 * scaler, screenHeight * position - 100 * scaler));
+	ImGui::Begin("canvas", (bool*)0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Image(canvasImagePath, ImVec2(150 * scaler, 100 * scaler));
+
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Overlay::RenderCanvasTint(int screenWidth, int screenHeight, float scaler, float position) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - 150 * scaler, screenHeight * position - 100 * scaler));
+	ImGui::Begin("tint", (bool*)0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Image(canvasTintImagePath, ImVec2(150 * scaler, 100 * scaler));
+
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Overlay::RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight, float scaler, float position) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - 130 * scaler, screenHeight * position - 80 * scaler));
 	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.10f, screenHeight * 0.10f));
 	ImGui::Begin("Speedometer", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
-	ImGui::SetWindowFontScale(2.0f);
-	ImGui::Text("%.1f km/h", currentSpeed * 3.6);
+	ImGui::SetWindowFontScale(scaler);
+	ImGui::Text("%.2f m/s", currentSpeed);
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-void Overlay::RenderCharge(int charge, int screenWidth, int screenHeight) {
+void Overlay::RenderCharge(int charge, int screenWidth, int screenHeight, float scaler, float position) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::SetNextWindowPos(ImVec2(screenWidth - screenWidth * 0.10 - 10, screenHeight * 0.15));
-	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.10, screenHeight * 0.10));
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - 135 * scaler, screenHeight * position - 35 * scaler));
 	ImGui::Begin("Charge", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+	ImGui::Image(batteryImagesMap[battery(charge)], ImVec2(120 * scaler, 20 * scaler));
 
-	ImGui::SetWindowFontScale(2.0f);
-	ImGui::Text(battery(charge).c_str());
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-void Overlay::RenderPlace(int place, int screenWidth, int screenHeight) {
+void Overlay::RenderPlace(int place, int screenWidth, int screenHeight, float scaler, float position) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::SetNextWindowPos(ImVec2(screenWidth * 0.5, screenHeight * 0.05));
+	ImGui::SetNextWindowPos(ImVec2(screenWidth - 40 * scaler, screenHeight * position - 80 * scaler));
 	ImGui::SetNextWindowSize(ImVec2(screenWidth * 0.20, screenHeight * 0.10));
 	ImGui::Begin("place", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
-	ImGui::SetWindowFontScale(2.0f);
+	ImGui::SetWindowFontScale(scaler);
 	ImGui::Text("%d%s", place, positionFancy(place).c_str());
+
 	ImGui::End();
 
 	ImGui::Render();

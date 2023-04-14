@@ -12,6 +12,13 @@
 #include "PhysicsSystem.h"
 #include "StateHandler.h"
 #include "AudioHelper.h"
+#include "Overlay.h"
+	
+struct positionCompare {
+	bool operator() (const std::pair<Vehicle*, float>& lhs, const std::pair<Vehicle*, float>& rhs) const {
+		return lhs.second > rhs.second;
+	}
+};
 
 class VehicleHandler
 {
@@ -234,6 +241,37 @@ public:
 		}
 	}
 
+	void RenderPlayerDataOverlay(Overlay& overlay, int windowWidth, int windowHeight)
+	{
+		// Find positions
+		std::set<std::pair<Vehicle*, float>, positionCompare> positions;
+		for (auto v : vehicles)
+		{
+			positions.insert({ v, v->transform->position.z });
+		}
+
+		int i = 1;
+		for (auto& carPair : positions)
+		{
+			overlay.RenderCanvas(windowWidth, windowHeight, 1, 0.25 * i);
+			overlay.RenderCharge(carPair.first->getRaybeamChargePercentage(), windowWidth, windowHeight, 1, 0.25 * i);
+			overlay.RenderPlace(i, windowWidth, windowHeight, 1, 0.25 * i);
+			overlay.RenderSpeedometer(carPair.first->currentSpeed(), windowWidth, windowHeight, 1, 0.25 * i);
+			overlay.RenderCanvasTint(windowWidth, windowHeight, 1, 0.25 * i);
+			i++;
+		}
+	}
+
+	std::string VehicleNameToFriendlyName(std::string n)
+	{
+		if (n.rfind("car3") == 0)
+			return "Player 3";
+		else if (n.rfind("car2") == 0)
+			return "Player 2";
+		else
+			return "Player 1";
+	}
+
 	void Debug()
 	{
 #ifdef _DEBUG
@@ -257,5 +295,5 @@ protected:
 	std::vector<Vehicle*> inactiveVehicles;
 
 	int numberOfHumans = 1;
-	int humanPlayersLeft;
+	int humanPlayersLeft = 0;
 };
