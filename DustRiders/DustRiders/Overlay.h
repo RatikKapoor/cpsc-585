@@ -36,7 +36,7 @@ public:
 	void RenderOverlay(StateHandler::GameState, StateHandler::GameState, std::vector<Entity *>, EntityComponentSystem *);
 	void RenderMenu(int windowHeight, int windowWidth);
 	void RenderPause(StateHandler::GameState prevState, int windowHeight, int windowWidth);
-	void RenderWin(int windowHeight, int windowWidth);
+	void RenderWin(int windowHeight, int windowWidth, StateHandler::GameState player);
 	void RenderLoss(int windowHeight, int windowWidth);
 	void RenderStorm(int frameWidth, int frameHeight, int screenWidth, int screenHeight);
 	void RenderSpeedometer(float currentSpeed, int screenWidth, int screenHeight);

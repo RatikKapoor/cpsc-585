@@ -26,9 +26,10 @@ public:
       Exit = -1,
       NotStarted = 0,
       Playing = 1,
-      GameWon = 2,
-      GameLost = 3,
-
+      GameWonPlayer1 = 2,
+      GameWonPlayer2 = 3,
+      GameWonPlayer3 = 4,
+      GameLost = 5,
     };
 
     operator int() { return static_cast<int>(this->state); }

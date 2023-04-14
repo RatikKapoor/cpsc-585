@@ -69,7 +69,11 @@ void StateHandler::processJS(Joystick &js)
       setGState(GameState::Exit);
       return;
     }
-    if (prevGState == GameState::GameLost || prevGState == GameState::GameWon || prevGState == GameState::PauseMenu)
+    if (prevGState == GameState::GameLost
+        || prevGState == GameState::GameWonPlayer1
+        || prevGState == GameState::GameWonPlayer2
+        || prevGState == GameState::GameWonPlayer3
+        || prevGState == GameState::PauseMenu)
     {
       if (pressed[Xbox::Button::XBOX_RIGHT])
       {
@@ -147,8 +151,14 @@ StateHandler::GameState::operator std::string()
   case PauseMenu:
     stateString = "Pause Menu";
     break;
-  case GameWon:
-    stateString = "Game Won";
+  case GameWonPlayer1:
+    stateString = "Player 1 Win";
+    break;
+  case GameWonPlayer2:
+    stateString = "Player 2 Win";
+    break;
+  case GameWonPlayer3:
+    stateString = "Player 3 Win";
     break;
   case GameLost:
     stateString = "Game Lost";
