@@ -278,7 +278,7 @@ void Overlay::RenderSpeedometer(float currentSpeed, int screenWidth, int screenH
 	ImGui::Begin("Speedometer", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
 	ImGui::SetWindowFontScale(scaler);
-	ImGui::Text("%.2f m/s", currentSpeed);
+	ImGui::Text("%.0f km/h", currentSpeed * 3.6);
 	ImGui::End();
 
 	ImGui::Render(); // Render the ImGui window
