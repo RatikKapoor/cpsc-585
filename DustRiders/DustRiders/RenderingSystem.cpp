@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+#include "DebugDefines.h"
 
 Model *RenderingSystem::addModel(std::string name, Model *model)
 {
@@ -151,18 +152,14 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 	return textures;
 }
 
-#define SHADOW_ONLY
 
 void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect)
 {
+		lightPos = glm::vec3(cam.getPos().x-160.f, 0.f, cam.getPos().z+60.f) + lightOffset;
+		drawShadowMap(ecs, cam, aspect, lightPos);
+		lastChunkCount = ChunkHandler::chunkCounter;
 
 #ifdef SHADOW_ONLY
-	if (ChunkHandler::chunkCounter != lastChunkCount)
-	{
-	}
-	// drawShadowMap(ecs, cam, aspect, glm::vec3(5.0f, 10.0f, -20.0f));
-	drawShadowMap(ecs, cam, aspect, glm::vec3(cam.getPos().x, 15.f, cam.getPos().z + 50.f));
-	lastChunkCount = ChunkHandler::chunkCounter;
 	renderDepth(ecs, cam, aspect);
 	return;
 #endif
@@ -178,7 +175,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
-	glm::vec3 lightPos = glm::vec3(cam.getPos().x, cam.getPos().y - 50.f, cam.getPos().z - 50.f);
+
 
 	int numRendered = 0;
 
@@ -213,6 +210,16 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 			location = glGetUniformLocation(shader, "cameraPos");
 			glUniform3fv(location, 1, glm::value_ptr(camPos));
 
+			if(regex_match(entity->name, regex("(ground)(.*)"))){
+				unsigned int lightSpaceMatrixPos = glGetUniformLocation(shader, "lightSpaceMatrix");
+				glUniformMatrix4fv(lightSpaceMatrixPos, 1, GL_FALSE, glm::value_ptr(getLightSpaceMatrix(lightPos)));
+
+				glUniform1i(glGetUniformLocation(shader, "shadowMap"), 3);
+				glActiveTexture(GL_TEXTURE3);
+				glBindTexture(GL_TEXTURE_2D, shadowMap);
+				glActiveTexture(GL_TEXTURE0);
+			}
+
 			if (regex_match(entity->name, regex("(car)(.*)")))
 			{
 				// LogWriter::log("Rendering car \"" + entity->name + "\"");
@@ -235,6 +242,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 			}
 			entity->model->draw(shader, entity->useMatInt);
 			numRendered++;
+
 		}
 	}
 
@@ -269,10 +277,10 @@ void RenderingSystem::createShadowmap(EntityComponentSystem &ecs, Camera &cam, f
 glm::mat4 RenderingSystem::getLightSpaceMatrix(glm::vec3 lightPos)
 {
 	glm::mat4 lightProjection, lightView, lightSpaceMatrix;
-	float nearPlane = 0.01f;
-	float farPlane = 200.0f;
-	lightProjection = glm::ortho(-70.0f, 70.0f, -70.0f, 70.0f, nearPlane, farPlane);
-	lightView = glm::lookAt(lightPos, glm::vec3(1.f, -3.f, 0.5f) + lightPos, glm::vec3(0.0f, 1.0f, 0.0f));
+	float nearPlane = 300.0f;
+	float farPlane = 400.0f;
+	lightProjection = glm::ortho(-80.0f, 80.0f, -40.0f, 40.0f, nearPlane, farPlane);
+	lightView = glm::lookAt(lightPos, (-1.0f*lightOffset)+lightPos+glm::vec3(0.f, -100.f, 0.f), glm::vec3(0.0f, 1.0f, 0.0f));
 	lightSpaceMatrix = lightProjection * lightView;
 	return lightSpaceMatrix;
 }
@@ -299,9 +307,9 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 
 	for (Entity *entity : ecs.getAll())
 	{
-		if (entity->shouldRender)
-		// if (regex_match(entity->name, regex("(car)(.*)")))
-		{
+		if (entity->shouldRender){
+		// if (!regex_match(entity->name, regex("(ground)(.*)")))
+		// {
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, entity->transform->position);
 			model = model * glm::toMat4(entity->transform->rotation);
@@ -349,6 +357,7 @@ void RenderingSystem::drawShadowMap(EntityComponentSystem &ecs, Camera &cam, flo
 			numRendered++;
 		}
 	}
+	// }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
