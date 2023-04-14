@@ -253,7 +253,7 @@ public:
 		int i = 1;
 		for (auto& carPair : positions)
 		{
-			overlay.RenderCanvas(windowWidth, windowHeight, 1, 0.25 * i);
+			overlay.RenderCanvas(carPair.first->useMatInt, windowWidth, windowHeight, 1, 0.25 * i);
 			overlay.RenderCharge(carPair.first->getRaybeamChargePercentage(), windowWidth, windowHeight, 1, 0.25 * i);
 			overlay.RenderPlace(i, windowWidth, windowHeight, 1, 0.25 * i);
 			overlay.RenderSpeedometer(carPair.first->currentSpeed(), windowWidth, windowHeight, 1, 0.25 * i);
