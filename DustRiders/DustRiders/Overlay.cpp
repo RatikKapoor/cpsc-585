@@ -360,7 +360,7 @@ void Overlay::RenderPause(StateHandler::GameState prevState, int windowHeight, i
 		ImGui::End();
 	}
 
-	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.4));
+	ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1, windowHeight * 1.3));
 	ImGui::Begin("ControlInput", (bool *)0, textWindowFlags);
 	ImGui::SetWindowFontScale(windowHeight / 180.0f);
 
