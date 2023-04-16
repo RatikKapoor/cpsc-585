@@ -10,6 +10,7 @@ uniform mat4 P;
 uniform mat4 nM;
 uniform vec3 cameraPos;
 uniform vec3 lightPos;
+uniform vec3 lightCol;
 uniform float hitVisible;
 uniform mat4 lightSpaceMatrix;
 
@@ -21,6 +22,7 @@ out mat4 nMatrix;
 out vec3 lPos;
 out vec3 camPos;
 out float hitVis;
+out vec3 lCol;
 
 out mat4 lsMatrix;
 out vec4 projCoords;
@@ -41,4 +43,5 @@ void main() {
 
 	projCoords = lightSpacePos*0.5+0.5;
 	lsMatrix = lightSpaceMatrix;
+	lCol = lightCol;
 }
