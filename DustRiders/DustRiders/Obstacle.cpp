@@ -13,7 +13,7 @@ Obstacle::Obstacle(std::string n,
 
 void Obstacle::initObstacle(PxVec3 pos)
 {
-	auto shape = this->gPhysics->createShape(PxBoxGeometry(0.5, 0.2, 0.5), *gMaterial);
+	auto shape = this->gPhysics->createShape(PxBoxGeometry(1.5, 0.15, 0.5), *gMaterial);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
 	PxTransform localTm(pos);
