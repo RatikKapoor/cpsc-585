@@ -22,7 +22,10 @@ void Camera::setFocusEntity(Entity *newFocus)
 glm::mat4 Camera::getView()
 {
 	glm::vec3 eye = getPos();
-	glm::vec3 at = focusEntity->transform->position + focusOffset;
+	glm::vec3 at = glm::vec3(0.0f, 0.0f, 1.0f);
+	if(focusEntity!=nullptr){
+		at = focusEntity->transform->position + focusOffset;
+	}
 
 // #ifndef NO_DEATH
 	at.x = 0;
@@ -35,7 +38,10 @@ glm::mat4 Camera::getView()
 glm::vec3 Camera::getPos()
 {
 	glm::vec3 newDir = glm::vec3(0.f);
-	glm::vec3 position = focusEntity->transform->position;
+	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+	if(focusEntity!=nullptr){
+		position = focusEntity->transform->position;
+	}
 // #ifndef NO_DEATH
 	position.x = 0;
 	glm::vec3 direction{0.0f, 0.0f, -1.0f};
