@@ -1,4 +1,5 @@
 #include "RenderingSystem.h"
+#include "StateHandler.h"
 
 #include "Geometry.h"
 #include "Vehicle.h"
@@ -153,7 +154,7 @@ std::vector<Texture> RenderingSystem::loadMaterialTextures(aiMaterial *mat, aiTe
 }
 
 
-void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect)
+void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect, StateHandler::GameState gState)
 {
 		lightPos = glm::vec3(cam.getPos().x-160.f, 0.f, cam.getPos().z+60.f) + lightOffset;
 		drawShadowMap(ecs, cam, aspect, lightPos);
@@ -175,7 +176,21 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 	glm::vec3 camPos = cam.getPos();
 
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), aspect, 0.01f, 1000.f);
-	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
+	glm::vec3 lightCol = glm::vec3(1.1f, 1.1f, 0.8f);
+	if(gState != StateHandler::GameState::Playing){
+		if(gState == StateHandler::GameState::GameWonPlayer1){
+			lightCol = glm::vec3(0.8f, 1.0f, 0.8f);
+		}else if(gState == StateHandler::GameState::GameWonPlayer2){
+			lightCol = glm::vec3(1.0f, 0.8f, 0.8f);
+		}else if(gState == StateHandler::GameState::GameWonPlayer3){
+			lightCol = glm::vec3(0.8f, 0.8f, 1.0f);
+		}else if(gState == StateHandler::GameState::PauseMenu){
+			lightCol = glm::vec3(0.75f, 0.75f, 0.75f);
+		}else
+		{
+			lightCol = glm::vec3(0.2f, 0.3f, 0.3f);
+		}
+	}
 
 
 	int numRendered = 0;
@@ -211,7 +226,7 @@ void RenderingSystem::updateRender(EntityComponentSystem &ecs, Camera &cam, floa
 			location = glGetUniformLocation(shader, "cameraPos");
 			glUniform3fv(location, 1, glm::value_ptr(camPos));
 
-			if(regex_match(entity->name, regex("(ground)(.*)"))){
+			if(!regex_match(entity->name, regex("((ray)(.*))|((flame)(.*))"))){
 				unsigned int lightSpaceMatrixPos = glGetUniformLocation(shader, "lightSpaceMatrix");
 				glUniformMatrix4fv(lightSpaceMatrixPos, 1, GL_FALSE, glm::value_ptr(getLightSpaceMatrix(lightPos)));
 

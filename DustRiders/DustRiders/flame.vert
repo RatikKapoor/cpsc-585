@@ -11,6 +11,7 @@ uniform mat4 nM;
 uniform vec3 cameraPos;
 uniform vec3 lightPos;
 uniform float hitVisible;
+uniform vec3 lightCol;
 
 
 out vec3 fragPos;
@@ -20,6 +21,7 @@ out mat4 nMatrix;
 out vec3 lPos;
 out vec3 camPos;
 out float hitVis;
+out vec3 lCol;
 
 out vec2 tc;
 
@@ -32,4 +34,5 @@ void main() {
 	lPos =  vec3( vec4((lightPos),1.0 ));
 	camPos = vec3(M*vec4((cameraPos),1.0));
 	hitVis = hitVisible;
+	lCol = lightCol;
 }

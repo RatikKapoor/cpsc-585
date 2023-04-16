@@ -5,6 +5,7 @@
 #include <string>
 
 #include "ShaderProgram.h"
+#include "StateHandler.h"
 #include "Texture.h"
 #include "Model.h"
 #include "Camera.h"
@@ -46,7 +47,7 @@ public:
 	Texture loadTexture(std::string name, std::string path, GLint interpolation);
 
 	// void updateRender(std::vector<Entity *> &entityList, Camera &cam, float aspect);
-	void updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect);
+	void updateRender(EntityComponentSystem &ecs, Camera &cam, float aspect, StateHandler::GameState gState);
 	void createShadowmap(EntityComponentSystem &ecs, Camera &cam, float aspect);
 	void drawShadowMap(EntityComponentSystem &ecs, Camera &cam, float aspect, glm::vec3 lightPos);
 

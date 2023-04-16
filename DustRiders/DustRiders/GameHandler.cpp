@@ -167,7 +167,7 @@ void GameHandler::Loop()
 
 			window.swapBuffers();
 
-			renderer.updateRender(ecs, camera, window.getAspectRatio());
+			renderer.updateRender(ecs, camera, window.getAspectRatio(), stateHandle.getGState());
 #ifdef _DEBUG
 			auto entities = ecs.getAll();
 			overlay.RenderOverlay(stateHandle.getGState(), stateHandle.getPrevGState(), entities, &ecs);

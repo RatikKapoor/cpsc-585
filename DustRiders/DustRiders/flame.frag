@@ -11,6 +11,7 @@ in float hitVis;
 
 in vec3 lPos;
 in vec3 camPos;
+in vec3 lCol;
 
 uniform sampler2D baseTex;
 uniform sampler2D specularTex;
@@ -19,7 +20,7 @@ uniform sampler2D emissionTex;
 out vec4 color;
 
 void main() {
-	vec3 lightCol = vec3(1.0, 1.0, 1.0);
+	vec3 lCol = vec3(1.0, 1.0, 1.0);
 
 	vec3 norm = normalize(n);
 	vec4 d = texture(baseTex, tc);
@@ -29,11 +30,11 @@ void main() {
         discard; // If the texture is transparent, don't draw the fragment
 
 	// Ambient
-	vec3 ambientLighting = 0.05*lightCol;
+	vec3 ambientLighting = 0.05*lCol;
 
 	// Diffusion
 	vec3 lightDir = normalize(lPos - fragPos);
-	vec3 diff = max(dot(norm, lightDir), 0.0)*lightCol;
+	vec3 diff = max(dot(norm, lightDir), 0.0)*lCol;
 
 
 	vec3 specular = vec3(0.f, 0.f, 0.f);
