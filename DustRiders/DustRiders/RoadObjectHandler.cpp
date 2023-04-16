@@ -115,11 +115,11 @@ void RoadObjectHandler::addObstacles(float minDistance, float maxDistance) {
 		case ObstacleRock:
 			(*ecs)[name] = new Obstacle(name,
 				roadObjectModel,
-				ShaderProvider::mapShader,
+				ShaderProvider::carShader,
 				glm::vec3(1.f),
 				physics,
 				PxVec3(x, -0.f,(obstacleCounter % 5 == 0) ? dist + z : dist - z),
-				1);
+				0);
 			obstacleList.push_back((Obstacle*)(*ecs)[name]);
 			obstacleCounter++;
 			break;
