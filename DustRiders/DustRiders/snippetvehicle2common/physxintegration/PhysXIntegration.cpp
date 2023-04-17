@@ -113,7 +113,7 @@ namespace snippetvehicle2
 		PxQueryFilterCallback *queryFilterCallback = NULL;
 		const PxTransform physxActorCMassLocalPose(PxVec3(0.0f, 0.55f, 1.594f), PxQuat(PxIdentity));
 
-		const PxVec3 vehicleBoxDimensions(2.0f, 1.47f, 3.85f);
+		const PxVec3 vehicleBoxDimensions(2.0f, 1.47f, 5.15f);
 
 		// NOTE Vehicle rigid body box size
 		// const PxVec3 physxActorBoxShapeHalfExtents(0.84097f, 0.65458f, 2.46971f);

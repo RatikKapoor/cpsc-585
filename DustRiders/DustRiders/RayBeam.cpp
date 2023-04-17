@@ -17,7 +17,7 @@ RayBeam::RayBeam(std::string n,
 	coolDownTime = 2.0;
 	isActive = false;
 	shouldRender = false;
-	beamOriginOffset = PxVec3(0.f, 1.47f / 2.f, 3.85f);
+	beamOriginOffset = PxVec3(0.f, 1.47f / 2.f, 5.15f);
 	beamDirRaw = PxVec3(0.f, 0.f, 1.f);
 	initBeam(pos, ecs);
 	lastFireTime = 0.0;
